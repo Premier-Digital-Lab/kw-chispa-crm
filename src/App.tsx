@@ -1,9 +1,10 @@
 import { CRM } from "@/components/atomic-crm/root/CRM";
+import AIChatbot from "@/components/AIChatbot";
 
 /**
  * Application entry point
  *
- * Customize Atomic CRM by passing props to the CRM component:
+ * Customize KW CHISPA CRM by passing props to the CRM component:
  *  - companySectors
  *  - darkTheme
  *  - dealCategories
@@ -24,6 +25,11 @@ import { CRM } from "@/components/atomic-crm/root/CRM";
  *    />
  * );
  */
-const App = () => <CRM />;
+const App = () => (
+	<>
+		<CRM />
+		<AIChatbot />
+	</>
+);
 
 export default App;

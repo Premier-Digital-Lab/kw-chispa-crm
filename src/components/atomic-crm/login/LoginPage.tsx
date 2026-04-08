@@ -95,8 +95,8 @@ export const LoginPage = (props: { redirectTo?: string }) => {
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="absolute inset-0 bg-zinc-900" />
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <img className="h-6 mr-2" src={darkModeLogo} alt={title} />
-            {title}
+            <img className="h-20" src={darkModeLogo} alt={title} />
+            
           </div>
         </div>
         <div className="flex flex-col justify-center w-full p-4 lg:p-8">
