@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { ChatBubble, X } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 
 type Message = { role: "user" | "assistant" | "system"; content: string };
 
@@ -60,7 +60,7 @@ export default function AIChatbot() {
           aria-label="Open chat"
           className="rounded-full p-2"
         >
-          <ChatBubble />
+          <MessageCircle />
         </Button>
       </div>
 
