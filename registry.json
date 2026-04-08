@@ -526,6 +526,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/layout/Header.tsx.backup",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/layout/Header.tsx",
           "type": "registry:component"
         },
