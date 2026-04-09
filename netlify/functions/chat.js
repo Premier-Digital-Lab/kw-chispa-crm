@@ -81,6 +81,7 @@ exports.handler = async (event) => {
           const contactPayload = {
             first_name: input.first_name,
             last_name: input.last_name,
+            created_at: new Date().toISOString(),
           };
           if (input.email) {
             contactPayload.email_jsonb = [{ email: input.email, type: 'Work' }];
