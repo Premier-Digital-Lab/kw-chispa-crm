@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, X } from "lucide-react";
+import { getSupabaseClient } from "@/components/atomic-crm/providers/supabase/supabase";
 
 type Message = { role: "user" | "assistant" | "system"; content: string };
 
@@ -32,10 +33,16 @@ export default function AIChatbot() {
     setLoading(true);
 
     try {
+      const session = await getSupabaseClient().auth.getSession();
+      const accessToken = session.data.session?.access_token;
+
       const res = await fetch("/.netlify/functions/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages, contactsContext: "" }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ messages: nextMessages }),
       });
 
       if (!res.ok) throw new Error(await res.text());
