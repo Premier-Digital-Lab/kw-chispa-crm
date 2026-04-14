@@ -11,7 +11,7 @@ export const frenchCrmMessages = {
         linkedin_url: "LinkedIn",
         phone_number: "Numéro de téléphone",
         created_at: "Date de création",
-        nb_contacts: "Nombre de contacts",
+        nb_contacts: "Nombre de membres",
         revenue: "Chiffre d'affaires",
         sector: "Secteur",
         size: "Taille",
@@ -44,8 +44,8 @@ export const frenchCrmMessages = {
       added_on: "Ajoutée le %{date}",
       followed_by: "Suivie par %{name}",
       followed_by_you: "Suivie par vous",
-      no_contacts: "Aucun contact",
-      nb_contacts: "%{smart_count} contact |||| %{smart_count} contacts",
+      no_contacts: "Aucun membre",
+      nb_contacts: "%{smart_count} membre |||| %{smart_count} membres",
       nb_deals: "%{smart_count} affaire |||| %{smart_count} affaires",
       sizes: {
         one_employee: "1 employé",
@@ -65,10 +65,10 @@ export const frenchCrmMessages = {
       },
     },
     contacts: {
-      name: "Contact |||| Contacts",
-      forcedCaseName: "Contact",
+      name: "Membre |||| Membres",
+      forcedCaseName: "Membre",
       field_categories: {
-        background_info: "Informations complémentaires",
+        background_info: "Bio",
         identity: "Identité",
         misc: "Divers",
         personal_info: "Informations personnelles",
@@ -85,18 +85,18 @@ export const frenchCrmMessages = {
         phone_jsonb: "Numéros de téléphone",
         phone_number: "Numéro de téléphone",
         linkedin_url: "URL LinkedIn",
-        background: "Informations de contexte",
+        background: "Bio",
         has_newsletter: "Abonné à la newsletter",
         sales_id: "Responsable de compte",
       },
       action: {
-        add: "Ajouter un contact",
-        add_first: "Ajoutez votre premier contact",
-        create: "Créer un contact",
-        edit: "Modifier le contact",
+        add: "Ajouter un membre",
+        add_first: "Ajoutez votre premier membre",
+        create: "Créer un membre",
+        edit: "Modifier le membre",
         export_vcard: "Exporter en vCard",
-        new: "Nouveau contact",
-        show: "Afficher le contact",
+        new: "Nouveau membre",
+        show: "Afficher le membre",
       },
       background: {
         last_activity_on: "Dernière activité le %{date}",
@@ -108,16 +108,16 @@ export const frenchCrmMessages = {
       position_at: "%{title} chez",
       position_at_company: "%{title} chez %{company}",
       empty: {
-        description: "Il semble que votre liste de contacts soit vide.",
-        title: "Aucun contact trouvé",
+        description: "Il semble que votre liste de membres soit vide.",
+        title: "Aucun membre trouvé",
       },
       import: {
-        title: "Importer des contacts",
+        title: "Importer des membres",
         button: "Importer un fichier CSV",
         complete:
-          "Import des contacts terminé. %{importCount} contacts importés, %{errorCount} erreurs",
+          "Import des membres terminé. %{importCount} membres importés, %{errorCount} erreurs",
         progress:
-          "%{importCount} / %{rowCount} contacts importés, avec %{errorCount} erreurs.",
+          "%{importCount} / %{rowCount} membres importés, avec %{errorCount} erreurs.",
         error:
           "Échec de l'importation de ce fichier. Veuillez vous assurer que vous avez fourni un fichier CSV valide.",
         imported: "Importé",
@@ -128,7 +128,7 @@ export const frenchCrmMessages = {
           "Voici un exemple de fichier CSV que vous pouvez utiliser comme modèle",
         stop: "Arrêter l'importation",
         csv_file: "Fichier CSV",
-        contacts_label: "contact |||| contacts",
+        contacts_label: "membre |||| membres",
       },
       inputs: {
         genders: {
@@ -143,37 +143,37 @@ export const frenchCrmMessages = {
         },
       },
       list: {
-        error_loading: "Erreur lors du chargement des contacts",
+        error_loading: "Erreur lors du chargement des membres",
       },
       bulk_tag: {
         action: "Étiqueter",
         back: "Retour aux étiquettes",
         create_description:
-          "Créez une nouvelle étiquette et appliquez-la aux contacts sélectionnés.",
+          "Créez une nouvelle étiquette et appliquez-la aux membres sélectionnés.",
         description:
-          "Choisissez une étiquette existante ou créez-en une pour les contacts sélectionnés.",
+          "Choisissez une étiquette existante ou créez-en une pour les membres sélectionnés.",
         empty:
-          "Aucune étiquette pour le moment. Créez-en une pour étiqueter les contacts sélectionnés.",
-        error: "Impossible d'ajouter l'étiquette aux contacts",
-        noop: "Les contacts sélectionnés ont déjà cette étiquette",
+          "Aucune étiquette pour le moment. Créez-en une pour étiqueter les membres sélectionnés.",
+        error: "Impossible d'ajouter l'étiquette aux membres",
+        noop: "Les membres sélectionnés ont déjà cette étiquette",
         success:
-          "Étiquette ajoutée à %{smart_count} contact |||| Étiquette ajoutée à %{smart_count} contacts",
-        title: "Ajouter une étiquette aux contacts",
+          "Étiquette ajoutée à %{smart_count} membre |||| Étiquette ajoutée à %{smart_count} membres",
+        title: "Ajouter une étiquette aux membres",
       },
       merge: {
-        action: "Fusionner avec un autre contact",
-        confirm: "Fusionner les contacts",
-        current_contact: "Contact actuel (sera supprimé)",
-        description: "Fusionnez ce contact avec un autre.",
-        error: "Échec de la fusion des contacts",
+        action: "Fusionner avec un autre membre",
+        confirm: "Fusionner les membres",
+        current_contact: "Membre actuel (sera supprimé)",
+        description: "Fusionnez ce membre avec un autre.",
+        error: "Échec de la fusion des membres",
         merging: "Fusion...",
         no_additional_data: "Aucune donnée supplémentaire à fusionner",
-        select_target: "Veuillez sélectionner un contact avec lequel fusionner",
-        success: "Contacts fusionnés avec succès",
-        target_contact: "Contact cible (sera conservé)",
-        title: "Fusionner les contacts",
+        select_target: "Veuillez sélectionner un membre avec lequel fusionner",
+        success: "Membres fusionnés avec succès",
+        target_contact: "Membre cible (sera conservé)",
+        title: "Fusionner les membres",
         warning_description:
-          "Toutes les données seront transférées au deuxième contact. Cette action ne peut pas être annulée.",
+          "Toutes les données seront transférées au deuxième membre. Cette action ne peut pas être annulée.",
         warning_title: "Avertissement : opération destructrice",
         what_will_be_merged: "Ce qui sera fusionné :",
       },
@@ -190,9 +190,9 @@ export const frenchCrmMessages = {
       },
       hot: {
         empty_change_status:
-          'Changez le statut d\'un contact en ajoutant une note à ce contact et en cliquant sur "afficher les options".',
-        empty_hint: 'Les contacts avec un statut "chaud" apparaîtront ici.',
-        title: "Contacts chauds",
+          'Changez le statut d\'un membre en ajoutant une note à ce membre et en cliquant sur "afficher les options".',
+        empty_hint: 'Les membres avec un statut "chaud" apparaîtront ici.',
+        title: "Membres chauds",
       },
     },
     deals: {
@@ -201,7 +201,7 @@ export const frenchCrmMessages = {
         name: "Nom",
         description: "Description",
         company_id: "Entreprise",
-        contact_ids: "Contacts",
+        contact_ids: "Membres",
         category: "Catégorie",
         amount: "Budget",
         expected_closing_date: "Date de clôture prévue",
@@ -246,7 +246,7 @@ export const frenchCrmMessages = {
         status: "Statut",
         date: "Date",
         attachments: "Pièces jointes",
-        contact_id: "Contact",
+        contact_id: "Membre",
         deal_id: "Affaire",
       },
       action: {
@@ -273,7 +273,7 @@ export const frenchCrmMessages = {
       },
       note_for_contact: "Note pour %{name}",
       stepper: {
-        hint: "Accédez à une page de contact et ajoutez une note",
+        hint: "Accédez à une page de membre et ajoutez une note",
       },
       added: "Note ajoutée",
       inputs: {
@@ -321,7 +321,7 @@ export const frenchCrmMessages = {
         text: "Description",
         due_date: "Date d'échéance",
         type: "Type",
-        contact_id: "Contact",
+        contact_id: "Membre",
         due_short: "échéance",
       },
       action: {
@@ -345,7 +345,7 @@ export const frenchCrmMessages = {
         edit_for: "Modifier la tâche pour %{name}",
       },
       empty: "Aucune tâche pour l'instant",
-      empty_list_hint: "Les tâches ajoutées à vos contacts apparaîtront ici.",
+      empty_list_hint: "Les tâches ajoutées à vos membres apparaîtront ici.",
       filters: {
         later: "Plus tard",
         overdue: "En retard",
@@ -464,7 +464,7 @@ export const frenchCrmMessages = {
       },
       idle: {
         description_1:
-          "Vous pouvez importer des ventes, des entreprises, des contacts, des entreprises, des notes et des tâches.",
+          "Vous pouvez importer des ventes, des entreprises, des membres, des entreprises, des notes et des tâches.",
         description_2:
           "Les données doivent se trouver dans un fichier JSON correspondant à l'exemple suivant :",
       },
@@ -533,7 +533,7 @@ export const frenchCrmMessages = {
     profile: {
       inbound: {
         description:
-          "Vous pouvez commencer à envoyer des e-mails vers l'adresse de réception de votre serveur, par exemple en l'ajoutant au champ %{field}. KW CHISPA CRM traitera les e-mails et ajoutera des notes aux contacts correspondants.",
+          "Vous pouvez commencer à envoyer des e-mails vers l'adresse de réception de votre serveur, par exemple en l'ajoutant au champ %{field}. KW CHISPA CRM traitera les e-mails et ajoutera des notes aux membres correspondants.",
         title: "E-mail entrant",
       },
       mcp: {

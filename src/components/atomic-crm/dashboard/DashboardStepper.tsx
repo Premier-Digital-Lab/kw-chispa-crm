@@ -93,7 +93,7 @@ export const DashboardStepper = ({
                       >
                         <Plus className="h-4 w-4" />
                         {translate("resources.contacts.action.new", {
-                          _: "New Contact",
+                          _: "New Member",
                         })}
                       </Button>
                     ) : (
