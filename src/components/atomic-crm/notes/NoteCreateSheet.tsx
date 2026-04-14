@@ -39,7 +39,6 @@ export const NoteCreateSheet = ({
   const redirect = useRedirect();
   const translate = useTranslate();
   const getContactRepresentation = useGetRecordRepresentation("contacts");
-  const defaultStatus = selectContact ? undefined : contact?.status;
 
   if (!identity) return null;
 
@@ -52,7 +51,7 @@ export const NoteCreateSheet = ({
     if (!contact) return;
     update("contacts", {
       id: referenceRecordId as unknown as Identifier,
-      data: { last_seen: new Date().toISOString(), status: data.status },
+      data: { last_seen: new Date().toISOString() },
       previousData: contact,
     });
     notify("resources.notes.added", {
@@ -84,7 +83,6 @@ export const NoteCreateSheet = ({
           contact_id ?? data[foreignKeyMapping["contacts"]],
         sales_id: identity.id,
         date: new Date(data.date || getCurrentDate()).toISOString(),
-        status: defaultStatus,
       })}
       mutationOptions={{ onSuccess: handleSuccess }}
       open={open}

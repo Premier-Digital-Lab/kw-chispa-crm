@@ -30,7 +30,6 @@ import { MobileContent } from "../layout/MobileContent";
 import MobileHeader from "../layout/MobileHeader";
 import { MobileBackButton } from "../misc/MobileBackButton";
 import { formatRelativeDate } from "../misc/RelativeDate";
-import { Status } from "../misc/Status";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Company, Contact, Deal } from "../types";
 import {
@@ -228,8 +227,7 @@ const ContactsIterator = () => {
                   <div className="text-sm text-muted-foreground">
                     {translate("crm.common.last_activity_with_date", {
                       date: formatRelativeDate(contact.last_seen, locale),
-                    })}{" "}
-                    <Status status={contact.status} />
+                    })}
                   </div>
                 </div>
               )}

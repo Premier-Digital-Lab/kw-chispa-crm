@@ -20,7 +20,6 @@ export type ContactImportSchema = {
   first_seen: string;
   last_seen: string;
   has_newsletter: string;
-  status: string;
   tags: string;
   linkedin_url: string;
 };
@@ -100,7 +99,6 @@ export function useContactImport() {
             first_seen,
             last_seen,
             has_newsletter,
-            status,
             company: companyName,
             tags: tagNames,
             linkedin_url,
@@ -138,7 +136,6 @@ export function useContactImport() {
                   ? new Date(last_seen).toISOString()
                   : today,
                 has_newsletter,
-                status,
                 company_id: company?.id,
                 tags: tagList.map((tag) => tag.id),
                 sales_id: user?.identity?.id,

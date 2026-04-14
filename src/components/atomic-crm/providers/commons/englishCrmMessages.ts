@@ -183,12 +183,6 @@ export const englishCrmMessages = {
         tags: "Tags",
         tasks: "Tasks",
       },
-      hot: {
-        empty_change_status:
-          'Change the status of a member by adding a note to that member and clicking on "show options".',
-        empty_hint: 'Members with a "hot" status will appear here.',
-        title: "Hot Members",
-      },
     },
     deals: {
       name: "Deal |||| Deals",

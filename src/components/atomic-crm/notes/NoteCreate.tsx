@@ -34,7 +34,7 @@ export const NoteCreate = ({
 
   if (!record || !identity) return null;
 
-  const defaultStatus = reference === "contacts" ? record.status : undefined;
+  const defaultStatus = undefined;
 
   return (
     <CreateBase resource={resource} redirect={false}>
@@ -70,22 +70,13 @@ const NoteCreateButton = ({
 
   if (!record || !identity) return null;
 
-  const resetValues: {
-    date: string;
-    text: null;
-    attachments: null;
-    status?: string;
-  } = {
+  const resetValues = {
     date: getCurrentDate(),
     text: null,
     attachments: null,
   };
 
   const handleSuccess = (data: any) => {
-    if (reference === "contacts") {
-      resetValues.status = data.status ?? defaultStatus;
-    }
-
     reset(resetValues, { keepValues: false });
     refetch();
     update(reference, {
@@ -93,7 +84,6 @@ const NoteCreateButton = ({
       data: {
         last_seen:
           reference === "contacts" ? new Date().toISOString() : undefined,
-        status: data.status,
       },
       previousData: record,
     });

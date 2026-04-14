@@ -188,12 +188,6 @@ export const frenchCrmMessages = {
         tags: "Étiquettes",
         tasks: "Tâches",
       },
-      hot: {
-        empty_change_status:
-          'Changez le statut d\'un membre en ajoutant une note à ce membre et en cliquant sur "afficher les options".',
-        empty_hint: 'Les membres avec un statut "chaud" apparaîtront ici.',
-        title: "Membres chauds",
-      },
     },
     deals: {
       name: "Affaire |||| Affaires",
