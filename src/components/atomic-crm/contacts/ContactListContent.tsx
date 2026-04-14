@@ -255,10 +255,9 @@ const ContactItemContentMobile = ({ contact }: { contact: Contact }) => {
       <Avatar />
       <div className="flex flex-col grow justify-between">
         <div className="flex-1 min-w-0">
-          <div className="flex justify-between">
-            <div className="font-medium">
-              <RecordRepresentation />
-            </div>
+          <div className="font-medium">
+            <RecordRepresentation />
+          </div>
           <div className="text-sm text-muted-foreground">
             <div className="flex flex-col gap-1">
               <span>
