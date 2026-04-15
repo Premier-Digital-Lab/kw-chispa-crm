@@ -242,19 +242,19 @@ export const ContactInputs = () => {
             react-hook-form validation runs across all tabs on every submit,
             not just the currently visible one. Radix sets hidden="" on inactive
             content, which applies display:none without unmounting. */}
-        <TabsContent value="identity" className="mt-4" forceMount>
+        <TabsContent value="identity" className="mt-4 data-[state=inactive]:hidden" forceMount>
           <IdentityTabInputs />
         </TabsContent>
-        <TabsContent value="social_media" className="mt-4" forceMount>
+        <TabsContent value="social_media" className="mt-4 data-[state=inactive]:hidden" forceMount>
           <SocialMediaTabInputs />
         </TabsContent>
-        <TabsContent value="kw_info" className="mt-4" forceMount>
+        <TabsContent value="kw_info" className="mt-4 data-[state=inactive]:hidden" forceMount>
           <KwInfoTabInputs />
         </TabsContent>
-        <TabsContent value="service_areas" className="mt-4" forceMount>
+        <TabsContent value="service_areas" className="mt-4 data-[state=inactive]:hidden" forceMount>
           <ServiceAreasTabInputs />
         </TabsContent>
-        <TabsContent value="membership" className="mt-4" forceMount>
+        <TabsContent value="membership" className="mt-4 data-[state=inactive]:hidden" forceMount>
           <MembershipTabInputs />
         </TabsContent>
       </Tabs>
