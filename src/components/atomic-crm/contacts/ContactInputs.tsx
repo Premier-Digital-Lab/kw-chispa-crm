@@ -40,6 +40,52 @@ import {
   translatePersonalInfoTypeLabel,
 } from "./contactModel.ts";
 
+// Which tab each validated field belongs to — used to auto-switch on error.
+const FIELD_TO_TAB: Record<string, string> = {
+  first_name: "identity",
+  last_name: "identity",
+  cell_number: "identity",
+  email_jsonb: "identity",
+  background: "identity",
+  gender: "identity",
+  title: "identity",
+  company_id: "identity",
+  linkedin_url: "social_media",
+  facebook_url: "social_media",
+  instagram_url: "social_media",
+  tiktok_url: "social_media",
+  market_center_name: "kw_info",
+  agent_role: "kw_info",
+  market_center_team_leader: "kw_info",
+  market_center_tl_phone: "kw_info",
+  market_center_tl_email: "kw_info",
+  mc_street_number: "kw_info",
+  mc_street_name: "kw_info",
+  mc_suite_unit: "kw_info",
+  mc_city: "kw_info",
+  mc_state: "kw_info",
+  mc_zip_code: "kw_info",
+  mc_country: "kw_info",
+  languages_spoken: "service_areas",
+  cities_served: "service_areas",
+  counties_served: "service_areas",
+  states_served: "service_areas",
+  countries_served: "service_areas",
+  membership_tier: "membership",
+  join_date: "membership",
+  member_status: "membership",
+  has_newsletter: "membership",
+  sales_id: "membership",
+};
+
+const TAB_ORDER = [
+  "identity",
+  "social_media",
+  "kw_info",
+  "service_areas",
+  "membership",
+] as const;
+
 // Edits a Postgres text[] column via a plain text input showing comma-separated
 // values. Local state tracks the displayed string character-by-character so
 // typing is never destructive. The array is only written to form state on blur,
@@ -121,9 +167,34 @@ const CommaSeparatedInput = ({
 
 export const ContactInputs = () => {
   const translate = useTranslate();
+  const [activeTab, setActiveTab] = useState<string>("identity");
+  const { formState } = useFormContext();
+
+  // After each failed submit, jump to the first tab that has an error so the
+  // user immediately sees what needs fixing.
+  useEffect(() => {
+    if (formState.submitCount === 0) return;
+    const errorKeys = Object.keys(formState.errors);
+    if (errorKeys.length === 0) return;
+
+    const firstErrorTab = TAB_ORDER.find((tab) =>
+      errorKeys.some((key) => FIELD_TO_TAB[key] === tab),
+    );
+    if (firstErrorTab && firstErrorTab !== activeTab) {
+      setActiveTab(firstErrorTab);
+    }
+    // We intentionally depend on submitCount so this runs once per submit
+    // attempt, not on every render where errors change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState.submitCount]);
+
   return (
     <div className="flex flex-col gap-4 p-1">
-      <Tabs defaultValue="identity" className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-5 h-auto">
           <TabsTrigger
             value="identity"
@@ -167,19 +238,23 @@ export const ContactInputs = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="identity" className="mt-4">
+        {/* forceMount keeps every tab's fields in the DOM at all times so that
+            react-hook-form validation runs across all tabs on every submit,
+            not just the currently visible one. Radix sets hidden="" on inactive
+            content, which applies display:none without unmounting. */}
+        <TabsContent value="identity" className="mt-4" forceMount>
           <IdentityTabInputs />
         </TabsContent>
-        <TabsContent value="social_media" className="mt-4">
+        <TabsContent value="social_media" className="mt-4" forceMount>
           <SocialMediaTabInputs />
         </TabsContent>
-        <TabsContent value="kw_info" className="mt-4">
+        <TabsContent value="kw_info" className="mt-4" forceMount>
           <KwInfoTabInputs />
         </TabsContent>
-        <TabsContent value="service_areas" className="mt-4">
+        <TabsContent value="service_areas" className="mt-4" forceMount>
           <ServiceAreasTabInputs />
         </TabsContent>
-        <TabsContent value="membership" className="mt-4">
+        <TabsContent value="membership" className="mt-4" forceMount>
           <MembershipTabInputs />
         </TabsContent>
       </Tabs>
