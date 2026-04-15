@@ -4,7 +4,6 @@ import { ContactInputs } from "./ContactInputs";
 import {
   cleanupContactForCreate,
   defaultEmailJsonb,
-  defaultPhoneJsonb,
 } from "./contactModel";
 
 export interface ContactCreateSheetProps {
@@ -25,7 +24,6 @@ export const ContactCreateSheet = ({
       defaultValues={{
         sales_id: identity?.id,
         email_jsonb: defaultEmailJsonb,
-        phone_jsonb: defaultPhoneJsonb,
       }}
       transform={cleanupContactForCreate}
       open={open}
