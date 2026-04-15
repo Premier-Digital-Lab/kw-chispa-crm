@@ -153,15 +153,15 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
                     `}
         </style>
       )}
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="flex flex-col max-h-[90vh] overflow-hidden">
+        <DialogHeader className="shrink-0">
           <DialogTitle>
             {translate("crm.image_editor.title", {
               _: "Upload and resize image",
             })}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-2 justify-center">
+        <div className="flex flex-col gap-2 overflow-y-auto min-h-0 flex-1">
           <div
             className="flex flex-row justify-center bg-gray-50 cursor-pointer p-4 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
             {...getRootProps()}
@@ -185,7 +185,7 @@ const ImageEditorDialog = (props: ImageEditorDialogProps) => {
           )}
         </div>
 
-        <DialogFooter className="flex justify-between w-full">
+        <DialogFooter className="flex justify-between w-full shrink-0">
           <Button type="button" onClick={updateImage}>
             {translate("crm.image_editor.update_image")}
           </Button>
