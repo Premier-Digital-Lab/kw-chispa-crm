@@ -6,6 +6,7 @@ import { raSupabaseEnglishMessages } from "ra-supabase-language-english";
 import { raSupabaseFrenchMessages } from "ra-supabase-language-french";
 import { englishCrmMessages } from "./englishCrmMessages";
 import { frenchCrmMessages } from "./frenchCrmMessages";
+import { spanishCrmMessages } from "./spanishCrmMessages";
 
 const raSupabaseEnglishMessagesOverride = {
   "ra-supabase": {
@@ -39,12 +40,20 @@ const frenchCatalog = mergeTranslations(
   frenchCrmMessages,
 );
 
-export const getInitialLocale = (): "en" | "fr" => {
+// Spanish inherits all ra-core strings from the English base, then overlays
+// our CRM-specific translations. No compatible ra-language-spanish v5 package
+// exists, so ra-core UI strings (Save, Cancel, etc.) remain in English.
+const spanishCatalog = mergeTranslations(englishCatalog, spanishCrmMessages);
+
+export const getInitialLocale = (): "en" | "fr" | "es" => {
   if (typeof navigator === "undefined") {
     return "en";
   }
 
   const browserLocale = navigator.languages?.[0] ?? navigator.language;
+  if (browserLocale?.toLowerCase().startsWith("es")) {
+    return "es";
+  }
   if (browserLocale?.toLowerCase().startsWith("fr")) {
     return "fr";
   }
@@ -57,11 +66,15 @@ export const i18nProvider = polyglotI18nProvider(
     if (locale === "fr") {
       return frenchCatalog;
     }
+    if (locale === "es") {
+      return spanishCatalog;
+    }
     return englishCatalog;
   },
   getInitialLocale(),
   [
     { locale: "en", name: "English" },
+    { locale: "es", name: "Español" },
     { locale: "fr", name: "Français" },
   ],
   { allowMissing: true },
