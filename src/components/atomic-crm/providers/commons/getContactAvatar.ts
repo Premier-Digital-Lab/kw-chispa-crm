@@ -40,6 +40,11 @@ async function getFaviconUrl(domain: string): Promise<string | null> {
 export async function getContactAvatar(
   record: Partial<Contact>,
 ): Promise<string | null> {
+  // User-uploaded photos always take priority over auto-detected ones.
+  if (record.avatar?.src) {
+    return record.avatar.src;
+  }
+
   if (!record.email_jsonb || !record.email_jsonb.length) {
     return null;
   }

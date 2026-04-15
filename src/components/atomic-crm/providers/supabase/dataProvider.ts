@@ -302,6 +302,12 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
   },
   {
     resource: "contacts",
+    beforeSave: async (data: any, _, __) => {
+      if (data.avatar) {
+        await uploadToBucket(data.avatar);
+      }
+      return data;
+    },
     beforeGetList: async (params) => {
       return applyFullTextSearch([
         "first_name",

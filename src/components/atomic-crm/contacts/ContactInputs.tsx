@@ -9,7 +9,7 @@ import {
 import type { InputProps } from "ra-core";
 import type { ClipboardEventHandler, FocusEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,7 +32,7 @@ import { InputHelperText } from "@/components/admin/input-helper-text";
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
 import { isValidUrl } from "../misc/isValidUrl";
 import type { Sale } from "../types";
-import { Avatar } from "./Avatar";
+import ImageEditorField from "../misc/ImageEditorField";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
 import {
   contactGender,
@@ -265,6 +265,9 @@ export const ContactInputs = () => {
 const IdentityTabInputs = () => {
   const translate = useTranslate();
   const { getValues, setValue } = useFormContext();
+  const firstName = useWatch({ name: "first_name" });
+  const lastName = useWatch({ name: "last_name" });
+  const initials = `${(firstName ?? "").charAt(0)}${(lastName ?? "").charAt(0)}`.toUpperCase();
 
   const personalInfoTypes = [
     { id: "Work", name: translatePersonalInfoTypeLabel("Work", translate) },
@@ -298,7 +301,12 @@ const IdentityTabInputs = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
-        <Avatar />
+        <ImageEditorField
+          source="avatar"
+          type="avatar"
+          emptyText={initials || undefined}
+          linkPosition="bottom"
+        />
       </div>
       <RadioButtonGroupInput
         label={false}
