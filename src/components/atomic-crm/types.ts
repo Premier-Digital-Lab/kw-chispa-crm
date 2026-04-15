@@ -115,9 +115,14 @@ export type Contact = {
   languages_spoken?: string[] | null;
   cities_served?: string[] | null;
   counties_served?: string[] | null;
+  states_served?: string[] | null;
+  countries_served?: string[] | null;
   membership_tier?: string | null;
   join_date?: string | null;
   member_status?: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
+  tiktok_url?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {

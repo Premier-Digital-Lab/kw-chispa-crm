@@ -1,0 +1,203 @@
+-- Migration: Add social media URLs and service area array fields
+--
+-- Adds to contacts:
+--   facebook_url, instagram_url, tiktok_url (text, optional)
+--   states_served, countries_served (text[], optional in DB)
+--
+-- Steps:
+--   1. Drop contacts_summary (co.* expands at CREATE VIEW time;
+--      recreate so it picks up the new columns)
+--   2. Add 5 new columns
+--   3. Recreate contacts_summary
+--   4. Recreate merge_contacts() with 5 new COALESCE entries
+
+
+-- ============================================================
+-- Step 1: Drop contacts_summary view
+-- ============================================================
+
+DROP VIEW IF EXISTS public.contacts_summary;
+
+
+-- ============================================================
+-- Step 2: Add new columns
+-- ============================================================
+
+ALTER TABLE public.contacts
+    ADD COLUMN facebook_url       text,
+    ADD COLUMN instagram_url      text,
+    ADD COLUMN tiktok_url         text,
+    ADD COLUMN states_served      text[],
+    ADD COLUMN countries_served   text[];
+
+
+-- ============================================================
+-- Step 3: Recreate contacts_summary
+-- ============================================================
+
+CREATE VIEW public.contacts_summary
+WITH (security_invoker = on)
+AS
+SELECT
+    co.*,
+    jsonb_path_query_array(co.email_jsonb, '$[*].email')::text AS email_fts,
+    c.name AS company_name,
+    count(DISTINCT t.id) FILTER (WHERE t.done_date IS NULL) AS nb_tasks
+FROM public.contacts co
+LEFT JOIN public.tasks t ON co.id = t.contact_id
+LEFT JOIN public.companies c ON co.company_id = c.id
+GROUP BY co.id, c.name;
+
+
+-- ============================================================
+-- Step 4: Recreate merge_contacts()
+--
+-- Adds COALESCE entries for the 5 new columns.
+-- All other logic is unchanged from 20260414000000_split_market_center_address.sql.
+-- ============================================================
+
+DROP FUNCTION IF EXISTS public.merge_contacts(bigint, bigint);
+
+CREATE FUNCTION public.merge_contacts(loser_id bigint, winner_id bigint)
+RETURNS bigint
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path TO 'public'
+AS $$
+DECLARE
+  winner_contact contacts%ROWTYPE;
+  loser_contact contacts%ROWTYPE;
+  deal_record RECORD;
+  merged_emails jsonb;
+  merged_tags bigint[];
+  winner_emails jsonb;
+  loser_emails jsonb;
+  email_map jsonb;
+BEGIN
+  -- Fetch both contacts
+  SELECT * INTO winner_contact FROM contacts WHERE id = winner_id;
+  SELECT * INTO loser_contact FROM contacts WHERE id = loser_id;
+
+  IF winner_contact IS NULL OR loser_contact IS NULL THEN
+    RAISE EXCEPTION 'Contact not found';
+  END IF;
+
+  -- 1. Reassign tasks from loser to winner
+  UPDATE tasks SET contact_id = winner_id WHERE contact_id = loser_id;
+
+  -- 2. Reassign contact notes from loser to winner
+  UPDATE contact_notes SET contact_id = winner_id WHERE contact_id = loser_id;
+
+  -- 3. Update deals - replace loser with winner in contact_ids array
+  FOR deal_record IN
+    SELECT id, contact_ids
+    FROM deals
+    WHERE contact_ids @> ARRAY[loser_id]
+  LOOP
+    UPDATE deals
+    SET contact_ids = (
+      SELECT ARRAY(
+        SELECT DISTINCT unnest(
+          array_remove(deal_record.contact_ids, loser_id) || ARRAY[winner_id]
+        )
+      )
+    )
+    WHERE id = deal_record.id;
+  END LOOP;
+
+  -- 4. Merge contact data
+
+  -- Merge emails with deduplication by email address
+  winner_emails := COALESCE(winner_contact.email_jsonb, '[]'::jsonb);
+  loser_emails  := COALESCE(loser_contact.email_jsonb,  '[]'::jsonb);
+  email_map     := '{}'::jsonb;
+
+  IF jsonb_array_length(winner_emails) > 0 THEN
+    FOR i IN 0..jsonb_array_length(winner_emails)-1 LOOP
+      email_map := email_map || jsonb_build_object(
+        winner_emails->i->>'email',
+        winner_emails->i
+      );
+    END LOOP;
+  END IF;
+
+  IF jsonb_array_length(loser_emails) > 0 THEN
+    FOR i IN 0..jsonb_array_length(loser_emails)-1 LOOP
+      IF NOT email_map ? (loser_emails->i->>'email') THEN
+        email_map := email_map || jsonb_build_object(
+          loser_emails->i->>'email',
+          loser_emails->i
+        );
+      END IF;
+    END LOOP;
+  END IF;
+
+  merged_emails := (SELECT jsonb_agg(value) FROM jsonb_each(email_map));
+  merged_emails := COALESCE(merged_emails, '[]'::jsonb);
+
+  -- Merge tags (remove duplicates)
+  merged_tags := ARRAY(
+    SELECT DISTINCT unnest(
+      COALESCE(winner_contact.tags, ARRAY[]::bigint[]) ||
+      COALESCE(loser_contact.tags, ARRAY[]::bigint[])
+    )
+  );
+
+  -- 5. Update winner with merged data
+  UPDATE contacts SET
+    avatar                       = COALESCE(winner_contact.avatar,                       loser_contact.avatar),
+    gender                       = COALESCE(winner_contact.gender,                       loser_contact.gender),
+    first_name                   = COALESCE(winner_contact.first_name,                   loser_contact.first_name),
+    last_name                    = COALESCE(winner_contact.last_name,                    loser_contact.last_name),
+    title                        = COALESCE(winner_contact.title,                        loser_contact.title),
+    company_id                   = COALESCE(winner_contact.company_id,                   loser_contact.company_id),
+    email_jsonb                  = merged_emails,
+    cell_number                  = COALESCE(winner_contact.cell_number,                  loser_contact.cell_number),
+    linkedin_url                 = COALESCE(winner_contact.linkedin_url,                 loser_contact.linkedin_url),
+    background                   = COALESCE(winner_contact.background,                   loser_contact.background),
+    has_newsletter               = COALESCE(winner_contact.has_newsletter,               loser_contact.has_newsletter),
+    first_seen                   = LEAST(
+                                     COALESCE(winner_contact.first_seen, loser_contact.first_seen),
+                                     COALESCE(loser_contact.first_seen,  winner_contact.first_seen)
+                                   ),
+    last_seen                    = GREATEST(
+                                     COALESCE(winner_contact.last_seen, loser_contact.last_seen),
+                                     COALESCE(loser_contact.last_seen,  winner_contact.last_seen)
+                                   ),
+    sales_id                     = COALESCE(winner_contact.sales_id,                     loser_contact.sales_id),
+    tags                         = merged_tags,
+    -- Member directory fields: prefer winner's values
+    market_center_name           = COALESCE(winner_contact.market_center_name,           loser_contact.market_center_name),
+    market_center_team_leader    = COALESCE(winner_contact.market_center_team_leader,    loser_contact.market_center_team_leader),
+    market_center_tl_phone       = COALESCE(winner_contact.market_center_tl_phone,       loser_contact.market_center_tl_phone),
+    market_center_tl_email       = COALESCE(winner_contact.market_center_tl_email,       loser_contact.market_center_tl_email),
+    agent_role                   = COALESCE(winner_contact.agent_role,                   loser_contact.agent_role),
+    languages_spoken             = COALESCE(winner_contact.languages_spoken,             loser_contact.languages_spoken),
+    counties_served              = COALESCE(winner_contact.counties_served,              loser_contact.counties_served),
+    cities_served                = COALESCE(winner_contact.cities_served,                loser_contact.cities_served),
+    membership_tier              = COALESCE(winner_contact.membership_tier,              loser_contact.membership_tier),
+    join_date                    = COALESCE(winner_contact.join_date,                    loser_contact.join_date),
+    member_status                = COALESCE(winner_contact.member_status,                loser_contact.member_status),
+    -- Market Center address components
+    mc_street_number             = COALESCE(winner_contact.mc_street_number,             loser_contact.mc_street_number),
+    mc_street_name               = COALESCE(winner_contact.mc_street_name,               loser_contact.mc_street_name),
+    mc_suite_unit                = COALESCE(winner_contact.mc_suite_unit,                loser_contact.mc_suite_unit),
+    mc_city                      = COALESCE(winner_contact.mc_city,                      loser_contact.mc_city),
+    mc_state                     = COALESCE(winner_contact.mc_state,                     loser_contact.mc_state),
+    mc_zip_code                  = COALESCE(winner_contact.mc_zip_code,                  loser_contact.mc_zip_code),
+    mc_country                   = COALESCE(winner_contact.mc_country,                   loser_contact.mc_country),
+    -- Social media URLs
+    facebook_url                 = COALESCE(winner_contact.facebook_url,                 loser_contact.facebook_url),
+    instagram_url                = COALESCE(winner_contact.instagram_url,                loser_contact.instagram_url),
+    tiktok_url                   = COALESCE(winner_contact.tiktok_url,                   loser_contact.tiktok_url),
+    -- Service area arrays
+    states_served                = COALESCE(winner_contact.states_served,                loser_contact.states_served),
+    countries_served             = COALESCE(winner_contact.countries_served,             loser_contact.countries_served)
+  WHERE id = winner_id;
+
+  -- 6. Delete loser contact
+  DELETE FROM contacts WHERE id = loser_id;
+
+  RETURN winner_id;
+END;
+$$;

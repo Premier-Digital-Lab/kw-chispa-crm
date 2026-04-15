@@ -8,6 +8,7 @@ import {
 } from "ra-core";
 import type { InputProps } from "ra-core";
 import type { ClipboardEventHandler, FocusEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ import {
 import { InputHelperText } from "@/components/admin/input-helper-text";
 
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
+import { isValidUrl } from "../misc/isValidUrl";
 import type { Sale } from "../types";
 import { Avatar } from "./Avatar";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
@@ -38,9 +40,10 @@ import {
   translatePersonalInfoTypeLabel,
 } from "./contactModel.ts";
 
-// Edits a postgres text[] column as a comma-separated string.
-// format: string[] → "A, B, C" (for display)
-// parse:  "A, B, C" → ["A", "B", "C"] (on save)
+// Edits a Postgres text[] column via a plain text input showing comma-separated
+// values. Local state tracks the displayed string character-by-character so
+// typing is never destructive. The array is only written to form state on blur,
+// which is also when validation runs.
 const CommaSeparatedInput = ({
   source,
   label,
@@ -55,19 +58,39 @@ const CommaSeparatedInput = ({
   className?: string;
 }) => {
   const resource = useResourceContext();
-  const { field, id, isRequired } = useInput({
-    source,
-    validate,
-    format: (value: string[] | null | undefined) =>
-      value && value.length > 0 ? value.join(", ") : "",
-    parse: (value: string) => {
-      const arr = value
-        .split(",")
-        .map((s: string) => s.trim())
-        .filter(Boolean);
-      return arr.length > 0 ? arr : null;
-    },
-  });
+  // No format/parse — keep the raw array in form state.
+  const { field, id, isRequired } = useInput({ source, validate });
+
+  const arrayToDisplay = (v: string[] | null | undefined) =>
+    Array.isArray(v) && v.length > 0 ? v.join(", ") : "";
+
+  const [displayValue, setDisplayValue] = useState(() =>
+    arrayToDisplay(field.value),
+  );
+
+  // Track whether the input is currently focused so we don't clobber what the
+  // user is typing when field.value changes from an external reset.
+  const isFocused = useRef(false);
+
+  useEffect(() => {
+    if (!isFocused.current) {
+      setDisplayValue(arrayToDisplay(field.value));
+    }
+  }, [field.value]);
+
+  const handleFocus = () => {
+    isFocused.current = true;
+  };
+
+  const handleBlur = () => {
+    isFocused.current = false;
+    const arr = displayValue
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    field.onChange(arr.length > 0 ? arr : null);
+    field.onBlur?.();
+  };
 
   return (
     <FormField id={id} className={className} name={field.name}>
@@ -82,7 +105,13 @@ const CommaSeparatedInput = ({
         </FormLabel>
       )}
       <FormControl>
-        <Input {...field} value={field.value ?? ""} />
+        <Input
+          id={id}
+          value={displayValue}
+          onChange={(e) => setDisplayValue(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
       </FormControl>
       <InputHelperText helperText={helperText} />
       <FormError />
@@ -105,11 +134,11 @@ export const ContactInputs = () => {
             })}
           </TabsTrigger>
           <TabsTrigger
-            value="personal_info"
+            value="social_media"
             className="text-xs py-2 whitespace-normal text-center leading-tight"
           >
-            {translate("resources.contacts.field_categories.personal_info", {
-              _: "Personal Info",
+            {translate("resources.contacts.field_categories.social_media", {
+              _: "Social Media",
             })}
           </TabsTrigger>
           <TabsTrigger
@@ -141,8 +170,8 @@ export const ContactInputs = () => {
         <TabsContent value="identity" className="mt-4">
           <IdentityTabInputs />
         </TabsContent>
-        <TabsContent value="personal_info" className="mt-4">
-          <PersonalInfoTabInputs />
+        <TabsContent value="social_media" className="mt-4">
+          <SocialMediaTabInputs />
         </TabsContent>
         <TabsContent value="kw_info" className="mt-4">
           <KwInfoTabInputs />
@@ -160,6 +189,37 @@ export const ContactInputs = () => {
 
 const IdentityTabInputs = () => {
   const translate = useTranslate();
+  const { getValues, setValue } = useFormContext();
+
+  const personalInfoTypes = [
+    { id: "Work", name: translatePersonalInfoTypeLabel("Work", translate) },
+    { id: "Home", name: translatePersonalInfoTypeLabel("Home", translate) },
+    { id: "Other", name: translatePersonalInfoTypeLabel("Other", translate) },
+  ];
+
+  const handleEmailChange = (emailValue: string) => {
+    const { first_name, last_name } = getValues();
+    if (first_name || last_name || !emailValue) return;
+    const [first, last] = emailValue.split("@")[0].split(".");
+    setValue("first_name", first.charAt(0).toUpperCase() + first.slice(1));
+    setValue(
+      "last_name",
+      last ? last.charAt(0).toUpperCase() + last.slice(1) : "",
+    );
+  };
+
+  const handleEmailPaste: ClipboardEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = (e) => {
+    handleEmailChange(e.clipboardData?.getData("text/plain") ?? "");
+  };
+
+  const handleEmailBlur = (
+    e: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    handleEmailChange(e.target.value);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
@@ -187,46 +247,7 @@ const IdentityTabInputs = () => {
         validate={required()}
         helperText={false}
       />
-    </div>
-  );
-};
 
-const PersonalInfoTabInputs = () => {
-  const translate = useTranslate();
-  const { getValues, setValue } = useFormContext();
-
-  const personalInfoTypes = [
-    { id: "Work", name: translatePersonalInfoTypeLabel("Work", translate) },
-    { id: "Home", name: translatePersonalInfoTypeLabel("Home", translate) },
-    { id: "Other", name: translatePersonalInfoTypeLabel("Other", translate) },
-  ];
-
-  const handleEmailChange = (emailValue: string) => {
-    const { first_name, last_name } = getValues();
-    if (first_name || last_name || !emailValue) return;
-    const [first, last] = emailValue.split("@")[0].split(".");
-    setValue("first_name", first.charAt(0).toUpperCase() + first.slice(1));
-    setValue(
-      "last_name",
-      last ? last.charAt(0).toUpperCase() + last.slice(1) : "",
-    );
-  };
-
-  const handleEmailPaste: ClipboardEventHandler<
-    HTMLTextAreaElement | HTMLInputElement
-  > = (e) => {
-    const emailValue = e.clipboardData?.getData("text/plain");
-    handleEmailChange(emailValue);
-  };
-
-  const handleEmailBlur = (
-    e: FocusEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    handleEmailChange(e.target.value);
-  };
-
-  return (
-    <div className="flex flex-col gap-4">
       <ArrayInput source="email_jsonb" helperText={false}>
         <SimpleFormIterator
           inline
@@ -255,14 +276,36 @@ const PersonalInfoTabInputs = () => {
           />
         </SimpleFormIterator>
       </ArrayInput>
-      <TextInput
-        source="linkedin_url"
-        helperText={false}
-        validate={isLinkedinUrl}
-      />
+
+      <TextInput source="background" multiline helperText={false} />
     </div>
   );
 };
+
+const SocialMediaTabInputs = () => (
+  <div className="flex flex-col gap-4">
+    <TextInput
+      source="linkedin_url"
+      helperText={false}
+      validate={isLinkedinUrl}
+    />
+    <TextInput
+      source="facebook_url"
+      helperText={false}
+      validate={isValidUrl}
+    />
+    <TextInput
+      source="instagram_url"
+      helperText={false}
+      validate={isValidUrl}
+    />
+    <TextInput
+      source="tiktok_url"
+      helperText={false}
+      validate={isValidUrl}
+    />
+  </div>
+);
 
 const KwInfoTabInputs = () => {
   const translate = useTranslate();
@@ -318,27 +361,35 @@ const KwInfoTabInputs = () => {
   );
 };
 
-const ServiceAreasTabInputs = () => {
-  return (
-    <div className="flex flex-col gap-4">
-      <CommaSeparatedInput
-        source="languages_spoken"
-        validate={required()}
-        helperText={false}
-      />
-      <CommaSeparatedInput
-        source="cities_served"
-        validate={required()}
-        helperText={false}
-      />
-      <CommaSeparatedInput
-        source="counties_served"
-        validate={required()}
-        helperText={false}
-      />
-    </div>
-  );
-};
+const ServiceAreasTabInputs = () => (
+  <div className="flex flex-col gap-4">
+    <CommaSeparatedInput
+      source="languages_spoken"
+      validate={required()}
+      helperText={false}
+    />
+    <CommaSeparatedInput
+      source="cities_served"
+      validate={required()}
+      helperText={false}
+    />
+    <CommaSeparatedInput
+      source="counties_served"
+      validate={required()}
+      helperText={false}
+    />
+    <CommaSeparatedInput
+      source="states_served"
+      validate={required()}
+      helperText={false}
+    />
+    <CommaSeparatedInput
+      source="countries_served"
+      validate={required()}
+      helperText={false}
+    />
+  </div>
+);
 
 const MembershipTabInputs = () => {
   const membershipTierChoices = [
@@ -367,9 +418,8 @@ const MembershipTabInputs = () => {
         choices={memberStatusChoices}
         helperText={false}
         translateChoice={false}
-        defaultValue="Active"
+        defaultValue="Pending"
       />
-      <TextInput source="background" multiline helperText={false} />
       <BooleanInput source="has_newsletter" helperText={false} />
       <ReferenceInput
         reference="sales"
