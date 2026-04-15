@@ -14,7 +14,6 @@ import { ContactInputs } from "./ContactInputs";
 import {
   cleanupContactForEdit,
   defaultEmailJsonb,
-  defaultPhoneJsonb,
 } from "./contactModel";
 
 export interface ContactEditSheetProps {
@@ -37,7 +36,6 @@ export const ContactEditSheet = ({
       transform={cleanupContactForEdit}
       defaultValues={{
         email_jsonb: defaultEmailJsonb,
-        phone_jsonb: defaultPhoneJsonb,
       }}
       headerActions={<ContactEditMenuButton onOpenChange={onOpenChange} />}
     >

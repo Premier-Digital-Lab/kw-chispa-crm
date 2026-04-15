@@ -95,11 +95,29 @@ export type Contact = {
   tags: number[];
   gender: string;
   sales_id?: Identifier;
-  status: string;
   background: string;
-  phone_jsonb: PhoneNumberAndType[];
   nb_tasks?: number;
   company_name?: string;
+  // KW CHISPA member directory fields
+  cell_number?: string | null;
+  market_center_name?: string | null;
+  market_center_team_leader?: string | null;
+  market_center_tl_phone?: string | null;
+  market_center_tl_email?: string | null;
+  agent_role?: string | null;
+  mc_street_number?: string | null;
+  mc_street_name?: string | null;
+  mc_suite_unit?: string | null;
+  mc_city?: string | null;
+  mc_state?: string | null;
+  mc_zip_code?: string | null;
+  mc_country?: string | null;
+  languages_spoken?: string[] | null;
+  cities_served?: string[] | null;
+  counties_served?: string[] | null;
+  membership_tier?: string | null;
+  join_date?: string | null;
+  member_status?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {

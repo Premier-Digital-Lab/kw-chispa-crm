@@ -8,7 +8,6 @@ import { FormToolbar } from "../layout/FormToolbar";
 import {
   cleanupContactForEdit,
   defaultEmailJsonb,
-  defaultPhoneJsonb,
 } from "./contactModel";
 
 export const ContactEdit = ({
@@ -31,10 +30,6 @@ const normalizeContactArrayFields = (record: Contact) => ({
     record.email_jsonb && record.email_jsonb.length > 0
       ? record.email_jsonb
       : defaultEmailJsonb,
-  phone_jsonb:
-    record.phone_jsonb && record.phone_jsonb.length > 0
-      ? record.phone_jsonb
-      : defaultPhoneJsonb,
 });
 
 const ContactEditContent = () => {
