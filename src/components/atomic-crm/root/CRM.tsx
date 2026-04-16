@@ -24,6 +24,7 @@ import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
 import { SignupPage } from "../login/SignupPage";
 import { ConfirmationRequired } from "../login/ConfirmationRequired";
+import { PendingApprovalPage } from "../login/PendingApprovalPage";
 import { ImportPage } from "../misc/ImportPage";
 import {
   getAuthProvider as defaultAuthProviderBuilder,
@@ -250,6 +251,10 @@ const DesktopAdmin = (
           path={ConfirmationRequired.path}
           element={<ConfirmationRequired />}
         />
+        <Route
+          path={PendingApprovalPage.path}
+          element={<PendingApprovalPage />}
+        />
         <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
         <Route
           path={ForgotPasswordPage.path}
@@ -312,6 +317,10 @@ const MobileAdmin = (
           <Route
             path={ConfirmationRequired.path}
             element={<ConfirmationRequired />}
+          />
+          <Route
+            path={PendingApprovalPage.path}
+            element={<PendingApprovalPage />}
           />
           <Route path={SetPasswordPage.path} element={<SetPasswordPage />} />
           <Route

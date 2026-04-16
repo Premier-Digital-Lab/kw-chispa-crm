@@ -69,7 +69,7 @@ const getSale = async () => {
 
   const { data: dataSale, error: errorSale } = await getSupabaseClient()
     .from("sales")
-    .select("id, first_name, last_name, avatar, administrator")
+    .select("id, first_name, last_name, avatar, administrator, disabled")
     .match({ user_id: dataSession?.session?.user.id })
     .single();
 
@@ -86,6 +86,10 @@ function clearCache() {
   const storage = getLocalStorage();
   storage?.removeItem(IS_INITIALIZED_CACHE_KEY);
   storage?.removeItem(CURRENT_SALE_CACHE_KEY);
+}
+
+function clearSaleCache() {
+  getLocalStorage()?.removeItem(CURRENT_SALE_CACHE_KEY);
 }
 
 export const getAuthProvider = (): AuthProvider => {
@@ -109,24 +113,16 @@ export const getAuthProvider = (): AuthProvider => {
       return baseAuthProvider.logout(params);
     },
     checkAuth: async (params) => {
-      // Users are on the set-password page, nothing to do
+      const isExemptPath = (path: string) =>
+        window.location.pathname === path ||
+        window.location.hash.includes(`#${path}`);
+
+      // These pages are accessible without passing the full auth gate
       if (
-        window.location.pathname === "/set-password" ||
-        window.location.hash.includes("#/set-password")
-      ) {
-        return;
-      }
-      // Users are on the forgot-password page, nothing to do
-      if (
-        window.location.pathname === "/forgot-password" ||
-        window.location.hash.includes("#/forgot-password")
-      ) {
-        return;
-      }
-      // Users are on the sign-up page, nothing to do
-      if (
-        window.location.pathname === "/sign-up" ||
-        window.location.hash.includes("#/sign-up")
+        isExemptPath("/set-password") ||
+        isExemptPath("/forgot-password") ||
+        isExemptPath("/sign-up") ||
+        isExemptPath("/pending-approval")
       ) {
         return;
       }
@@ -137,6 +133,19 @@ export const getAuthProvider = (): AuthProvider => {
         await getSupabaseClient().auth.signOut();
         throw {
           redirectTo: "/sign-up",
+          message: false,
+        };
+      }
+
+      // Block self-registered members who haven't been approved yet.
+      // Their sales row has disabled = true until an admin approves them.
+      // Clear the sale cache on redirect so the next navigation re-checks the DB,
+      // which allows post-approval access without requiring a full logout.
+      const sale = await getSale();
+      if (sale?.disabled) {
+        clearSaleCache();
+        throw {
+          redirectTo: "/pending-approval",
           message: false,
         };
       }
