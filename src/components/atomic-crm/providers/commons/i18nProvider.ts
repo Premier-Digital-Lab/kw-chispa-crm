@@ -7,6 +7,7 @@ import { raSupabaseFrenchMessages } from "ra-supabase-language-french";
 import { englishCrmMessages } from "./englishCrmMessages";
 import { frenchCrmMessages } from "./frenchCrmMessages";
 import { spanishCrmMessages } from "./spanishCrmMessages";
+import { raSpanishMessages } from "./raSpanishMessages";
 
 const raSupabaseEnglishMessagesOverride = {
   "ra-supabase": {
@@ -40,10 +41,11 @@ const frenchCatalog = mergeTranslations(
   frenchCrmMessages,
 );
 
-// Spanish inherits all ra-core strings from the English base, then overlays
-// our CRM-specific translations. No compatible ra-language-spanish v5 package
-// exists, so ra-core UI strings (Save, Cancel, etc.) remain in English.
-const spanishCatalog = mergeTranslations(englishCatalog, spanishCrmMessages);
+const spanishCatalog = mergeTranslations(
+  englishCatalog,
+  raSpanishMessages,
+  spanishCrmMessages,
+);
 
 export const getInitialLocale = (): "en" | "fr" | "es" => {
   if (typeof navigator === "undefined") {
