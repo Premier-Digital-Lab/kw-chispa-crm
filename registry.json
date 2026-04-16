@@ -506,6 +506,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/login/PendingApprovalGuard.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/login/LoginSkeleton.tsx",
           "type": "registry:component"
         },

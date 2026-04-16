@@ -1,4 +1,9 @@
 import { useCanAccess, useGetList } from "ra-core";
+import { Link } from "react-router";
+import { UserCheck } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 import type { Contact, ContactNote } from "../types";
 import { DashboardActivityLog } from "./DashboardActivityLog";
@@ -6,6 +11,55 @@ import { DashboardStepper } from "./DashboardStepper";
 import { DealsChart } from "./DealsChart";
 import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
+
+/**
+ * Shown only to admins when there are self-registered members waiting for approval.
+ * Links directly to the Users list with the "Pending Approval" filter pre-applied.
+ */
+const PendingApprovalsCard = () => {
+  const { canAccess: isAdmin, isPending: isPendingAccess } = useCanAccess({
+    resource: "sales",
+    action: "list",
+  });
+
+  const { total, isPending: isPendingCount } = useGetList(
+    "sales",
+    {
+      filter: { disabled: true },
+      pagination: { page: 1, perPage: 1 },
+    },
+    { enabled: !isPendingAccess && isAdmin },
+  );
+
+  // Hide while loading, hide for non-admins, hide when nothing is pending
+  if (isPendingAccess || isPendingCount || !isAdmin || !total) return null;
+
+  const filterParam = encodeURIComponent(JSON.stringify({ disabled: true }));
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center">
+        <div className="mr-3 flex">
+          <UserCheck className="text-muted-foreground w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-semibold text-muted-foreground flex-1">
+          Pending Approvals
+        </h2>
+        <span className="text-2xl font-bold">{total}</span>
+      </div>
+      <Card className="p-4 mb-2">
+        <p className="text-sm text-muted-foreground mb-3">
+          {total === 1
+            ? "1 member is waiting for approval."
+            : `${total} members are waiting for approval.`}
+        </p>
+        <Button variant="outline" size="sm" asChild>
+          <Link to={`/sales?filter=${filterParam}`}>Review members</Link>
+        </Button>
+      </Card>
+    </div>
+  );
+};
 
 export const Dashboard = () => {
   const { canAccess: canSeeNotes, isPending: isPendingCanSeeNotes } =
@@ -62,7 +116,10 @@ export const Dashboard = () => {
       </div>
 
       <div className="md:col-span-3">
-        <TasksList />
+        <div className="flex flex-col gap-6">
+          <PendingApprovalsCard />
+          <TasksList />
+        </div>
       </div>
     </div>
   );
