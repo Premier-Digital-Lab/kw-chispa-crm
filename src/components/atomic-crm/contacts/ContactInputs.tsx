@@ -90,7 +90,7 @@ const TAB_ORDER = [
 // values. Local state tracks the displayed string character-by-character so
 // typing is never destructive. The array is only written to form state on blur,
 // which is also when validation runs.
-const CommaSeparatedInput = ({
+export const CommaSeparatedInput = ({
   source,
   label,
   validate,

@@ -87,15 +87,12 @@ const getDataProviderWithCustomMethods = () => {
       return baseDataProvider.getOne(resource, params);
     },
 
-    async signUp({ email, password, first_name, last_name }: SignUpData) {
+    async signUp({ email, password, ...profileMetadata }: SignUpData) {
       const response = await getSupabaseClient().auth.signUp({
         email,
         password,
         options: {
-          data: {
-            first_name,
-            last_name,
-          },
+          data: profileMetadata,
         },
       });
 

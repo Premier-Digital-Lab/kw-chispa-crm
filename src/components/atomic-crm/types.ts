@@ -14,6 +14,35 @@ export type SignUpData = {
   password: string;
   first_name: string;
   last_name: string;
+  // Required member profile fields
+  cell_number: string;
+  market_center_name: string;
+  agent_role: string;
+  languages_spoken: string[];
+  cities_served: string[];
+  counties_served: string[];
+  states_served: string[];
+  countries_served: string[];
+  // Optional profile fields
+  gender?: string;
+  title?: string;
+  background?: string;
+  linkedin_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  tiktok_url?: string;
+  market_center_team_leader?: string;
+  market_center_tl_phone?: string;
+  market_center_tl_email?: string;
+  mc_street_number?: string;
+  mc_street_name?: string;
+  mc_suite_unit?: string;
+  mc_city?: string;
+  mc_state?: string;
+  mc_zip_code?: string;
+  mc_country?: string;
+  membership_tier?: string;
+  has_newsletter?: boolean;
 };
 
 export type SalesFormData = {
