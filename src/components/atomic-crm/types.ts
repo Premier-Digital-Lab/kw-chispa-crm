@@ -33,6 +33,7 @@ export type Sale = {
   avatar?: RAFile;
   disabled?: boolean;
   user_id: string;
+  is_super_admin?: boolean;
 
   /**
    * This is a copy of the user's email, to make it easier to handle by react admin

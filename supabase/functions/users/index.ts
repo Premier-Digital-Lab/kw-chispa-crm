@@ -198,6 +198,12 @@ async function patchUser(req: Request, currentUserSale: any) {
     return createErrorResponse(404, "Not Found");
   }
 
+  // Super-admin protection: only the super-admin themselves can modify their account.
+  // No other admin — regardless of their own status — may disable, demote, or alter it.
+  if (sale.is_super_admin && currentUserSale.id !== sale.id) {
+    return createErrorResponse(403, "Cannot modify super-admin account");
+  }
+
   // Users can only update their own profile unless they are an administrator
   if (!currentUserSale.administrator && currentUserSale.id !== sale.id) {
     return createErrorResponse(401, "Not Authorized");

@@ -23,6 +23,14 @@ const OptionsField = (_props: { label?: string | boolean }) => {
   if (!record) return null;
   return (
     <div className="flex flex-row gap-1">
+      {record.is_super_admin && (
+        <Badge
+          variant="outline"
+          className="border-yellow-400 text-yellow-600 dark:border-yellow-500 dark:text-yellow-400"
+        >
+          👑 Super Admin
+        </Badge>
+      )}
       {record.administrator && (
         <Badge
           variant="outline"
