@@ -1,4 +1,4 @@
-import { useGetList } from "ra-core";
+import { useCanAccess, useGetList } from "ra-core";
 
 import type { Contact, ContactNote } from "../types";
 import { DashboardActivityLog } from "./DashboardActivityLog";
@@ -8,6 +8,9 @@ import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
 
 export const Dashboard = () => {
+  const { canAccess: canSeeNotes, isPending: isPendingCanSeeNotes } =
+    useCanAccess({ resource: "contact_notes", action: "list" });
+
   const {
     data: dataContact,
     total: totalContact,
@@ -17,9 +20,11 @@ export const Dashboard = () => {
   });
 
   const { total: totalContactNotes, isPending: isPendingContactNotes } =
-    useGetList<ContactNote>("contact_notes", {
-      pagination: { page: 1, perPage: 1 },
-    });
+    useGetList<ContactNote>(
+      "contact_notes",
+      { pagination: { page: 1, perPage: 1 } },
+      { enabled: canSeeNotes },
+    );
 
   const { total: totalDeal, isPending: isPendingDeal } = useGetList<Contact>(
     "deals",
@@ -28,7 +33,11 @@ export const Dashboard = () => {
     },
   );
 
-  const isPending = isPendingContact || isPendingContactNotes || isPendingDeal;
+  const isPending =
+    isPendingCanSeeNotes ||
+    isPendingContact ||
+    (canSeeNotes && isPendingContactNotes) ||
+    isPendingDeal;
 
   if (isPending) {
     return null;
@@ -38,7 +47,7 @@ export const Dashboard = () => {
     return <DashboardStepper step={1} />;
   }
 
-  if (!totalContactNotes) {
+  if (canSeeNotes && !totalContactNotes) {
     return <DashboardStepper step={2} contactId={dataContact?.[0]?.id} />;
   }
 

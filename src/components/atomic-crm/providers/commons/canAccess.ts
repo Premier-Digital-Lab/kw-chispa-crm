@@ -27,5 +27,13 @@ export const canAccess = <
     return false;
   }
 
+  // Non admins can't access notes
+  if (params.resource === "contact_notes") {
+    return false;
+  }
+  if (params.resource === "deal_notes") {
+    return false;
+  }
+
   return true;
 };
