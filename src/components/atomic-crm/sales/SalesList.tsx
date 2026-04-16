@@ -71,19 +71,21 @@ const PendingActions = (_props: { label?: string | boolean }) => {
   const refresh = useRefresh();
 
   const { mutate: approve, isPending: isApproving } = useMutation({
+    // Only send the fields that actually need to change for approval.
+    // Omitting email/first_name/last_name avoids triggering a Supabase Auth
+    // email re-verification flow for self-registered users (who signed up via
+    // signUp(), not via admin invite), which would cause updateUserById to fail.
     mutationFn: () =>
-      dataProvider.salesUpdate((record as any).id, {
+      dataProvider.salesUpdate(record!.id, {
         disabled: false,
         administrator: record!.administrator,
-        first_name: record!.first_name,
-        last_name: record!.last_name,
-        email: record!.email,
       }),
     onSuccess: () => {
       notify("Member approved!", { type: "success" });
       refresh();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("[PendingActions] approve failed:", error);
       notify("Failed to approve member", { type: "error" });
     },
   });
@@ -110,7 +112,8 @@ const PendingActions = (_props: { label?: string | boolean }) => {
       notify("Member rejected", { type: "info" });
       refresh();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("[PendingActions] reject failed:", error);
       notify("Failed to reject member", { type: "error" });
     },
   });
