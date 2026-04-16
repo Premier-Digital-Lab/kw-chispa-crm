@@ -209,12 +209,22 @@ async function patchUser(req: Request, currentUserSale: any) {
     return createErrorResponse(401, "Not Authorized");
   }
 
+  // Only include fields that were explicitly provided so we don't accidentally
+  // clear metadata (e.g. when the approve action omits email/first_name/last_name).
+  const updatePayload: Parameters<
+    typeof supabaseAdmin.auth.admin.updateUserById
+  >[1] = {
+    ban_duration: disabled ? "87600h" : "none",
+  };
+  if (email !== undefined) updatePayload.email = email;
+  if (first_name !== undefined || last_name !== undefined) {
+    updatePayload.user_metadata = {};
+    if (first_name !== undefined) updatePayload.user_metadata.first_name = first_name;
+    if (last_name !== undefined) updatePayload.user_metadata.last_name = last_name;
+  }
+
   const { data, error: userError } =
-    await supabaseAdmin.auth.admin.updateUserById(sale.user_id, {
-      email,
-      ban_duration: disabled ? "87600h" : "none",
-      user_metadata: { first_name, last_name },
-    });
+    await supabaseAdmin.auth.admin.updateUserById(sale.user_id, updatePayload);
 
   if (!data?.user || userError) {
     console.error("Error patching user:", userError);
