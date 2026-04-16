@@ -30,7 +30,8 @@ exports.handler = async (event) => {
     '- Membership tiers: "Free" or "Premier"\n' +
     '- Member status defaults to "Pending" (admin approves later)\n\n' +
     'For array fields (languages_spoken, cities_served, counties_served, states_served, countries_served), accept comma-separated values from the user and convert them to arrays.\n\n' +
-    'Always confirm what you understood before creating a member. Be warm and professional.';
+    'Always confirm what you understood before creating a member. Be warm and professional.\n\n' +
+    'When searching by county, strip the word \'County\' or \'Condado\' from the search term — the database stores just the county name (e.g. \'Bergen\' not \'Bergen County\'). Similarly, when searching by state, accept both abbreviations and full names (e.g. \'NJ\' or \'New Jersey\').';
 
   // ─── Tool Definitions ─────────────────────────────────────────────────────
 
