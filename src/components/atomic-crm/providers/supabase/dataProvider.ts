@@ -104,11 +104,45 @@ const getDataProviderWithCustomMethods = () => {
         throw new Error(response?.error?.message || "Failed to create account");
       }
 
+      const user = response.data.user;
+
+      // If a session was returned (email confirmation not required), the Supabase
+      // client is now authenticated. Fetch the sales row that handle_new_user
+      // created and insert a corresponding contacts row (member profile).
+      // When email confirmation IS required, session is null — the contacts row
+      // will be created post-confirmation (handled in a later commit).
+      if (response.data.session) {
+        const { data: salesRow } = await getSupabaseClient()
+          .from("sales")
+          .select("id")
+          .eq("user_id", user.id)
+          .single();
+
+        if (salesRow?.id) {
+          const { error: contactError } = await getSupabaseClient()
+            .from("contacts")
+            .insert({
+              first_name,
+              last_name,
+              email_jsonb: [{ email, type: "Work" }],
+              member_status: "Pending",
+              first_seen: new Date().toISOString(),
+              sales_id: salesRow.id,
+            });
+
+          if (contactError) {
+            // Non-fatal: the auth account was created. An admin can manually
+            // create the member profile. This will be tightened in a later commit.
+            console.error("signUp: failed to create contacts row", contactError);
+          }
+        }
+      }
+
       // Update the is initialized cache
       (getIsInitialized as any)._is_initialized_cache = true;
 
       return {
-        id: response.data.user.id,
+        id: user.id,
         email,
         password,
       };
