@@ -92,6 +92,12 @@ function clearSaleCache() {
   getLocalStorage()?.removeItem(CURRENT_SALE_CACHE_KEY);
 }
 
+// When a pending-approval redirect is in flight, the LogoutOnMount component
+// (rendered by CoreAdminRoutes when authenticated=false) will call logout().
+// We intercept that call to skip supabase.auth.signOut() so the user keeps their
+// session and we can redirect them to /pending-approval instead of /login.
+let _pendingApprovalRedirectInFlight = false;
+
 export const getAuthProvider = (): AuthProvider => {
   const baseAuthProvider = getBaseAuthProvider();
   return {
@@ -106,9 +112,24 @@ export const getAuthProvider = (): AuthProvider => {
         }
         return;
       }
-      return baseAuthProvider.login(params);
+      await baseAuthProvider.login(params);
+
+      // After successful login, check immediately if the user is pending approval.
+      // Returning { redirectTo } lets useLogin navigate there directly without
+      // going through the checkAuth/LogoutOnMount cycle.
+      const sale = await getSale();
+      if (sale?.disabled) {
+        clearSaleCache();
+        return { redirectTo: "/pending-approval" };
+      }
     },
     logout: async (params) => {
+      // If a pending-approval redirect triggered this logout (via LogoutOnMount),
+      // skip signing the user out so they keep their session for the status check.
+      if (_pendingApprovalRedirectInFlight) {
+        _pendingApprovalRedirectInFlight = false;
+        return "/pending-approval";
+      }
       clearCache();
       return baseAuthProvider.logout(params);
     },
@@ -139,11 +160,12 @@ export const getAuthProvider = (): AuthProvider => {
 
       // Block self-registered members who haven't been approved yet.
       // Their sales row has disabled = true until an admin approves them.
-      // Clear the sale cache on redirect so the next navigation re-checks the DB,
-      // which allows post-approval access without requiring a full logout.
+      // Set the flag so our logout() override skips supabase.auth.signOut(),
+      // keeping the session alive for the post-approval status check.
       const sale = await getSale();
       if (sale?.disabled) {
         clearSaleCache();
+        _pendingApprovalRedirectInFlight = true;
         throw {
           redirectTo: "/pending-approval",
           message: false,
