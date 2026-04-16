@@ -81,6 +81,7 @@ export const BooleanInput = (props: BooleanInputProps) => {
         <Switch
           id={id}
           checked={Boolean(field.value)}
+          disabled={disabled || readOnly}
           onFocus={onFocus}
           onCheckedChange={handleChange}
         />
