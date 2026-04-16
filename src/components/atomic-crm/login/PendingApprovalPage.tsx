@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Notification } from "@/components/admin/notification";
 import { useConfigurationContext } from "../root/ConfigurationContext";
@@ -9,14 +9,14 @@ const CURRENT_SALE_CACHE_KEY = "RaStore.auth.current_sale";
 
 export const PendingApprovalPage = () => {
   const { darkModeLogo: logo, title } = useConfigurationContext();
-  const navigate = useNavigate();
 
-  // Clear the cached sale so checkAuth re-reads from the DB on the next
-  // navigation. If the admin has approved the account, the fresh DB check
-  // will show disabled = false and the user will enter the CRM normally.
+  // Clear the localStorage sale cache AND do a full page reload.
+  // The full reload is necessary to flush react-query's in-memory identity
+  // cache; otherwise PendingApprovalGuard would still see disabled=true even
+  // after an admin has approved the account.
   const handleCheckStatus = () => {
     localStorage.removeItem(CURRENT_SALE_CACHE_KEY);
-    navigate("/");
+    window.location.href = "/";
   };
 
   return (
