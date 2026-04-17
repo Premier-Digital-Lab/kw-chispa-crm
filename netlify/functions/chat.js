@@ -31,7 +31,7 @@ exports.handler = async (event) => {
     '- Member status defaults to "Pending" (admin approves later)\n\n' +
     'For array fields (languages_spoken, cities_served, counties_served, states_served, countries_served), accept comma-separated values from the user and convert them to arrays.\n\n' +
     'Always confirm what you understood before creating a member. Be warm and professional.\n\n' +
-    'When searching by county, strip the word \'County\' or \'Condado\' from the search term — the database stores just the county name (e.g. \'Bergen\' not \'Bergen County\'). Similarly, when searching by state, accept both abbreviations and full names (e.g. \'NJ\' or \'New Jersey\').';
+    'When searching by county, strip the word \'County\' or \'Condado\' from the search term — the database stores just the county name (e.g. \'Bergen\' not \'Bergen County\'). When searching by state, ALWAYS convert abbreviations to full names before calling search_members — the database stores full state names (e.g. use \'New Jersey\' not \'NJ\', use \'Texas\' not \'TX\'). Never pass a two-letter abbreviation as the state parameter.';
 
   // ─── Tool Definitions ─────────────────────────────────────────────────────
 
@@ -223,6 +223,20 @@ exports.handler = async (event) => {
     return { success: false, error: errorText };
   }
 
+  const STATE_ABBR = {
+    AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
+    CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
+    HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
+    KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
+    MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
+    MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
+    NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio',
+    OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
+    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
+    VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
+    DC: 'District of Columbia', PR: 'Puerto Rico',
+  };
+
   async function handleSearchMembers(input) {
     if (!userJwt) {
       return { success: false, error: 'User is not authenticated.' };
@@ -251,7 +265,9 @@ exports.handler = async (event) => {
       url.searchParams.set('cities_served', `cs.{"${input.city}"}`);
     }
     if (input.state) {
-      url.searchParams.set('states_served', `cs.{"${input.state}"}`);
+      const stateInput = input.state.trim();
+      const expandedState = STATE_ABBR[stateInput.toUpperCase()] ?? stateInput;
+      url.searchParams.set('states_served', `cs.{"${expandedState}"}`);
     }
     if (input.county) {
       url.searchParams.set('counties_served', `cs.{"${input.county}"}`);

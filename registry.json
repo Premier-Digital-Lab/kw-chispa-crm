@@ -558,6 +558,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/find-agent/FindAgentPage.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/filters/FilterCategory.tsx",
           "type": "registry:component"
         },

@@ -44,15 +44,15 @@ const buildFilter = (fields: SearchFields): Record<string, any> => {
 
   if (fields.name.trim()) {
     filter["@or"] = {
-      "first_name@ilike": `%${fields.name.trim()}%`,
-      "last_name@ilike": `%${fields.name.trim()}%`,
+      "first_name@ilike": fields.name.trim(),
+      "last_name@ilike": fields.name.trim(),
     };
   }
   if (fields.city.trim()) {
-    filter["mc_city@ilike"] = `%${fields.city.trim()}%`;
+    filter["mc_city@ilike"] = fields.city.trim();
   }
   if (fields.state.trim()) {
-    filter["mc_state@ilike"] = `%${fields.state.trim()}%`;
+    filter["mc_state@ilike"] = fields.state.trim();
   }
   if (fields.county.trim()) {
     filter["counties_served@cs"] = `{${fields.county.trim()}}`;
@@ -61,7 +61,7 @@ const buildFilter = (fields: SearchFields): Record<string, any> => {
     filter["languages_spoken@cs"] = `{${fields.language.trim()}}`;
   }
   if (fields.marketCenter.trim()) {
-    filter["market_center_name@ilike"] = `%${fields.marketCenter.trim()}%`;
+    filter["market_center_name@ilike"] = fields.marketCenter.trim();
   }
   if (fields.agentRole) {
     filter["agent_role"] = fields.agentRole;
