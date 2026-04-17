@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useGetList, useTranslate } from "ra-core";
+import { useState, useCallback } from "react";
+import { useTranslate } from "ra-core";
 import { Link } from "react-router";
-import { Search, MessageCircle, MapPin, Globe, Building2, Phone, Mail, UserCircle } from "lucide-react";
+import { Search, MessageCircle, MapPin, Building2, Phone, Mail, UserCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
+import { getSupabaseClient } from "../providers/supabase/supabase";
 import type { Contact } from "../types";
 
 type SearchFields = {
@@ -37,70 +38,85 @@ const emptyFields: SearchFields = {
 const isAnyFieldFilled = (fields: SearchFields) =>
   Object.values(fields).some((v) => v.trim() !== "");
 
-const buildFilter = (fields: SearchFields): Record<string, any> => {
-  const filter: Record<string, any> = {
-    member_status: "Active",
-  };
+const useAgentSearch = () => {
+  const [results, setResults] = useState<Contact[] | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  if (fields.name.trim()) {
-    filter["@or"] = {
-      "first_name@ilike": fields.name.trim(),
-      "last_name@ilike": fields.name.trim(),
-    };
-  }
-  if (fields.city.trim()) {
-    filter["mc_city@ilike"] = fields.city.trim();
-  }
-  if (fields.state.trim()) {
-    filter["mc_state@ilike"] = fields.state.trim();
-  }
-  if (fields.county.trim()) {
-    filter["counties_served@cs"] = `{${fields.county.trim()}}`;
-  }
-  if (fields.language.trim()) {
-    filter["languages_spoken@cs"] = `{${fields.language.trim()}}`;
-  }
-  if (fields.marketCenter.trim()) {
-    filter["market_center_name@ilike"] = fields.marketCenter.trim();
-  }
-  if (fields.agentRole) {
-    filter["agent_role"] = fields.agentRole;
-  }
-  if (fields.countriesServed.trim()) {
-    filter["countries_served@cs"] = `{${fields.countriesServed.trim()}}`;
-  }
+  const search = useCallback(async (fields: SearchFields) => {
+    setIsSearching(true);
+    try {
+      const supabase = getSupabaseClient();
+      let query = supabase
+        .from("contacts")
+        .select(
+          "id,first_name,last_name,agent_role,market_center_name,mc_city,mc_state," +
+          "languages_spoken,counties_served,countries_served,cell_number,email_jsonb,background"
+        )
+        .eq("member_status", "Active")
+        .order("last_name", { ascending: true })
+        .limit(25);
 
-  return filter;
+      if (fields.name.trim()) {
+        const n = fields.name.trim();
+        query = query.or(`first_name.ilike.%${n}%,last_name.ilike.%${n}%`);
+      }
+      if (fields.city.trim()) {
+        query = query.ilike("mc_city", `%${fields.city.trim()}%`);
+      }
+      if (fields.state.trim()) {
+        query = query.ilike("mc_state", `%${fields.state.trim()}%`);
+      }
+      if (fields.county.trim()) {
+        query = query.contains("counties_served", [fields.county.trim()]);
+      }
+      if (fields.language.trim()) {
+        query = query.contains("languages_spoken", [fields.language.trim()]);
+      }
+      if (fields.marketCenter.trim()) {
+        query = query.ilike("market_center_name", `%${fields.marketCenter.trim()}%`);
+      }
+      if (fields.agentRole) {
+        query = query.eq("agent_role", fields.agentRole);
+      }
+      if (fields.countriesServed.trim()) {
+        query = query.contains("countries_served", [fields.countriesServed.trim()]);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.error("Agent search error:", error.message);
+        setResults([]);
+      } else {
+        setResults((data ?? []) as Contact[]);
+      }
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  return { results, isSearching, search };
 };
 
 export const FindAgentPage = () => {
   const translate = useTranslate();
   const [fields, setFields] = useState<SearchFields>(emptyFields);
-  const [submittedFilter, setSubmittedFilter] = useState<Record<string, any> | null>(null);
-
-  const { data: results, isPending: isSearching } = useGetList<Contact>(
-    "contacts",
-    {
-      filter: submittedFilter ?? {},
-      pagination: { page: 1, perPage: 25 },
-      sort: { field: "last_name", order: "ASC" },
-    },
-    { enabled: submittedFilter !== null },
-  );
+  const [hasSearched, setHasSearched] = useState(false);
+  const { results, isSearching, search } = useAgentSearch();
 
   const canSearch = isAnyFieldFilled(fields);
 
-  const handleFieldChange = (key: keyof SearchFields, value: string) => {
-    setFields((prev) => ({ ...prev, [key]: value }));
-  };
-
   const handleSearch = () => {
-    if (!canSearch) return;
-    setSubmittedFilter(buildFilter(fields));
+    if (!canSearch || isSearching) return;
+    setHasSearched(true);
+    search(fields);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && canSearch) handleSearch();
+  };
+
+  const handleFieldChange = (key: keyof SearchFields, value: string) => {
+    setFields((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -214,7 +230,7 @@ export const FindAgentPage = () => {
       </div>
 
       {/* Results */}
-      {submittedFilter !== null && !isSearching && (
+      {hasSearched && !isSearching && (
         <>
           {results && results.length > 0 ? (
             <div className="flex flex-col gap-3">
@@ -294,7 +310,6 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               <p className="text-sm text-muted-foreground">{contact.agent_role}</p>
             )}
 
-            {/* Market Center */}
             {contact.market_center_name && (
               <div className="flex items-center gap-1.5 mt-1.5 text-sm">
                 <Building2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
@@ -302,7 +317,6 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               </div>
             )}
 
-            {/* Location */}
             {location && (
               <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
                 <MapPin className="w-3.5 h-3.5 shrink-0" />
@@ -310,21 +324,10 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               </div>
             )}
 
-            {/* Array fields */}
-            <ArrayBadges
-              items={contact.languages_spoken}
-              label="Languages"
-            />
-            <ArrayBadges
-              items={contact.counties_served}
-              label="Counties"
-            />
-            <ArrayBadges
-              items={contact.countries_served}
-              label="Countries"
-            />
+            <ArrayBadges items={contact.languages_spoken} label="Languages" />
+            <ArrayBadges items={contact.counties_served} label="Counties" />
+            <ArrayBadges items={contact.countries_served} label="Countries" />
 
-            {/* Bio */}
             {contact.background && (
               <>
                 <Separator className="my-2" />

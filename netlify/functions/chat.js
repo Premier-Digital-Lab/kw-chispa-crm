@@ -254,20 +254,50 @@ exports.handler = async (event) => {
     );
     url.searchParams.set('limit', '10');
 
+    // Build OR clauses separately so we can combine them safely
+    let nameOrClause = null;
+    let stateOrClause = null;
+
     // Name search: OR across first_name and last_name
     if (input.query && input.query.trim()) {
       const q = input.query.trim().replace(/[()]/g, '');
-      url.searchParams.set('or', `(first_name.ilike.*${q}*,last_name.ilike.*${q}*)`);
+      nameOrClause = `(first_name.ilike.*${q}*,last_name.ilike.*${q}*)`;
+    }
+
+    // State search: OR across abbreviation and full name to handle both storage formats
+    if (input.state) {
+      const stateInput = input.state.trim();
+      const fullName = STATE_ABBR[stateInput.toUpperCase()];
+      const abbr = !fullName
+        ? Object.keys(STATE_ABBR).find(
+            (k) => STATE_ABBR[k].toLowerCase() === stateInput.toLowerCase(),
+          )
+        : null;
+
+      if (fullName) {
+        // User typed an abbreviation — search both
+        stateOrClause = `(states_served.cs.{"${stateInput}"},states_served.cs.{"${fullName}"})`;
+      } else if (abbr) {
+        // User typed a full name — search both
+        stateOrClause = `(states_served.cs.{"${stateInput}"},states_served.cs.{"${abbr}"})`;
+      } else {
+        // Unknown value — search as-is
+        url.searchParams.set('states_served', `cs.{"${stateInput}"}`);
+      }
+    }
+
+    // Combine OR clauses: if both name and state need OR, wrap in an AND
+    if (nameOrClause && stateOrClause) {
+      url.searchParams.set('and', `(or${nameOrClause},or${stateOrClause})`);
+    } else if (nameOrClause) {
+      url.searchParams.set('or', nameOrClause);
+    } else if (stateOrClause) {
+      url.searchParams.set('or', stateOrClause);
     }
 
     // Array-contains filters (PostgREST cs operator)
     if (input.city) {
       url.searchParams.set('cities_served', `cs.{"${input.city}"}`);
-    }
-    if (input.state) {
-      const stateInput = input.state.trim();
-      const expandedState = STATE_ABBR[stateInput.toUpperCase()] ?? stateInput;
-      url.searchParams.set('states_served', `cs.{"${expandedState}"}`);
     }
     if (input.county) {
       url.searchParams.set('counties_served', `cs.{"${input.county}"}`);
