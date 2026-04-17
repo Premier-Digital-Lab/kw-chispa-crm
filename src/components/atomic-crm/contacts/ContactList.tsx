@@ -3,9 +3,12 @@ import {
   downloadCSV,
   InfiniteListBase,
   useGetIdentity,
+  useGetList,
   useListContext,
   type Exporter,
 } from "ra-core";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { BulkActionsToolbar } from "@/components/admin/bulk-actions-toolbar";
 import { BulkDeleteButton } from "@/components/admin/bulk-delete-button";
 import { BulkExportButton } from "@/components/admin/bulk-export-button";
@@ -33,10 +36,37 @@ import { InfinitePagination } from "../misc/InfinitePagination";
 import MobileHeader from "../layout/MobileHeader";
 import { MobileContent } from "../layout/MobileContent";
 
-export const ContactList = () => {
-  const { identity } = useGetIdentity();
+/**
+ * Redirects non-admin members to their own contact profile.
+ * Admins see the full list.
+ */
+const MemberProfileRedirect = ({ salesId }: { salesId: string | number }) => {
+  const navigate = useNavigate();
+  const { data, isPending } = useGetList("contacts", {
+    filter: { sales_id: salesId },
+    pagination: { page: 1, perPage: 1 },
+    sort: { field: "id", order: "ASC" },
+  });
 
-  if (!identity) return null;
+  useEffect(() => {
+    if (!isPending && data && data.length > 0) {
+      navigate(`/contacts/${data[0].id}`, { replace: true });
+    }
+  }, [isPending, data, navigate]);
+
+  return null;
+};
+
+export const ContactList = () => {
+  const { identity, isPending } = useGetIdentity();
+
+  if (isPending || !identity) return null;
+
+  // Non-admin members are redirected to their own contact profile.
+  // The full directory is admin-only; members use the chat assistant to find others.
+  if (!identity.administrator) {
+    return <MemberProfileRedirect salesId={identity.id} />;
+  }
 
   return (
     <List
@@ -84,18 +114,27 @@ const ContactBulkActionButtons = () => (
   </>
 );
 
-const ContactListActions = () => (
-  <TopToolbar>
-    <SortButton fields={["first_name", "last_name", "last_seen"]} />
-    <ContactImportButton />
-    <ExportButton exporter={exporter} />
-    <CreateButton />
-  </TopToolbar>
-);
+const ContactListActions = () => {
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
+  return (
+    <TopToolbar>
+      <SortButton fields={["first_name", "last_name", "last_seen"]} />
+      {isAdmin && <ContactImportButton />}
+      {isAdmin && <ExportButton exporter={exporter} />}
+      {isAdmin && <CreateButton />}
+    </TopToolbar>
+  );
+};
 
 export const ContactListMobile = () => {
-  const { identity } = useGetIdentity();
-  if (!identity) return null;
+  const { identity, isPending } = useGetIdentity();
+
+  if (isPending || !identity) return null;
+
+  if (!identity.administrator) {
+    return <MemberProfileRedirect salesId={identity.id} />;
+  }
 
   return (
     <InfiniteListBase

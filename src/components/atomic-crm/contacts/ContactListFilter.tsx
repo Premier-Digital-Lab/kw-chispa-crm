@@ -118,17 +118,19 @@ export const ContactListFilter = () => {
         />
       </FilterCategory>
 
-      <FilterCategory
-        icon={<Users />}
-        label="resources.contacts.fields.sales_id"
-      >
-        <ToggleFilterButton
-          className="w-full justify-between h-10 md:h-8"
-          label="crm.common.me"
-          value={{ sales_id: identity?.id }}
-          size={isMobile ? "lg" : undefined}
-        />
-      </FilterCategory>
+      {identity?.administrator && (
+        <FilterCategory
+          icon={<Users />}
+          label="resources.contacts.fields.sales_id"
+        >
+          <ToggleFilterButton
+            className="w-full justify-between h-10 md:h-8"
+            label="crm.common.me"
+            value={{ sales_id: identity?.id }}
+            size={isMobile ? "lg" : undefined}
+          />
+        </FilterCategory>
+      )}
     </ResponsiveFilters>
   );
 };

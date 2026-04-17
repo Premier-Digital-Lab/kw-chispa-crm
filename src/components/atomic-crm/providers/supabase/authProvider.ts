@@ -18,6 +18,7 @@ const getBaseAuthProvider = () =>
         fullName: `${sale.first_name} ${sale.last_name}`,
         avatar: sale.avatar?.src,
         disabled: sale.disabled,
+        administrator: sale.administrator,
       };
     },
   });
@@ -164,9 +165,7 @@ export const getAuthProvider = (): AuthProvider => {
       // Set the flag so our logout() override skips supabase.auth.signOut(),
       // keeping the session alive for the post-approval status check.
       const sale = await getSale();
-      console.log("[checkAuth] sale:", sale, "disabled:", sale?.disabled);
       if (sale?.disabled) {
-        console.log("[checkAuth] user is disabled — throwing pending-approval redirect");
         clearSaleCache();
         _pendingApprovalRedirectInFlight = true;
         throw {

@@ -2,6 +2,7 @@ import {
   email,
   FieldTitle,
   required,
+  useGetIdentity,
   useInput,
   useResourceContext,
   useTranslate,
@@ -475,6 +476,9 @@ const ServiceAreasTabInputs = () => (
 );
 
 const MembershipTabInputs = () => {
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
+
   const membershipTierChoices = [
     { id: "Free", name: "Free" },
     { id: "Premier", name: "Premier" },
@@ -488,21 +492,25 @@ const MembershipTabInputs = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <SelectInput
-        source="membership_tier"
-        choices={membershipTierChoices}
-        helperText={false}
-        translateChoice={false}
-        defaultValue="Free"
-      />
+      {isAdmin && (
+        <SelectInput
+          source="membership_tier"
+          choices={membershipTierChoices}
+          helperText={false}
+          translateChoice={false}
+          defaultValue="Free"
+        />
+      )}
       <DateInput source="join_date" helperText={false} />
-      <SelectInput
-        source="member_status"
-        choices={memberStatusChoices}
-        helperText={false}
-        translateChoice={false}
-        defaultValue="Pending"
-      />
+      {isAdmin && (
+        <SelectInput
+          source="member_status"
+          choices={memberStatusChoices}
+          helperText={false}
+          translateChoice={false}
+          defaultValue="Pending"
+        />
+      )}
       <BooleanInput source="has_newsletter" helperText={false} />
       <ReferenceInput
         reference="sales"

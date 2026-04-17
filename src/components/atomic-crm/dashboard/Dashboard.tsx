@@ -1,6 +1,6 @@
-import { useCanAccess, useGetList } from "ra-core";
+import { useCanAccess, useGetIdentity, useGetList } from "ra-core";
 import { Link } from "react-router";
-import { UserCheck } from "lucide-react";
+import { MessageCircle, UserCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +11,36 @@ import { DashboardStepper } from "./DashboardStepper";
 import { DealsChart } from "./DealsChart";
 import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
+
+/**
+ * Shown to approved non-admin members in place of the admin dashboard.
+ * Directs them to use the chat assistant to search for other members.
+ */
+const MemberWelcomeDashboard = () => (
+  <div className="max-w-lg mx-auto mt-16 flex flex-col items-center gap-6 text-center px-4">
+    <MessageCircle className="w-12 h-12 text-muted-foreground" />
+    <div className="flex flex-col gap-2">
+      <h2 className="text-2xl font-bold">Welcome to KW CHISPA!</h2>
+      <p className="text-muted-foreground text-base">
+        ¡Bienvenido/a a KW CHISPA!
+      </p>
+    </div>
+    <Card className="p-6 w-full text-left">
+      <p className="text-sm mb-2">
+        Use the chat assistant to search for members by city, state, language,
+        or Market Center.
+      </p>
+      <p className="text-sm text-muted-foreground">
+        Usa el asistente de chat para buscar miembros por ciudad, estado,
+        idioma o Market Center.
+      </p>
+    </Card>
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <span>Click the chat bubble in the bottom-right corner to get started</span>
+      <span>→</span>
+    </div>
+  </div>
+);
 
 /**
  * Shown only to admins when there are self-registered members waiting for approval.
@@ -62,6 +92,7 @@ const PendingApprovalsCard = () => {
 };
 
 export const Dashboard = () => {
+  const { identity, isPending: isPendingIdentity } = useGetIdentity();
   const { canAccess: canSeeNotes, isPending: isPendingCanSeeNotes } =
     useCanAccess({ resource: "contact_notes", action: "list" });
 
@@ -88,6 +119,7 @@ export const Dashboard = () => {
   );
 
   const isPending =
+    isPendingIdentity ||
     isPendingCanSeeNotes ||
     isPendingContact ||
     (canSeeNotes && isPendingContactNotes) ||
@@ -95,6 +127,11 @@ export const Dashboard = () => {
 
   if (isPending) {
     return null;
+  }
+
+  // Non-admin members see a simplified welcome page that directs them to the chat assistant.
+  if (!identity?.administrator) {
+    return <MemberWelcomeDashboard />;
   }
 
   if (!totalContact) {

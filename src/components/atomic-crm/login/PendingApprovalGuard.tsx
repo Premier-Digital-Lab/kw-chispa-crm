@@ -24,7 +24,6 @@ export const PendingApprovalGuard = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isDisabled) {
-      console.log("[PendingApprovalGuard] user is disabled — redirecting to /pending-approval");
       localStorage.removeItem(CURRENT_SALE_CACHE_KEY);
       navigate("/pending-approval", { replace: true });
     }
