@@ -50,7 +50,7 @@ const useAgentSearch = () => {
         .from("contacts")
         .select(
           "id,first_name,last_name,agent_role,market_center_name,mc_city,mc_state," +
-          "languages_spoken,counties_served,countries_served,cell_number,email_jsonb,background"
+          "languages_spoken,cities_served,counties_served,countries_served,cell_number,email_jsonb,background"
         )
         .eq("member_status", "Active")
         .order("last_name", { ascending: true })
@@ -61,10 +61,12 @@ const useAgentSearch = () => {
         query = query.or(`first_name.ilike.%${n}%,last_name.ilike.%${n}%`);
       }
       if (fields.city.trim()) {
-        query = query.ilike("mc_city", `%${fields.city.trim()}%`);
+        const city = fields.city.trim();
+        query = query.or(`mc_city.ilike.%${city}%,cities_served.cs.{"${city}"}`);
       }
       if (fields.state.trim()) {
-        query = query.ilike("mc_state", `%${fields.state.trim()}%`);
+        const state = fields.state.trim();
+        query = query.or(`mc_state.ilike.%${state}%,states_served.cs.{"${state}"}`);
       }
       if (fields.county.trim()) {
         query = query.contains("counties_served", [fields.county.trim()]);
