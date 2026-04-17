@@ -26,6 +26,7 @@ import { SignupPage } from "../login/SignupPage";
 import { ConfirmationRequired } from "../login/ConfirmationRequired";
 import { PendingApprovalPage } from "../login/PendingApprovalPage";
 import { ImportPage } from "../misc/ImportPage";
+import { FindAgentPage } from "../find-agent/FindAgentPage";
 import {
   getAuthProvider as defaultAuthProviderBuilder,
   getDataProvider as defaultDataProviderBuilder,
@@ -267,6 +268,7 @@ const DesktopAdmin = (
         <Route path={ProfilePage.path} element={<ProfilePage />} />
         <Route path={SettingsPage.path} element={<SettingsPage />} />
         <Route path={ImportPage.path} element={<ImportPage />} />
+        <Route path={FindAgentPage.path} element={<FindAgentPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -334,6 +336,7 @@ const MobileAdmin = (
             path={SettingsPageMobile.path}
             element={<SettingsPageMobile />}
           />
+          <Route path={FindAgentPage.path} element={<FindAgentPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

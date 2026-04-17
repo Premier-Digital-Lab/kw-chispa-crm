@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Home, ListTodo, Plus, Settings, Users } from "lucide-react";
+import { Home, ListTodo, Plus, Search, Settings, Users } from "lucide-react";
 import { useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useMatch } from "react-router";
 import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
@@ -21,6 +21,8 @@ export const MobileNavigation = () => {
   let currentPath: string | boolean = "/";
   if (matchPath("/", location.pathname)) {
     currentPath = "/";
+  } else if (matchPath("/find-agent", location.pathname)) {
+    currentPath = "/find-agent";
   } else if (matchPath("/contacts/*", location.pathname)) {
     currentPath = "/contacts";
   } else if (matchPath("/companies/*", location.pathname)) {
@@ -59,6 +61,12 @@ export const MobileNavigation = () => {
             Icon={Home}
             label={translate("ra.page.dashboard")}
             isActive={currentPath === "/"}
+          />
+          <NavigationButton
+            href="/find-agent"
+            Icon={Search}
+            label={translate("crm.find_agent.nav_label")}
+            isActive={currentPath === "/find-agent"}
           />
           <NavigationButton
             href="/contacts"

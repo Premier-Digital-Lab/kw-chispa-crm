@@ -548,6 +548,31 @@ export const spanishCrmMessages: PartialCrmMessages = {
     navigation: {
       label: "Navegación del CRM",
     },
+    find_agent: {
+      nav_label: "Buscar Agente",
+      title: "Buscar Agente",
+      subtitle: "Busca miembros de KW CHISPA por nombre, ubicación, idioma o Market Center.",
+      chat_hint: "También puedes buscar usando el asistente de chat en la esquina inferior derecha / You can also search using the chat assistant in the bottom-right corner",
+      form: {
+        name: "Nombre",
+        city: "Ciudad",
+        state: "Estado",
+        county: "Condado",
+        language: "Idioma",
+        market_center: "Market Center",
+        agent_role: "Rol del Agente",
+        agent_role_placeholder: "Cualquier rol",
+        agent_role_all: "Cualquier rol",
+        countries_served: "Países Atendidos",
+        search: "Buscar",
+        at_least_one_required: "Completa al menos un campo para buscar.",
+      },
+      results: {
+        count: "%{smart_count} miembro encontrado |||| %{smart_count} miembros encontrados",
+        no_results: "No se encontraron miembros que coincidan con tu búsqueda.",
+        no_results_hint: "Intenta ampliar tu búsqueda o usar palabras clave diferentes.",
+      },
+    },
     profile: {
       inbound: {
         description:
