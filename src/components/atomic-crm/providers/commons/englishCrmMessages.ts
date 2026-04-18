@@ -412,6 +412,11 @@ export const englishCrmMessages = {
       },
       welcome_title: "Welcome to KW CHISPA Central",
       dont_have_account: "Don't have an account? Sign Up",
+      chatbot: {
+        placeholder: "Type a message...",
+        send: "Send",
+        start: "Start the conversation...",
+      },
     },
     common: {
       activity: "Activity",

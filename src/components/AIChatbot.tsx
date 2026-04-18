@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslate } from "ra-core";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, X } from "lucide-react";
@@ -7,6 +8,7 @@ import { getSupabaseClient } from "@/components/atomic-crm/providers/supabase/su
 type Message = { role: "user" | "assistant" | "system"; content: string };
 
 export default function AIChatbot() {
+  const translate = useTranslate();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -85,7 +87,7 @@ export default function AIChatbot() {
           <div ref={messagesRef} className="flex-1 overflow-auto p-3 space-y-3">
             {messages.length === 0 && (
               <div className="text-sm text-muted-foreground">
-                Start the conversation...
+                {translate("crm.auth.chatbot.start", { _: "Start the conversation..." })}
               </div>
             )}
 
@@ -116,11 +118,11 @@ export default function AIChatbot() {
                   }
                 }}
                 className="h-14 resize-none"
-                placeholder="Type a message..."
+                placeholder={translate("crm.auth.chatbot.placeholder", { _: "Type a message..." })}
               />
               <div className="flex flex-col">
                 <Button type="submit" disabled={loading} size="sm">
-                  Send
+                  {translate("crm.auth.chatbot.send", { _: "Send" })}
                 </Button>
               </div>
             </div>

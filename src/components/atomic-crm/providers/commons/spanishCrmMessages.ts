@@ -414,6 +414,11 @@ export const spanishCrmMessages: PartialCrmMessages = {
       },
       welcome_title: "Bienvenido a KW CHISPA Central",
       dont_have_account: "¿No tienes una cuenta? Regístrate",
+      chatbot: {
+        placeholder: "Escribe un mensaje...",
+        send: "Enviar",
+        start: "Inicia la conversación...",
+      },
     },
     common: {
       activity: "Actividad",
