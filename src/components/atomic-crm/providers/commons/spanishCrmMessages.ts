@@ -413,6 +413,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         initial_user_created: "Usuario inicial creado correctamente",
       },
       welcome_title: "Bienvenido a KW CHISPA Central",
+      dont_have_account: "¿No tienes una cuenta? Regístrate",
     },
     common: {
       activity: "Actividad",

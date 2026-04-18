@@ -411,6 +411,7 @@ export const englishCrmMessages = {
         initial_user_created: "Initial user successfully created",
       },
       welcome_title: "Welcome to KW CHISPA Central",
+      dont_have_account: "Don't have an account? Sign Up",
     },
     common: {
       activity: "Activity",
