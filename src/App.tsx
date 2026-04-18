@@ -1,5 +1,4 @@
 import { CRM } from "@/components/atomic-crm/root/CRM";
-import AIChatbot from "@/components/AIChatbot";
 
 /**
  * Application entry point
@@ -25,11 +24,6 @@ import AIChatbot from "@/components/AIChatbot";
  *    />
  * );
  */
-const App = () => (
-	<>
-		<CRM />
-		<AIChatbot />
-	</>
-);
+const App = () => <CRM />;
 
 export default App;

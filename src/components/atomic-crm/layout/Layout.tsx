@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
 import { PendingApprovalGuard } from "../login/PendingApprovalGuard";
 import Header from "./Header";
+import AIChatbot from "@/components/AIChatbot";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
@@ -20,6 +21,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           </Suspense>
         </ErrorBoundary>
       </main>
+      <AIChatbot />
       <Notification />
     </PendingApprovalGuard>
   );
