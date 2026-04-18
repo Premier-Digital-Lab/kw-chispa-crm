@@ -5,7 +5,7 @@ import { buildContact, StoryWrapper } from "@/test/StoryWrapper";
 import type { DataProvider } from "ra-core";
 
 const meta = {
-  title: "KW CHISPA CRM/Contacts/Contact Create",
+  title: "KW CHISPA Central/Contacts/Contact Create",
   parameters: {
     layout: "fullscreen",
   },

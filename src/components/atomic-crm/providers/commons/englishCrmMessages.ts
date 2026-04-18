@@ -410,7 +410,7 @@ export const englishCrmMessages = {
         creating: "Creating...",
         initial_user_created: "Initial user successfully created",
       },
-      welcome_title: "Welcome to KW CHISPA CRM",
+      welcome_title: "Welcome to KW CHISPA Central",
     },
     common: {
       activity: "Activity",
@@ -452,7 +452,7 @@ export const englishCrmMessages = {
       latest_notes: "My Latest Notes",
       latest_notes_added_ago: "added %{timeAgo}",
       stepper: {
-        install: "Install KW CHISPA CRM",
+        install: "Install KW CHISPA Central",
         progress: "%{step}/3 done",
         whats_next: "What's next?",
       },
@@ -574,7 +574,7 @@ export const englishCrmMessages = {
     profile: {
       inbound: {
         description:
-          "You can start sending emails to your server's inbound email address, e.g. by adding it to the %{field} field. KW CHISPA CRM will process the emails and add notes to the corresponding members.",
+          "You can start sending emails to your server's inbound email address, e.g. by adding it to the %{field} field. KW CHISPA Central will process the emails and add notes to the corresponding members.",
         title: "Inbound email",
       },
       mcp: {

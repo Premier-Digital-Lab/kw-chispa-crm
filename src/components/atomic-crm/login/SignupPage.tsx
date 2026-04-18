@@ -127,7 +127,7 @@ export const SignupPage = () => {
       <div className="max-w-lg mx-auto py-8">
         <h2 className="text-2xl font-bold mb-2">
           {translate("crm.auth.welcome_title", {
-            _: "Welcome to KW CHISPA CRM",
+            _: "Welcome to KW CHISPA Central",
           })}
         </h2>
         <p className="text-base mb-6">

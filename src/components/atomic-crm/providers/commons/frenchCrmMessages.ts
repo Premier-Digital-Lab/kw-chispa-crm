@@ -416,7 +416,7 @@ export const frenchCrmMessages = {
         creating: "Création...",
         initial_user_created: "Utilisateur initial créé avec succès",
       },
-      welcome_title: "Bienvenue sur KW CHISPA CRM",
+      welcome_title: "Bienvenue sur KW CHISPA Central",
     },
     common: {
       activity: "Activité",
@@ -459,7 +459,7 @@ export const frenchCrmMessages = {
       latest_notes: "Mes dernières notes",
       latest_notes_added_ago: "ajouté %{timeAgo}",
       stepper: {
-        install: "Installer KW CHISPA CRM",
+        install: "Installer KW CHISPA Central",
         progress: "%{step}/3 terminé",
         whats_next: "Et ensuite ?",
       },
@@ -556,7 +556,7 @@ export const frenchCrmMessages = {
     profile: {
       inbound: {
         description:
-          "Vous pouvez commencer à envoyer des e-mails vers l'adresse de réception de votre serveur, par exemple en l'ajoutant au champ %{field}. KW CHISPA CRM traitera les e-mails et ajoutera des notes aux membres correspondants.",
+          "Vous pouvez commencer à envoyer des e-mails vers l'adresse de réception de votre serveur, par exemple en l'ajoutant au champ %{field}. KW CHISPA Central traitera les e-mails et ajoutera des notes aux membres correspondants.",
         title: "E-mail entrant",
       },
       mcp: {

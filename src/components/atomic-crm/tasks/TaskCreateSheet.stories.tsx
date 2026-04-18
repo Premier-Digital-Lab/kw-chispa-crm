@@ -4,7 +4,7 @@ import { useState } from "react";
 import { TaskCreateSheet } from "./TaskCreateSheet";
 import { StoryWrapper, buildContact } from "@/test/StoryWrapper";
 const meta = {
-  title: "KW CHISPA CRM/Tasks/TaskCreateSheet",
+  title: "KW CHISPA Central/Tasks/TaskCreateSheet",
   parameters: {
     layout: "fullscreen",
   },

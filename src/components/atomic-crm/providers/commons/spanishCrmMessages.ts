@@ -412,7 +412,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         creating: "Creando...",
         initial_user_created: "Usuario inicial creado correctamente",
       },
-      welcome_title: "Bienvenido a KW CHISPA CRM",
+      welcome_title: "Bienvenido a KW CHISPA Central",
     },
     common: {
       activity: "Actividad",
@@ -454,7 +454,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
       latest_notes: "Mis últimas notas",
       latest_notes_added_ago: "agregado %{timeAgo}",
       stepper: {
-        install: "Instalar KW CHISPA CRM",
+        install: "Instalar KW CHISPA Central",
         progress: "%{step}/3 completado",
         whats_next: "¿Qué sigue?",
       },
@@ -576,7 +576,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
     profile: {
       inbound: {
         description:
-          "Puedes empezar a enviar correos a la dirección de entrada de tu servidor, por ejemplo, agregándola al campo %{field}. KW CHISPA CRM procesará los correos y agregará notas a los miembros correspondientes.",
+          "Puedes empezar a enviar correos a la dirección de entrada de tu servidor, por ejemplo, agregándola al campo %{field}. KW CHISPA Central procesará los correos y agregará notas a los miembros correspondientes.",
         title: "Correo entrante",
       },
       mcp: {

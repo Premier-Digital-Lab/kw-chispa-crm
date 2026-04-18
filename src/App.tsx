@@ -4,7 +4,7 @@ import AIChatbot from "@/components/AIChatbot";
 /**
  * Application entry point
  *
- * Customize KW CHISPA CRM by passing props to the CRM component:
+ * Customize KW CHISPA Central by passing props to the CRM component:
  *  - companySectors
  *  - darkTheme
  *  - dealCategories

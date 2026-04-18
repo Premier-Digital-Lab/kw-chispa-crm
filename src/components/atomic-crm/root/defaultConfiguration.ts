@@ -1,11 +1,11 @@
 import type { ConfigurationContextValue } from "./ConfigurationContext";
 
-export const defaultDarkModeLogo = "/logo-white.png";
+export const defaultDarkModeLogo = "/logo-white-transparent.png";
 export const defaultLightModeLogo = "/logo-black.png";
 
 export const defaultCurrency = "USD";
 
-export const defaultTitle = "KW CHISPA CRM";
+export const defaultTitle = "KW CHISPA Central";
 
 export const defaultCompanySectors = [
   { value: "communication-services", label: "Communication Services" },

@@ -6,7 +6,7 @@ import { ContactListMobile } from "./ContactList";
 import { StoryWrapper, buildContact } from "@/test/StoryWrapper";
 
 const meta = {
-  title: "KW CHISPA CRM/Contacts/Contact List",
+  title: "KW CHISPA Central/Contacts/Contact List",
   parameters: {
     layout: "fullscreen",
   },

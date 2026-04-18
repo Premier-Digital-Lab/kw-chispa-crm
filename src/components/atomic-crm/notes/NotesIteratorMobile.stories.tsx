@@ -15,7 +15,7 @@ const singleNote = {
 };
 
 const meta = {
-  title: "KW CHISPA CRM/Notes/NotesIteratorMobile",
+  title: "KW CHISPA Central/Notes/NotesIteratorMobile",
   parameters: {
     layout: "fullscreen",
   },

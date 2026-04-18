@@ -24,7 +24,7 @@ export const NoteInputsStory = ({
 );
 
 const meta = {
-  title: "KW CHISPA CRM/Notes/Note Inputs",
+  title: "KW CHISPA Central/Notes/Note Inputs",
   includeStories: ["Default", "WithSaveButton", "WithAttachmentDefault"],
   render: (args) => <NoteInputsStory {...args} />,
 } satisfies Meta<typeof NoteInputsStory>;

@@ -22,7 +22,7 @@ export const NoteInputsMobileStory = ({
 );
 
 const meta = {
-  title: "KW CHISPA CRM/Notes/Note Inputs Mobile",
+  title: "KW CHISPA Central/Notes/Note Inputs Mobile",
   includeStories: [
     "Default",
     "WithSaveButton",
