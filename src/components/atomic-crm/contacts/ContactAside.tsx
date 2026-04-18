@@ -1,4 +1,4 @@
-import { useRecordContext, useTranslate } from "ra-core";
+import { useGetIdentity, useRecordContext, useTranslate } from "ra-core";
 import { EditButton } from "@/components/admin/edit-button";
 import { DeleteButton } from "@/components/admin";
 import { ReferenceManyField } from "@/components/admin/reference-many-field";
@@ -17,6 +17,8 @@ import { ExportVCardButton } from "./ExportVCardButton";
 export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const record = useRecordContext<Contact>();
   const translate = useTranslate();
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
 
   if (!record) return null;
 
@@ -42,27 +44,31 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
         <ContactBackgroundInfo />
       </AsideSection>
 
-      <AsideSection
-        title={translate("resources.tags.name", { smart_count: 2 })}
-      >
-        <TagsListEdit />
-      </AsideSection>
-
-      <AsideSection
-        title={translate("resources.tasks.name", { smart_count: 2 })}
-      >
-        <ReferenceManyField
-          target="contact_id"
-          reference="tasks"
-          sort={{ field: "due_date", order: "ASC" }}
-          perPage={1000}
+      {isAdmin && (
+        <AsideSection
+          title={translate("resources.tags.name", { smart_count: 2 })}
         >
-          <TasksIterator />
-        </ReferenceManyField>
-        <AddTask />
-      </AsideSection>
+          <TagsListEdit />
+        </AsideSection>
+      )}
 
-      {link !== "edit" && (
+      {isAdmin && (
+        <AsideSection
+          title={translate("resources.tasks.name", { smart_count: 2 })}
+        >
+          <ReferenceManyField
+            target="contact_id"
+            reference="tasks"
+            sort={{ field: "due_date", order: "ASC" }}
+            perPage={1000}
+          >
+            <TasksIterator />
+          </ReferenceManyField>
+          <AddTask />
+        </AsideSection>
+      )}
+
+      {isAdmin && link !== "edit" && (
         <>
           <div className="mt-6 pt-6 border-t hidden sm:flex flex-col gap-2 items-start">
             <ExportVCardButton />

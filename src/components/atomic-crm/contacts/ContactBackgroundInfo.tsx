@@ -15,6 +15,7 @@ export const ContactBackgroundInfo = () => {
   const translate = useTranslate();
   const [locale = "en"] = useLocaleState();
   const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
   const isCurrentUser = record?.sales_id === identity?.id;
   const salesName = useGetSalesName(record?.sales_id, {
     enabled: !isCurrentUser,
@@ -54,14 +55,16 @@ export const ContactBackgroundInfo = () => {
         </span>
       </div>
 
-      <div className="inline-flex text-muted-foreground text-sm md:py-0.5">
-        {translate(
-          isCurrentUser
-            ? "resources.contacts.background.followed_by_you"
-            : "resources.contacts.background.followed_by",
-          { name: salesName },
-        )}
-      </div>
+      {isAdmin && (
+        <div className="inline-flex text-muted-foreground text-sm md:py-0.5">
+          {translate(
+            isCurrentUser
+              ? "resources.contacts.background.followed_by_you"
+              : "resources.contacts.background.followed_by",
+            { name: salesName },
+          )}
+        </div>
+      )}
     </div>
   );
 };
