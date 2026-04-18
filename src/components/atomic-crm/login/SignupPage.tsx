@@ -117,9 +117,9 @@ export const SignupPage = () => {
     <div className="min-h-screen p-8">
       <div className="flex items-center gap-4">
         <img
-          src={logo}
+          src="/logo-white.png"
           alt={title}
-          className="h-16 filter brightness-0 invert"
+          className="h-16"
         />
         <h1 className="text-xl font-semibold">Central</h1>
       </div>
