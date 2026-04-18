@@ -119,10 +119,9 @@ export const SignupPage = () => {
         <img
           src={logo}
           alt={title}
-          width={24}
-          className="filter brightness-0 invert"
+          className="h-16 filter brightness-0 invert"
         />
-        <h1 className="text-xl font-semibold">{title}</h1>
+        <h1 className="text-xl font-semibold">Central</h1>
       </div>
       <div className="max-w-lg mx-auto py-8">
         <h2 className="text-2xl font-bold mb-2">
