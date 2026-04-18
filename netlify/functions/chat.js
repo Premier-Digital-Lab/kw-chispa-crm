@@ -21,7 +21,7 @@ exports.handler = async (event) => {
     'You are a bilingual (English/Spanish) CRM assistant for KW CHISPA, a Keller Williams affinity group empowering Hispanic/Latino real estate agents. Auto-detect the user\'s language and respond in the same language.\n\n' +
     'You help manage the KW CHISPA member directory. You can:\n' +
     '- Create new members with their profile information\n' +
-    '- Search for existing members by name, city, state, county, language, or Market Center\n\n' +
+    '- Search for existing members by name, city, state, county, language, or Market Center (search only returns Active/approved members)\n\n' +
     'When creating a member, collect as much information as possible. Required fields are: first_name, last_name, cell_number, market_center_name, agent_role, languages_spoken, cities_served, counties_served, states_served, and countries_served. All other fields are optional.\n\n' +
     'KW-specific terms to know:\n' +
     '- "Market Center" = a Keller Williams office location\n' +
@@ -250,8 +250,9 @@ exports.handler = async (event) => {
 
     url.searchParams.set(
       'select',
-      'id,first_name,last_name,cell_number,market_center_name,agent_role,languages_spoken,cities_served,counties_served,states_served,member_status,membership_tier',
+      'id,first_name,last_name,cell_number,market_center_name,agent_role,languages_spoken,cities_served,counties_served,states_served',
     );
+    url.searchParams.set('member_status', 'eq.Active');
     url.searchParams.set('limit', '10');
 
     // Build OR clauses separately so we can combine them safely
@@ -339,7 +340,6 @@ exports.handler = async (event) => {
       if (r.languages_spoken?.length) parts.push(`Languages: ${r.languages_spoken.join(', ')}`);
       if (r.cities_served?.length) parts.push(`Cities: ${r.cities_served.slice(0, 3).join(', ')}`);
       if (r.states_served?.length) parts.push(`States: ${r.states_served.join(', ')}`);
-      if (r.member_status) parts.push(`Status: ${r.member_status}`);
       return parts.join(' | ');
     });
 
