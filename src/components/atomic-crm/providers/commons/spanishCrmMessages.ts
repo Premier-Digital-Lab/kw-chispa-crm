@@ -102,7 +102,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         market_center_tl_email: "Correo del Team Leader",
         agent_role: "Rol del agente",
         mc_street_address: "Dirección",
-        mc_suite_unit: "Suite / Unidad",
+        mc_suite_unit: "Suite / Unidad / Piso",
         mc_city: "Ciudad",
         mc_state: "Estado",
         mc_zip_code: "Código postal",

@@ -103,7 +103,7 @@ export const frenchCrmMessages = {
         market_center_tl_email: "E-mail du Team Leader",
         agent_role: "Rôle de l'agent",
         mc_street_address: "Adresse",
-        mc_suite_unit: "Bureau / Unité",
+        mc_suite_unit: "Bureau / Unité / Étage",
         mc_city: "Ville",
         mc_state: "État",
         mc_zip_code: "Code postal",

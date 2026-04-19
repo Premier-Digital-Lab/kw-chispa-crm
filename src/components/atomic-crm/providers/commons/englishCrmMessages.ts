@@ -100,7 +100,7 @@ export const englishCrmMessages = {
         market_center_tl_email: "Team Leader Email",
         agent_role: "Agent Role",
         mc_street_address: "Street Address",
-        mc_suite_unit: "Suite / Unit",
+        mc_suite_unit: "Suite / Unit / Floor",
         mc_city: "City",
         mc_state: "State",
         mc_zip_code: "Zip Code",

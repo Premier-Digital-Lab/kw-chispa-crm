@@ -425,7 +425,7 @@ const KwInfoTabInputs = () => {
         <Separator className="mb-4" />
         <div className="flex flex-col gap-4">
           <TextInput source="mc_street_address" validate={required()} helperText={false} />
-          <TextInput source="mc_suite_unit" helperText={false} />
+          <TextInput source="mc_suite_unit" validate={required()} helperText={false} />
           <div className="grid grid-cols-2 gap-4">
             <TextInput source="mc_city" validate={required()} helperText={false} />
             <TextInput source="mc_state" validate={required()} helperText={false} />
