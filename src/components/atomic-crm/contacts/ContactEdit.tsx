@@ -17,7 +17,17 @@ export const ContactEdit = ({
 }) => (
   <EditBase
     redirect="show"
-    transform={cleanupContactForEdit}
+    transform={(data) => {
+      try {
+        console.log("Transform input:", JSON.stringify(data, null, 2));
+        const result = cleanupContactForEdit(data);
+        console.log("Transform output:", JSON.stringify(result, null, 2));
+        return result;
+      } catch (e) {
+        console.error("Transform error:", e);
+        throw e;
+      }
+    }}
     mutationMode={mutationMode}
   >
     <ContactEditContent />
