@@ -68,8 +68,7 @@ exports.handler = async (event) => {
           market_center_tl_phone: { type: 'string', description: 'Team Leader phone number' },
           market_center_tl_email: { type: 'string', description: 'Team Leader email address' },
           // Market Center Address
-          mc_street_number: { type: 'string', description: 'Market Center street number' },
-          mc_street_name: { type: 'string', description: 'Market Center street name' },
+          mc_street_address: { type: 'string', description: 'Market Center street address' },
           mc_suite_unit: { type: 'string', description: 'Market Center suite or unit number' },
           mc_city: { type: 'string', description: 'Market Center city' },
           mc_state: { type: 'string', description: 'Market Center state' },
@@ -181,7 +180,7 @@ exports.handler = async (event) => {
       'linkedin_url', 'facebook_url', 'instagram_url', 'tiktok_url',
       'market_center_name', 'agent_role',
       'market_center_team_leader', 'market_center_tl_phone', 'market_center_tl_email',
-      'mc_street_number', 'mc_street_name', 'mc_suite_unit',
+      'mc_street_address', 'mc_suite_unit',
       'mc_city', 'mc_state', 'mc_zip_code', 'mc_country',
       'membership_tier', 'join_date', 'member_status',
     ];

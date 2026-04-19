@@ -59,8 +59,7 @@ const FIELD_TO_TAB: Record<string, string> = {
   market_center_team_leader: "kw_info",
   market_center_tl_phone: "kw_info",
   market_center_tl_email: "kw_info",
-  mc_street_number: "kw_info",
-  mc_street_name: "kw_info",
+  mc_street_address: "kw_info",
   mc_suite_unit: "kw_info",
   mc_city: "kw_info",
   mc_state: "kw_info",
@@ -425,18 +424,15 @@ const KwInfoTabInputs = () => {
         </h6>
         <Separator className="mb-4" />
         <div className="flex flex-col gap-4">
+          <TextInput source="mc_street_address" validate={required()} helperText={false} />
+          <TextInput source="mc_suite_unit" helperText={false} />
           <div className="grid grid-cols-2 gap-4">
-            <TextInput source="mc_street_number" helperText={false} />
-            <TextInput source="mc_suite_unit" helperText={false} />
-          </div>
-          <TextInput source="mc_street_name" helperText={false} />
-          <div className="grid grid-cols-2 gap-4">
-            <TextInput source="mc_city" helperText={false} />
-            <TextInput source="mc_state" helperText={false} />
+            <TextInput source="mc_city" validate={required()} helperText={false} />
+            <TextInput source="mc_state" validate={required()} helperText={false} />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <TextInput source="mc_zip_code" helperText={false} />
-            <TextInput source="mc_country" helperText={false} />
+            <TextInput source="mc_zip_code" validate={required()} helperText={false} />
+            <TextInput source="mc_country" validate={required()} helperText={false} />
           </div>
         </div>
       </div>

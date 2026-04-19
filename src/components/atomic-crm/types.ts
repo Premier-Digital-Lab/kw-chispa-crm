@@ -34,8 +34,7 @@ export type SignUpData = {
   market_center_team_leader?: string;
   market_center_tl_phone?: string;
   market_center_tl_email?: string;
-  mc_street_number?: string;
-  mc_street_name?: string;
+  mc_street_address?: string;
   mc_suite_unit?: string;
   mc_city?: string;
   mc_state?: string;
@@ -135,8 +134,7 @@ export type Contact = {
   market_center_tl_phone?: string | null;
   market_center_tl_email?: string | null;
   agent_role?: string | null;
-  mc_street_number?: string | null;
-  mc_street_name?: string | null;
+  mc_street_address?: string | null;
   mc_suite_unit?: string | null;
   mc_city?: string | null;
   mc_state?: string | null;
