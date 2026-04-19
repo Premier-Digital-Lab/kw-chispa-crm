@@ -300,7 +300,7 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
   {
     resource: "sales",
     beforeSave: async (data: Sale, _, __) => {
-      if (data.avatar) {
+      if (data.avatar?.rawFile instanceof File) {
         await uploadToBucket(data.avatar);
       }
       return data;
@@ -309,7 +309,7 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
   {
     resource: "contacts",
     beforeSave: async (data: any, _, __) => {
-      if (data.avatar) {
+      if (data.avatar?.rawFile instanceof File) {
         await uploadToBucket(data.avatar);
       }
       return data;
