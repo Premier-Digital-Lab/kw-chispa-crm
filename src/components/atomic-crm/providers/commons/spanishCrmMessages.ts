@@ -104,7 +104,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         mc_street_address: "Dirección",
         mc_suite_unit: "Suite / Unidad / Piso",
         mc_city: "Ciudad",
-        mc_state: "Estado",
+        mc_state: "Estado / Provincia / Región",
         mc_zip_code: "Código postal",
         mc_country: "País",
         languages_spoken: "Idiomas que habla",

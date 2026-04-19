@@ -102,7 +102,7 @@ export const englishCrmMessages = {
         mc_street_address: "Street Address",
         mc_suite_unit: "Suite / Unit / Floor",
         mc_city: "City",
-        mc_state: "State",
+        mc_state: "State / Province / Region",
         mc_zip_code: "Zip Code",
         mc_country: "Country",
         languages_spoken: "Languages Spoken",

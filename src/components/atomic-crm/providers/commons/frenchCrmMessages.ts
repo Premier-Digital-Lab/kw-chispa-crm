@@ -105,7 +105,7 @@ export const frenchCrmMessages = {
         mc_street_address: "Adresse",
         mc_suite_unit: "Bureau / Unité / Étage",
         mc_city: "Ville",
-        mc_state: "État",
+        mc_state: "État / Province / Région",
         mc_zip_code: "Code postal",
         mc_country: "Pays",
         languages_spoken: "Langues parlées",
