@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EditBase, Form, useEditContext } from "ra-core";
 
@@ -9,14 +10,30 @@ import {
   defaultEmailJsonb,
 } from "./contactModel";
 
+class ErrorBoundary extends Component<{children: React.ReactNode}, {error: Error | null}> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidCatch(error: Error, info: any) {
+    console.error("CAUGHT ERROR:", error);
+    console.error("COMPONENT STACK:", info.componentStack);
+  }
+  render() {
+    if (this.state.error) {
+      return <pre style={{color: "red", padding: 20, whiteSpace: "pre-wrap"}}>
+        ERROR: {this.state.error.message}{"\n\n"}
+        STACK: {this.state.error.stack}
+      </pre>;
+    }
+    return this.props.children;
+  }
+}
+
 export const ContactEdit = () => (
-  <EditBase
-    redirect="show"
-    mutationMode="pessimistic"
-    transform={cleanupContactForEdit}
-  >
-    <ContactEditContent />
-  </EditBase>
+  <ErrorBoundary>
+    <EditBase redirect="show" mutationMode="pessimistic" transform={cleanupContactForEdit}>
+      <ContactEditContent />
+    </EditBase>
+  </ErrorBoundary>
 );
 
 const normalizeContactArrayFields = (record: Contact) => ({
