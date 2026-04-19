@@ -32,7 +32,6 @@ import { InputHelperText } from "@/components/admin/input-helper-text";
 
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
 import { isValidUrl } from "../misc/isValidUrl";
-import type { Sale } from "../types";
 import ImageEditorField from "../misc/ImageEditorField";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
 import {
@@ -520,13 +519,10 @@ const MembershipTabInputs = () => {
       >
         <SelectInput
           helperText={false}
-          optionText={saleOptionRenderer}
+          optionText={(choice: any) => choice ? `${choice.first_name} ${choice.last_name}` : ""}
           validate={required()}
         />
       </ReferenceInput>
     </div>
   );
 };
-
-const saleOptionRenderer = (choice: Sale) =>
-  choice ? `${choice.first_name} ${choice.last_name}` : "";
