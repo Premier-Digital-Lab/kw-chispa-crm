@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { EditBase, Form, useEditContext, type MutationMode } from "ra-core";
+import { EditBase, Form, useEditContext } from "ra-core";
 
 import type { Contact } from "../types";
 import { ContactAside } from "./ContactAside";
@@ -10,26 +10,11 @@ import {
   defaultEmailJsonb,
 } from "./contactModel";
 
-export const ContactEdit = ({
-  mutationMode,
-}: {
-  mutationMode?: MutationMode;
-}) => (
+export const ContactEdit = () => (
   <EditBase
     redirect="show"
     mutationMode="pessimistic"
-    transform={(data) => {
-      try {
-        console.log("Transform input:", JSON.stringify(data, null, 2));
-        const result = cleanupContactForEdit(data);
-        console.log("Transform output:", JSON.stringify(result, null, 2));
-        return result;
-      } catch (e) {
-        console.error("Transform error:", e);
-        throw e;
-      }
-    }}
-    mutationMode={mutationMode}
+    transform={cleanupContactForEdit}
   >
     <ContactEditContent />
   </EditBase>
