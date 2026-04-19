@@ -17,6 +17,7 @@ export const ContactEdit = ({
 }) => (
   <EditBase
     redirect="show"
+    mutationMode="pessimistic"
     transform={(data) => {
       try {
         console.log("Transform input:", JSON.stringify(data, null, 2));
