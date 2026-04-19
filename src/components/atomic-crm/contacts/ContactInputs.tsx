@@ -529,4 +529,4 @@ const MembershipTabInputs = () => {
 };
 
 const saleOptionRenderer = (choice: Sale) =>
-  `${choice.first_name} ${choice.last_name}`;
+  choice ? `${choice.first_name} ${choice.last_name}` : "";
