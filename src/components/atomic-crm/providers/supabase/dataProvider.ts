@@ -312,6 +312,24 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
       if (data.avatar?.rawFile instanceof File) {
         await uploadToBucket(data.avatar);
       }
+      if (data.mc_city || data.mc_state) {
+        try {
+          const parts = [data.mc_city, data.mc_state].filter(Boolean);
+          const q = encodeURIComponent(parts.join(", "));
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&email=your.premier.digital.lab@gmail.com`
+          );
+          if (res.ok) {
+            const json = await res.json();
+            if (json.length > 0) {
+              data.latitude = parseFloat(json[0].lat);
+              data.longitude = parseFloat(json[0].lon);
+            }
+          }
+        } catch {
+          // geocoding failure does not block save
+        }
+      }
       return data;
     },
     beforeGetList: async (params) => {

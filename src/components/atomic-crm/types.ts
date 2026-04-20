@@ -151,6 +151,8 @@ export type Contact = {
   facebook_url?: string | null;
   instagram_url?: string | null;
   tiktok_url?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {

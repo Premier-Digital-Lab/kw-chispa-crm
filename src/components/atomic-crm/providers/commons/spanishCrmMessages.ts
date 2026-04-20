@@ -578,6 +578,9 @@ export const spanishCrmMessages: PartialCrmMessages = {
         no_results_hint: "Intenta ampliar tu búsqueda o usar palabras clave diferentes.",
       },
       return_to_results: "← Volver a los resultados de búsqueda",
+      view_cards: "Tarjetas",
+      view_map: "Mapa",
+      map_no_locations: "No hay ubicaciones en el mapa. Intenta la vista de tarjetas.",
     },
     profile: {
       inbound: {

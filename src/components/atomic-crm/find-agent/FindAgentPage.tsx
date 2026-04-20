@@ -12,6 +12,9 @@ import { Separator } from "@/components/ui/separator";
 
 import { getSupabaseClient } from "../providers/supabase/supabase";
 import type { Contact } from "../types";
+import { AgentMap } from "./AgentMap";
+
+type ViewMode = "cards" | "map";
 
 type SearchFields = {
   name: string;
@@ -40,13 +43,13 @@ const isAnyFieldFilled = (fields: SearchFields) =>
 
 const STORAGE_KEY = "find-agent-search-state";
 
-const saveSearchState = (fields: SearchFields, results: Contact[]) => {
+const saveSearchState = (fields: SearchFields, results: Contact[], viewMode: ViewMode) => {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ fields, results }));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ fields, results, viewMode }));
   } catch {}
 };
 
-const loadSearchState = (): { fields: SearchFields; results: Contact[] } | null => {
+const loadSearchState = (): { fields: SearchFields; results: Contact[]; viewMode?: ViewMode } | null => {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -67,7 +70,8 @@ const useAgentSearch = () => {
         .from("contacts")
         .select(
           "id,first_name,last_name,agent_role,market_center_name,mc_city,mc_state," +
-          "languages_spoken,cities_served,counties_served,countries_served,cell_number,email_jsonb,background"
+          "languages_spoken,cities_served,counties_served,countries_served,cell_number,email_jsonb,background," +
+          "latitude,longitude"
         )
         .eq("member_status", "Active")
         .order("last_name", { ascending: true })
@@ -120,6 +124,7 @@ export const FindAgentPage = () => {
   const translate = useTranslate();
   const [fields, setFields] = useState<SearchFields>(emptyFields);
   const [hasSearched, setHasSearched] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("cards");
   const { results, setResults, isSearching, search } = useAgentSearch();
 
   // Restore search state when navigating back
@@ -129,6 +134,7 @@ export const FindAgentPage = () => {
       setFields(saved.fields);
       setResults(saved.results);
       setHasSearched(true);
+      if (saved.viewMode) setViewMode(saved.viewMode);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -136,9 +142,9 @@ export const FindAgentPage = () => {
   // Persist search state so it survives navigation away and back
   useEffect(() => {
     if (results !== null) {
-      saveSearchState(fields, results);
+      saveSearchState(fields, results, viewMode);
     }
-  }, [fields, results]);
+  }, [fields, results, viewMode]);
 
   const canSearch = isAnyFieldFilled(fields);
 
@@ -271,15 +277,45 @@ export const FindAgentPage = () => {
         <>
           {results && results.length > 0 ? (
             <div className="flex flex-col gap-3">
-              <p className="text-sm text-muted-foreground">
-                {translate("crm.find_agent.results.count", {
-                  smart_count: results.length,
-                  _: `${results.length} member(s) found`,
-                })}
-              </p>
-              {results.map((contact) => (
-                <AgentCard key={contact.id} contact={contact} />
-              ))}
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  {translate("crm.find_agent.results.count", {
+                    smart_count: results.length,
+                    _: `${results.length} member(s) found`,
+                  })}
+                </p>
+                <div className="flex rounded-md border overflow-hidden text-sm">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("cards")}
+                    className={`px-3 py-1.5 transition-colors ${
+                      viewMode === "cards"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-background text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {translate("crm.find_agent.view_cards")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("map")}
+                    className={`px-3 py-1.5 transition-colors border-l ${
+                      viewMode === "map"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-background text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {translate("crm.find_agent.view_map")}
+                  </button>
+                </div>
+              </div>
+              {viewMode === "cards" ? (
+                results.map((contact) => (
+                  <AgentCard key={contact.id} contact={contact} />
+                ))
+              ) : (
+                <AgentMap contacts={results} />
+              )}
             </div>
           ) : (
             <div className="text-center py-12 text-muted-foreground">

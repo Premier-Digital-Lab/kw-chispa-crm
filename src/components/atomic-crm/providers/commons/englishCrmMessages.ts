@@ -576,6 +576,9 @@ export const englishCrmMessages = {
         no_results_hint: "Try broadening your search or using different keywords.",
       },
       return_to_results: "← Return to Search Results",
+      view_cards: "Cards",
+      view_map: "Map",
+      map_no_locations: "No map locations available. Try the card view.",
     },
     profile: {
       inbound: {
