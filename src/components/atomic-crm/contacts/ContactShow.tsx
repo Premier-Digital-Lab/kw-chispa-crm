@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import {
   CanAccess,
   InfiniteListBase,
@@ -247,6 +248,176 @@ const ContactShowContentMobile = () => {
   );
 };
 
+const ReadOnlyRow = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) => {
+  if (!value) return null;
+  return (
+    <div className="flex gap-2 py-1 text-sm">
+      <span className="text-muted-foreground min-w-36 shrink-0">{label}</span>
+      <span>{value}</span>
+    </div>
+  );
+};
+
+const ReadOnlySection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) => (
+  <div>
+    <h3 className="text-sm font-semibold text-muted-foreground mb-2">{title}</h3>
+    <Separator className="mb-3" />
+    <div>{children}</div>
+  </div>
+);
+
+const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
+  const translate = useTranslate();
+
+  const mcAddressParts = [
+    record.mc_street_address,
+    record.mc_suite_unit,
+    record.mc_city,
+    record.mc_state,
+    record.mc_zip_code,
+    record.mc_country,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const tlName = [record.market_center_team_leader]
+    .filter(Boolean)
+    .join(" ");
+
+  const formatArray = (arr: string[] | null | undefined) =>
+    arr && arr.length > 0 ? arr.join(", ") : null;
+
+  const hasKwInfo =
+    record.market_center_name ||
+    record.agent_role ||
+    tlName ||
+    record.market_center_tl_email ||
+    mcAddressParts;
+
+  const hasServiceAreas =
+    formatArray(record.languages_spoken) ||
+    formatArray(record.cities_served) ||
+    formatArray(record.counties_served) ||
+    formatArray(record.countries_served);
+
+  return (
+    <div className="mt-4 space-y-6">
+      {(record.cell_number || record.background) && (
+        <div className="space-y-0">
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.cell_number")}
+            value={record.cell_number}
+          />
+          {record.background && (
+            <div className="py-1 text-sm">
+              <span className="text-muted-foreground block mb-1">
+                {translate("resources.contacts.field_categories.background_info")}
+              </span>
+              <span>{record.background}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {(record.email_jsonb?.length > 0 || record.linkedin_url) && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.personal_info")}
+        >
+          {record.email_jsonb?.map((entry, i) => (
+            <div key={i} className="flex gap-2 py-1 text-sm">
+              <span className="text-muted-foreground min-w-36 shrink-0">
+                {translate("resources.contacts.fields.email")}
+                {record.email_jsonb.length > 1 ? ` ${i + 1}` : ""}
+              </span>
+              <a
+                href={`mailto:${entry.email}`}
+                className="underline hover:no-underline"
+              >
+                {entry.email}
+              </a>
+            </div>
+          ))}
+          {record.linkedin_url && (
+            <div className="flex gap-2 py-1 text-sm">
+              <span className="text-muted-foreground min-w-36 shrink-0">LinkedIn</span>
+              <a
+                href={record.linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                LinkedIn
+              </a>
+            </div>
+          )}
+        </ReadOnlySection>
+      )}
+
+      {hasKwInfo && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.kw_info")}
+        >
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.market_center_name")}
+            value={record.market_center_name}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.agent_role")}
+            value={record.agent_role}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.market_center_team_leader")}
+            value={tlName || null}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.market_center_tl_email")}
+            value={record.market_center_tl_email}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.field_categories.mc_address")}
+            value={mcAddressParts || null}
+          />
+        </ReadOnlySection>
+      )}
+
+      {hasServiceAreas && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.service_areas")}
+        >
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.languages_spoken")}
+            value={formatArray(record.languages_spoken)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.cities_served")}
+            value={formatArray(record.cities_served)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.counties_served")}
+            value={formatArray(record.counties_served)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.countries_served")}
+            value={formatArray(record.countries_served)}
+          />
+        </ReadOnlySection>
+      )}
+    </div>
+  );
+};
+
 const ContactShowContent = () => {
   const translate = useTranslate();
   const { record, isPending } = useShowContext<Contact>();
@@ -318,22 +489,7 @@ const ContactShowContent = () => {
                 </InfiniteListBase>
               </CanAccess>
             ) : (
-              <div className="mt-4 space-y-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2">
-                    {translate("resources.contacts.field_categories.personal_info")}
-                  </h3>
-                  <Separator className="mb-3" />
-                  <ContactPersonalInfo />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-2">
-                    {translate("resources.contacts.field_categories.background_info")}
-                  </h3>
-                  <Separator className="mb-3" />
-                  <ContactBackgroundInfo />
-                </div>
-              </div>
+              <ContactReadOnlyProfile record={record} />
             )}
           </CardContent>
         </Card>
