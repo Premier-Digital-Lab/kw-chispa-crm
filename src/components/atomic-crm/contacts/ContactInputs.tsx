@@ -370,21 +370,25 @@ const SocialMediaTabInputs = () => (
       source="linkedin_url"
       helperText={false}
       validate={isLinkedinUrl}
+      placeholder="https://www.linkedin.com/in/yourprofile"
     />
     <TextInput
       source="facebook_url"
       helperText={false}
       validate={isValidUrl}
+      placeholder="https://www.facebook.com/yourpage"
     />
     <TextInput
       source="instagram_url"
       helperText={false}
       validate={isValidUrl}
+      placeholder="https://www.instagram.com/yourhandle"
     />
     <TextInput
       source="tiktok_url"
       helperText={false}
       validate={isValidUrl}
+      placeholder="https://www.tiktok.com/@yourhandle"
     />
   </div>
 );

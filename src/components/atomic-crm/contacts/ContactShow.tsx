@@ -292,18 +292,23 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
     .filter(Boolean)
     .join(", ");
 
-  const tlName = [record.market_center_team_leader]
-    .filter(Boolean)
-    .join(" ");
-
   const formatArray = (arr: string[] | null | undefined) =>
     arr && arr.length > 0 ? arr.join(", ") : null;
+
+  const hasPersonalInfo =
+    record.cell_number ||
+    record.email_jsonb?.length > 0 ||
+    record.linkedin_url ||
+    record.facebook_url ||
+    record.instagram_url ||
+    record.tiktok_url;
 
   const hasKwInfo =
     record.market_center_name ||
     record.agent_role ||
-    tlName ||
+    record.market_center_team_leader ||
     record.market_center_tl_email ||
+    record.market_center_tl_phone ||
     mcAddressParts;
 
   const hasServiceAreas =
@@ -314,27 +319,14 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
 
   return (
     <div className="mt-4 space-y-6">
-      {(record.cell_number || record.background) && (
-        <div className="space-y-0">
+      {hasPersonalInfo && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.personal_info")}
+        >
           <ReadOnlyRow
             label={translate("resources.contacts.fields.cell_number")}
             value={record.cell_number}
           />
-          {record.background && (
-            <div className="py-1 text-sm">
-              <span className="text-muted-foreground block mb-1">
-                {translate("resources.contacts.field_categories.background_info")}
-              </span>
-              <span>{record.background}</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {(record.email_jsonb?.length > 0 || record.linkedin_url) && (
-        <ReadOnlySection
-          title={translate("resources.contacts.field_categories.personal_info")}
-        >
           {record.email_jsonb?.map((entry, i) => (
             <div key={i} className="flex gap-2 py-1 text-sm">
               <span className="text-muted-foreground min-w-36 shrink-0">
@@ -358,7 +350,46 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
                 rel="noopener noreferrer"
                 className="underline hover:no-underline"
               >
-                LinkedIn
+                {record.linkedin_url}
+              </a>
+            </div>
+          )}
+          {record.facebook_url && (
+            <div className="flex gap-2 py-1 text-sm">
+              <span className="text-muted-foreground min-w-36 shrink-0">Facebook</span>
+              <a
+                href={record.facebook_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                {record.facebook_url}
+              </a>
+            </div>
+          )}
+          {record.instagram_url && (
+            <div className="flex gap-2 py-1 text-sm">
+              <span className="text-muted-foreground min-w-36 shrink-0">Instagram</span>
+              <a
+                href={record.instagram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                {record.instagram_url}
+              </a>
+            </div>
+          )}
+          {record.tiktok_url && (
+            <div className="flex gap-2 py-1 text-sm">
+              <span className="text-muted-foreground min-w-36 shrink-0">TikTok</span>
+              <a
+                href={record.tiktok_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:no-underline"
+              >
+                {record.tiktok_url}
               </a>
             </div>
           )}
@@ -379,11 +410,15 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
           />
           <ReadOnlyRow
             label={translate("resources.contacts.fields.market_center_team_leader")}
-            value={tlName || null}
+            value={record.market_center_team_leader}
           />
           <ReadOnlyRow
             label={translate("resources.contacts.fields.market_center_tl_email")}
             value={record.market_center_tl_email}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.market_center_tl_phone")}
+            value={record.market_center_tl_phone}
           />
           <ReadOnlyRow
             label={translate("resources.contacts.field_categories.mc_address")}
@@ -414,6 +449,14 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
           />
         </ReadOnlySection>
       )}
+
+      {record.background && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.background_info")}
+        >
+          <p className="text-sm">{record.background}</p>
+        </ReadOnlySection>
+      )}
     </div>
   );
 };
@@ -427,6 +470,8 @@ const ContactShowContent = () => {
   const isAdmin = identity?.administrator === true;
   const isOwnProfile = record.sales_id === identity?.id;
   const canEdit = isAdmin || isOwnProfile;
+
+  const companyLink = canEdit ? "show" : false;
 
   const identityHeader = (
     <div className="flex">
@@ -445,7 +490,7 @@ const ContactShowContent = () => {
             <ReferenceField
               source="company_id"
               reference="companies"
-              link="show"
+              link={companyLink}
             >
               &nbsp;
               <TextField source="name" />
@@ -457,7 +502,7 @@ const ContactShowContent = () => {
         <ReferenceField
           source="company_id"
           reference="companies"
-          link="show"
+          link={companyLink}
           className="no-underline"
         >
           <CompanyAvatar />

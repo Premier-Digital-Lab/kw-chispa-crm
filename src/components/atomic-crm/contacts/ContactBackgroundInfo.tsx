@@ -28,17 +28,21 @@ export const ContactBackgroundInfo = () => {
     : "";
   const formattedFirstSeen = formatLocalizedDate(record.first_seen, locale);
 
+  const canSeeBio = isAdmin || isCurrentUser;
+
   return (
     <div>
-      <WithRecord<Contact>
-        render={(record) =>
-          record?.background ? (
-            <div className="pb-2 text-sm">
-              <TextField source="background" record={record} />
-            </div>
-          ) : null
-        }
-      />
+      {canSeeBio && (
+        <WithRecord<Contact>
+          render={(record) =>
+            record?.background ? (
+              <div className="pb-2 text-sm">
+                <TextField source="background" record={record} />
+              </div>
+            ) : null
+          }
+        />
+      )}
       <div className="text-muted-foreground md:py-0.5">
         <span className="text-sm">
           {translate("resources.contacts.background.added_on", {
