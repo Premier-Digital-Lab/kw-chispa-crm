@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslate } from "ra-core";
+import { Link } from "react-router";
 import { Search, MessageCircle, MapPin, Building2, Phone, Mail, UserCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,23 @@ const emptyFields: SearchFields = {
 
 const isAnyFieldFilled = (fields: SearchFields) =>
   Object.values(fields).some((v) => v.trim() !== "");
+
+const STORAGE_KEY = "find-agent-search-state";
+
+const saveSearchState = (fields: SearchFields, results: Contact[]) => {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ fields, results }));
+  } catch {}
+};
+
+const loadSearchState = (): { fields: SearchFields; results: Contact[] } | null => {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
 
 const useAgentSearch = () => {
   const [results, setResults] = useState<Contact[] | null>(null);
@@ -95,14 +113,32 @@ const useAgentSearch = () => {
     }
   }, []);
 
-  return { results, isSearching, search };
+  return { results, setResults, isSearching, search };
 };
 
 export const FindAgentPage = () => {
   const translate = useTranslate();
   const [fields, setFields] = useState<SearchFields>(emptyFields);
   const [hasSearched, setHasSearched] = useState(false);
-  const { results, isSearching, search } = useAgentSearch();
+  const { results, setResults, isSearching, search } = useAgentSearch();
+
+  // Restore search state when navigating back
+  useEffect(() => {
+    const saved = loadSearchState();
+    if (saved) {
+      setFields(saved.fields);
+      setResults(saved.results);
+      setHasSearched(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist search state so it survives navigation away and back
+  useEffect(() => {
+    if (results !== null) {
+      saveSearchState(fields, results);
+    }
+  }, [fields, results]);
 
   const canSearch = isAnyFieldFilled(fields);
 
@@ -301,14 +337,12 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
         <div className="flex flex-col sm:flex-row sm:items-start gap-3">
           {/* Name + role */}
           <div className="flex-1 min-w-0">
-            <a
-              href={`/contacts/${contact.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={`/contacts/${contact.id}/show`}
               className="text-base font-semibold hover:underline"
             >
               {contact.first_name} {contact.last_name}
-            </a>
+            </Link>
             {contact.agent_role && (
               <p className="text-sm text-muted-foreground">{contact.agent_role}</p>
             )}
@@ -367,14 +401,12 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
                 {firstEmail}
               </a>
             )}
-            <a
-              href={`/contacts/${contact.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={`/contacts/${contact.id}/show`}
               className="text-xs text-primary hover:underline mt-1"
             >
               View Profile →
-            </a>
+            </Link>
           </div>
         </div>
       </CardContent>
