@@ -3,9 +3,7 @@ import {
   useLocaleState,
   useRecordContext,
   useTranslate,
-  WithRecord,
 } from "ra-core";
-import { TextField } from "@/components/admin/text-field";
 import { formatLocalizedDate } from "../misc/RelativeDate";
 import { useGetSalesName } from "../sales/useGetSalesName";
 import type { Contact } from "../types";
@@ -28,21 +26,8 @@ export const ContactBackgroundInfo = () => {
     : "";
   const formattedFirstSeen = formatLocalizedDate(record.first_seen, locale);
 
-  const canSeeBio = isAdmin || isCurrentUser;
-
   return (
     <div>
-      {canSeeBio && (
-        <WithRecord<Contact>
-          render={(record) =>
-            record?.background ? (
-              <div className="pb-2 text-sm">
-                <TextField source="background" record={record} />
-              </div>
-            ) : null
-          }
-        />
-      )}
       <div className="text-muted-foreground md:py-0.5">
         <span className="text-sm">
           {translate("resources.contacts.background.added_on", {

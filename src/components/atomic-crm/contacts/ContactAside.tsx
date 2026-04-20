@@ -40,11 +40,7 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
         <ContactPersonalInfo />
       </AsideSection>
 
-      <AsideSection
-        title={translate("resources.contacts.field_categories.background_info")}
-      >
-        <ContactBackgroundInfo />
-      </AsideSection>
+      <ContactBackgroundInfo />
 
       {isAdmin && (
         <AsideSection
