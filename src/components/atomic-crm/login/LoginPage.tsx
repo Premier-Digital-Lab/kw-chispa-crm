@@ -8,15 +8,6 @@ import { Notification } from "@/components/admin/notification";
 import { useConfigurationContext } from "@/components/atomic-crm/root/ConfigurationContext.tsx";
 import { SSOAuthButton } from "./SSOAuthButton";
 
-/**
- * Login page displayed when authentication is enabled and the user is not authenticated.
- *
- * Automatically shown when an unauthenticated user tries to access a protected route.
- * Handles login via authProvider.login() and displays error notifications on failure.
- *
- * @see {@link https://marmelab.com/shadcn-admin-kit/docs/loginpage LoginPage documentation}
- * @see {@link https://marmelab.com/shadcn-admin-kit/docs/security Security documentation}
- */
 export const LoginPage = (props: { redirectTo?: string }) => {
   const {
     darkModeLogo,
@@ -90,24 +81,47 @@ export const LoginPage = (props: { redirectTo?: string }) => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <div className="relative grid w-full lg:grid-cols-2">
-        <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-          <div className="absolute inset-0 bg-zinc-900" />
-          <div className="relative z-20 flex items-center text-lg font-medium">
-            <img className="h-20" src={darkModeLogo} alt={title} />
-            
-          </div>
-        </div>
-        <div className="flex flex-col justify-center w-full p-4 lg:p-8">
-          <div className="w-full space-y-6 lg:mx-auto lg:w-[350px]">
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                {translate("ra.auth.sign_in")}
-              </h1>
-            </div>
-            {disableEmailPasswordAuthentication ? null : (
-              <Form className="space-y-8" onSubmit={handleSubmit}>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          background:
+            "linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 40%, #CC0000 100%)",
+        }}
+      >
+        <source src="/login-bg.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/55" />
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-sm px-4 py-10 flex flex-col items-center gap-8">
+        {/* Logo */}
+        <img className="h-24" src={darkModeLogo} alt={title} />
+
+        {/* Frosted glass card */}
+        <div
+          className="w-full rounded-xl p-8 space-y-5"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            border: "0.5px solid rgba(255,255,255,0.15)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+          }}
+        >
+          <h1 className="text-2xl font-semibold text-white text-center">
+            {translate("ra.auth.sign_in")}
+          </h1>
+
+          {disableEmailPasswordAuthentication ? null : (
+            <div className="[&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input::placeholder]:text-white/50 [&_label]:text-white/80 [&_label]:text-sm">
+              <Form className="space-y-4" onSubmit={handleSubmit}>
                 <TextInput
                   label="ra.auth.email"
                   source="email"
@@ -120,45 +134,50 @@ export const LoginPage = (props: { redirectTo?: string }) => {
                   type="password"
                   validate={required()}
                 />
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 pt-1">
                   <Button
                     type="submit"
-                    className="cursor-pointer"
                     disabled={loading}
+                    className="w-full cursor-pointer text-white font-semibold"
+                    style={{ backgroundColor: "#CC0000" }}
                   >
                     {translate("ra.auth.sign_in")}
                   </Button>
                 </div>
               </Form>
-            )}
-            {googleWorkplaceDomain ? (
-              <SSOAuthButton className="w-full" domain={googleWorkplaceDomain}>
-                {translate("crm.auth.sign_in_google_workspace", {
-                  _: "Sign in with Google Workplace",
-                })}
-              </SSOAuthButton>
-            ) : null}
-            {disableEmailPasswordAuthentication ? null : (
-              <Link
-                to={"/forgot-password"}
-                className="block text-sm text-center hover:underline"
-              >
-                {translate("ra-supabase.auth.forgot_password", {
-                  _: "Forgot password?",
-                })}
-              </Link>
-            )}
+            </div>
+          )}
+
+          {googleWorkplaceDomain ? (
+            <SSOAuthButton className="w-full" domain={googleWorkplaceDomain}>
+              {translate("crm.auth.sign_in_google_workspace", {
+                _: "Sign in with Google Workplace",
+              })}
+            </SSOAuthButton>
+          ) : null}
+
+          {disableEmailPasswordAuthentication ? null : (
             <Link
-              to="/sign-up"
-              className="block text-sm text-center hover:underline"
+              to="/forgot-password"
+              className="block text-sm text-center text-white/70 hover:text-white hover:underline"
             >
-              {translate("crm.auth.dont_have_account", {
-                _: "Don't have an account? Sign Up",
+              {translate("ra-supabase.auth.forgot_password", {
+                _: "Forgot password?",
               })}
             </Link>
-          </div>
+          )}
+
+          <Link
+            to="/sign-up"
+            className="block text-sm text-center text-white/70 hover:text-white hover:underline"
+          >
+            {translate("crm.auth.dont_have_account", {
+              _: "Don't have an account? Sign Up",
+            })}
+          </Link>
         </div>
       </div>
+
       <Notification />
     </div>
   );

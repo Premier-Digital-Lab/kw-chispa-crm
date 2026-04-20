@@ -7,30 +7,48 @@ export const ConfirmationRequired = () => {
   const { darkModeLogo: logo, title } = useConfigurationContext();
 
   return (
-    <div className="h-screen p-8">
-      <div className="flex items-center gap-4">
-        <img
-          src={logo}
-          alt={title}
-          width={24}
-          className="filter brightness-0 invert"
-        />
-        <h1 className="text-xl font-semibold">{title}</h1>
-      </div>
-      <div className="h-full text-center">
-        <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
-          <h1 className="text-2xl font-bold mb-4">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          background:
+            "linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 40%, #CC0000 100%)",
+        }}
+      >
+        <source src="/login-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-black/55" />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center px-6 py-12 text-center max-w-sm mx-auto">
+        <img src={logo} alt={title} className="h-20 mb-8" />
+        <div
+          className="w-full rounded-xl p-8 space-y-4"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            border: "0.5px solid rgba(255,255,255,0.15)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+          }}
+        >
+          <h1 className="text-2xl font-bold text-white">
             {translate("crm.auth.welcome_title", {
               _: "Welcome to KW CHISPA Central",
             })}
           </h1>
-          <p className="text-base mb-4">
+          <p className="text-base text-white/80">
             {translate("crm.auth.confirmation_required", {
               _: "Please follow the link we just sent you by email to confirm your account.",
             })}
           </p>
         </div>
       </div>
+
       <Notification />
     </div>
   );

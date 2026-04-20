@@ -114,47 +114,74 @@ export const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="flex items-center gap-4">
-        <img
-          src="/logo-white.png"
-          alt={title}
-          className="h-16"
-        />
-        <h1 className="text-xl font-semibold">Central</h1>
+    <div className="relative min-h-screen">
+      {/* Background video — fixed so it stays behind scrollable content */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="fixed inset-0 w-full h-full object-cover -z-10"
+        style={{
+          background:
+            "linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 40%, #CC0000 100%)",
+        }}
+      >
+        <source src="/login-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="fixed inset-0 bg-black/55 -z-10" />
+
+      {/* Scrollable content */}
+      <div className="relative z-10 min-h-screen p-6 sm:p-10">
+        <div className="flex items-center gap-3 mb-8">
+          <img src={logo} alt={title} className="h-14" />
+        </div>
+
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-2xl font-bold mb-2 text-white">
+            {translate("crm.auth.welcome_title", {
+              _: "Welcome to KW CHISPA Central",
+            })}
+          </h2>
+          <p className="text-base mb-6 text-white/80">
+            {isInitialized
+              ? translate("crm.auth.signup.create_member_account", {
+                  _: "Create your KW CHISPA member account.",
+                })
+              : translate("crm.auth.signup.create_first_user", {
+                  _: "Create the first user account to complete the setup.",
+                })}
+          </p>
+
+          <div
+            className="rounded-xl p-6 sm:p-8"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "0.5px solid rgba(255,255,255,0.15)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+            }}
+          >
+            <Form
+              onSubmit={onSubmit}
+              mode="onChange"
+              resource="contacts"
+              sanitizeEmptyValues={false}
+              defaultValues={{
+                membership_tier: "Free",
+                has_newsletter: false,
+                gender: contactGender[0].value,
+              }}
+            >
+              <SignupFormBody
+                isSubmitting={isSignUpPending}
+                googleWorkplaceDomain={googleWorkplaceDomain}
+              />
+            </Form>
+          </div>
+        </div>
       </div>
-      <div className="max-w-lg mx-auto py-8">
-        <h2 className="text-2xl font-bold mb-2">
-          {translate("crm.auth.welcome_title", {
-            _: "Welcome to KW CHISPA Central",
-          })}
-        </h2>
-        <p className="text-base mb-6">
-          {isInitialized
-            ? translate("crm.auth.signup.create_member_account", {
-                _: "Create your KW CHISPA member account.",
-              })
-            : translate("crm.auth.signup.create_first_user", {
-                _: "Create the first user account to complete the setup.",
-              })}
-        </p>
-        <Form
-          onSubmit={onSubmit}
-          mode="onChange"
-          resource="contacts"
-          sanitizeEmptyValues={false}
-          defaultValues={{
-            membership_tier: "Free",
-            has_newsletter: false,
-            gender: contactGender[0].value,
-          }}
-        >
-          <SignupFormBody
-            isSubmitting={isSignUpPending}
-            googleWorkplaceDomain={googleWorkplaceDomain}
-          />
-        </Form>
-      </div>
+
       <Notification />
     </div>
   );
