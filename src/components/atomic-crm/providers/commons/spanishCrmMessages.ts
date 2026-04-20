@@ -561,7 +561,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
       form: {
         name: "Nombre",
         city: "Ciudad",
-        state: "Estado",
+        state: "Estado / Provincia / Región",
         county: "Condado",
         language: "Idioma",
         market_center: "Market Center",

@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { useTranslate } from "ra-core";
-import { Link } from "react-router";
 import { Search, MessageCircle, MapPin, Building2, Phone, Mail, UserCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -302,12 +301,14 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
         <div className="flex flex-col sm:flex-row sm:items-start gap-3">
           {/* Name + role */}
           <div className="flex-1 min-w-0">
-            <Link
-              to={`/contacts/${contact.id}`}
+            <a
+              href={`/contacts/${contact.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-base font-semibold hover:underline"
             >
               {contact.first_name} {contact.last_name}
-            </Link>
+            </a>
             {contact.agent_role && (
               <p className="text-sm text-muted-foreground">{contact.agent_role}</p>
             )}
@@ -327,8 +328,14 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
             )}
 
             <ArrayBadges items={contact.languages_spoken} label="Languages" />
-            <ArrayBadges items={contact.counties_served} label="Counties" />
-            <ArrayBadges items={contact.countries_served} label="Countries" />
+            <ArrayBadges items={contact.cities_served} label="Cities Served" />
+            {contact.mc_state && (
+              <p className="text-sm text-muted-foreground mt-1">
+                <span className="font-medium text-foreground">State / Province / Region:</span>{" "}
+                {contact.mc_state}
+              </p>
+            )}
+            <ArrayBadges items={contact.countries_served} label="Countries Served" />
 
             {contact.background && (
               <>
@@ -360,12 +367,14 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
                 {firstEmail}
               </a>
             )}
-            <Link
-              to={`/contacts/${contact.id}`}
+            <a
+              href={`/contacts/${contact.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-xs text-primary hover:underline mt-1"
             >
               View Profile →
-            </Link>
+            </a>
           </div>
         </div>
       </CardContent>

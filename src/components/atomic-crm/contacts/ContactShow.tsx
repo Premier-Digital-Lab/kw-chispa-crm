@@ -319,6 +319,29 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
 
   return (
     <div className="mt-4 space-y-6">
+      {hasServiceAreas && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.service_areas")}
+        >
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.languages_spoken")}
+            value={formatArray(record.languages_spoken)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.cities_served")}
+            value={formatArray(record.cities_served)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.counties_served")}
+            value={formatArray(record.counties_served)}
+          />
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.countries_served")}
+            value={formatArray(record.countries_served)}
+          />
+        </ReadOnlySection>
+      )}
+
       {hasPersonalInfo && (
         <ReadOnlySection
           title={translate("resources.contacts.field_categories.personal_info")}
@@ -423,29 +446,6 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
           <ReadOnlyRow
             label={translate("resources.contacts.field_categories.mc_address")}
             value={mcAddressParts || null}
-          />
-        </ReadOnlySection>
-      )}
-
-      {hasServiceAreas && (
-        <ReadOnlySection
-          title={translate("resources.contacts.field_categories.service_areas")}
-        >
-          <ReadOnlyRow
-            label={translate("resources.contacts.fields.languages_spoken")}
-            value={formatArray(record.languages_spoken)}
-          />
-          <ReadOnlyRow
-            label={translate("resources.contacts.fields.cities_served")}
-            value={formatArray(record.cities_served)}
-          />
-          <ReadOnlyRow
-            label={translate("resources.contacts.fields.counties_served")}
-            value={formatArray(record.counties_served)}
-          />
-          <ReadOnlyRow
-            label={translate("resources.contacts.fields.countries_served")}
-            value={formatArray(record.countries_served)}
           />
         </ReadOnlySection>
       )}

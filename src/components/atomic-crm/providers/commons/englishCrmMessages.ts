@@ -559,7 +559,7 @@ export const englishCrmMessages = {
       form: {
         name: "Name",
         city: "City",
-        state: "State",
+        state: "State / Province / Region",
         county: "County",
         language: "Language",
         market_center: "Market Center",
