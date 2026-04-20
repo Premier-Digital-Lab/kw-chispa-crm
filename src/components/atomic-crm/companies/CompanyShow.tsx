@@ -7,6 +7,7 @@ import { UserPlus } from "lucide-react";
 import {
   RecordContextProvider,
   ShowBase,
+  useGetIdentity,
   useListContext,
   useLocaleState,
   useRecordContext,
@@ -242,6 +243,9 @@ const ContactsIterator = () => {
 const CreateRelatedContactButton = () => {
   const translate = useTranslate();
   const company = useRecordContext<Company>();
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
+  if (!isAdmin) return null;
   return (
     <Button variant="outline" asChild size="sm" className="h-9">
       <RouterLink

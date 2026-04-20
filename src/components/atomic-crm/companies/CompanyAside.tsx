@@ -27,16 +27,18 @@ interface CompanyAsideProps {
 export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
   const record = useRecordContext<Company>();
   const translate = useTranslate();
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
   if (!record) return null;
 
   return (
     <div className="hidden sm:block w-92 min-w-92 space-y-4">
       <div className="flex flex-row space-x-1">
-        {link === "edit" ? (
+        {link === "edit" && isAdmin ? (
           <EditButton label={translate("resources.companies.action.edit")} />
-        ) : (
+        ) : link === "show" ? (
           <ShowButton label={translate("resources.companies.action.show")} />
-        )}
+        ) : null}
       </div>
 
       <CompanyInfo record={record} />

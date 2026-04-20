@@ -250,63 +250,91 @@ const ContactShowContentMobile = () => {
 const ContactShowContent = () => {
   const translate = useTranslate();
   const { record, isPending } = useShowContext<Contact>();
+  const { identity } = useGetIdentity();
   if (isPending || !record) return null;
+
+  const isAdmin = identity?.administrator === true;
+  const isOwnProfile = record.sales_id === identity?.id;
+  const canEdit = isAdmin || isOwnProfile;
+
+  const identityHeader = (
+    <div className="flex">
+      <Avatar />
+      <div className="ml-2 flex-1">
+        <h5 className="text-xl font-semibold">
+          <RecordRepresentation />
+        </h5>
+        <div className="inline-flex text-sm text-muted-foreground">
+          {record.title && record.company_id != null
+            ? `${translate("resources.contacts.position_at", {
+                title: record.title,
+              })} `
+            : record.title}
+          {record.company_id != null && (
+            <ReferenceField
+              source="company_id"
+              reference="companies"
+              link="show"
+            >
+              &nbsp;
+              <TextField source="name" />
+            </ReferenceField>
+          )}
+        </div>
+      </div>
+      <div>
+        <ReferenceField
+          source="company_id"
+          reference="companies"
+          link="show"
+          className="no-underline"
+        >
+          <CompanyAvatar />
+        </ReferenceField>
+      </div>
+    </div>
+  );
 
   return (
     <div className="mt-2 mb-2 flex gap-8">
       <div className="flex-1">
         <Card>
           <CardContent>
-            <div className="flex">
-              <Avatar />
-              <div className="ml-2 flex-1">
-                <h5 className="text-xl font-semibold">
-                  <RecordRepresentation />
-                </h5>
-                <div className="inline-flex text-sm text-muted-foreground">
-                  {record.title && record.company_id != null
-                    ? `${translate("resources.contacts.position_at", {
-                        title: record.title,
-                      })} `
-                    : record.title}
-                  {record.company_id != null && (
-                    <ReferenceField
-                      source="company_id"
-                      reference="companies"
-                      link="show"
-                    >
-                      &nbsp;
-                      <TextField source="name" />
-                    </ReferenceField>
-                  )}
+            {identityHeader}
+            {canEdit ? (
+              <CanAccess resource="contact_notes" action="list">
+                <InfiniteListBase
+                  resource="contact_notes"
+                  filter={{ contact_id: record.id }}
+                  sort={{ field: "date", order: "DESC" }}
+                  perPage={25}
+                  disableSyncWithLocation
+                  storeKey={false}
+                  empty={
+                    <NoteCreate reference="contacts" showStatus className="mt-4" />
+                  }
+                >
+                  <NotesIterator reference="contacts" showStatus />
+                </InfiniteListBase>
+              </CanAccess>
+            ) : (
+              <div className="mt-4 space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                    {translate("resources.contacts.field_categories.personal_info")}
+                  </h3>
+                  <Separator className="mb-3" />
+                  <ContactPersonalInfo />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                    {translate("resources.contacts.field_categories.background_info")}
+                  </h3>
+                  <Separator className="mb-3" />
+                  <ContactBackgroundInfo />
                 </div>
               </div>
-              <div>
-                <ReferenceField
-                  source="company_id"
-                  reference="companies"
-                  link="show"
-                  className="no-underline"
-                >
-                  <CompanyAvatar />
-                </ReferenceField>
-              </div>
-            </div>
-            <CanAccess resource="contact_notes" action="list">
-              <InfiniteListBase
-                resource="contact_notes"
-                filter={{ contact_id: record.id }}
-                sort={{ field: "date", order: "DESC" }}
-                perPage={25}
-                disableSyncWithLocation
-                storeKey={false}
-                empty={
-                  <NoteCreate reference="contacts" showStatus className="mt-4" />
-                }
-              >
-                <NotesIterator reference="contacts" showStatus />
-              </InfiniteListBase>
-            </CanAccess>
+            )}
           </CardContent>
         </Card>
       </div>
