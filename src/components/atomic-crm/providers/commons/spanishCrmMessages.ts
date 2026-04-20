@@ -68,7 +68,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
       forcedCaseName: "Miembro",
       field_categories: {
         background_info: "Bio",
-        identity: "Identidad",
+        identity: "Perfil",
         misc: "Otros",
         personal_info: "Información personal",
         social_media: "Redes Sociales",

@@ -66,7 +66,7 @@ export const englishCrmMessages = {
       forcedCaseName: "Member",
       field_categories: {
         background_info: "Bio",
-        identity: "Identity",
+        identity: "Profile",
         misc: "Misc",
         personal_info: "Personal Info",
         social_media: "Social Media",
