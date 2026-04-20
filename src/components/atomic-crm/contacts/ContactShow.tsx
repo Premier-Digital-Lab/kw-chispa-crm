@@ -479,7 +479,7 @@ const ContactShowContent = () => {
       return false;
     }
   })();
-  const showReturnLink = !canEdit && hasSearchResults;
+  const showReturnLink = hasSearchResults;
 
   const companyLink = canEdit ? "show" : false;
 
