@@ -314,7 +314,13 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
       }
       if (data.mc_city || data.mc_state) {
         try {
-          const parts = [data.mc_city, data.mc_state].filter(Boolean);
+          const parts = [
+            data.mc_street_address,
+            data.mc_city,
+            data.mc_state,
+            data.mc_zip_code,
+            data.mc_country,
+          ].filter(Boolean);
           const q = encodeURIComponent(parts.join(", "));
           const res = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&email=your.premier.digital.lab@gmail.com`
