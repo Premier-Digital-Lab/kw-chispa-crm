@@ -575,6 +575,7 @@ export const englishCrmMessages = {
         no_results: "No members found matching your search.",
         no_results_hint: "Try broadening your search or using different keywords.",
       },
+      return_to_results: "← Return to Search Results",
     },
     profile: {
       inbound: {

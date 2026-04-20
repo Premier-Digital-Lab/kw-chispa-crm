@@ -19,7 +19,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Pencil } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import MobileHeader from "../layout/MobileHeader";
 import { MobileContent } from "../layout/MobileContent";
@@ -463,6 +463,7 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
 
 const ContactShowContent = () => {
   const translate = useTranslate();
+  const navigate = useNavigate();
   const { record, isPending } = useShowContext<Contact>();
   const { identity } = useGetIdentity();
   if (isPending || !record) return null;
@@ -470,6 +471,15 @@ const ContactShowContent = () => {
   const isAdmin = identity?.administrator === true;
   const isOwnProfile = record.sales_id === identity?.id;
   const canEdit = isAdmin || isOwnProfile;
+
+  const hasSearchResults = (() => {
+    try {
+      return !!sessionStorage.getItem("find-agent-search-state");
+    } catch {
+      return false;
+    }
+  })();
+  const showReturnLink = !canEdit && hasSearchResults;
 
   const companyLink = canEdit ? "show" : false;
 
@@ -514,6 +524,15 @@ const ContactShowContent = () => {
   return (
     <div className="mt-2 mb-2 flex gap-8">
       <div className="flex-1">
+        {showReturnLink && (
+          <button
+            type="button"
+            onClick={() => navigate("/find-agent")}
+            className="text-sm text-muted-foreground hover:text-foreground mb-3 block"
+          >
+            {translate("crm.find_agent.return_to_results")}
+          </button>
+        )}
         <Card>
           <CardContent>
             {identityHeader}

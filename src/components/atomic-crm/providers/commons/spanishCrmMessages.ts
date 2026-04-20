@@ -577,6 +577,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         no_results: "No se encontraron miembros que coincidan con tu búsqueda.",
         no_results_hint: "Intenta ampliar tu búsqueda o usar palabras clave diferentes.",
       },
+      return_to_results: "← Volver a los resultados de búsqueda",
     },
     profile: {
       inbound: {
