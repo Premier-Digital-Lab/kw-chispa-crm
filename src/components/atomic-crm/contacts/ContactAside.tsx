@@ -19,17 +19,19 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const translate = useTranslate();
   const { identity } = useGetIdentity();
   const isAdmin = identity?.administrator === true;
+  const isOwnProfile = record?.sales_id === identity?.id;
+  const canEdit = isAdmin || isOwnProfile;
 
   if (!record) return null;
 
   return (
     <div className="hidden sm:block w-92 min-w-92 text-sm">
       <div className="mb-4 -ml-1">
-        {link === "edit" ? (
+        {link === "edit" && canEdit ? (
           <EditButton label="resources.contacts.action.edit" />
-        ) : (
+        ) : link === "show" ? (
           <ShowButton label="resources.contacts.action.show" />
-        )}
+        ) : null}
       </div>
 
       <AsideSection

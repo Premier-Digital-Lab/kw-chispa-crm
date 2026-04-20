@@ -5,6 +5,7 @@ import {
   RecordRepresentation,
   ShowBase,
   useCanAccess,
+  useGetIdentity,
   useShowContext,
   useTranslate,
 } from "ra-core";
@@ -64,6 +65,11 @@ const ContactShowContentMobile = () => {
     resource: "contact_notes",
     action: "list",
   });
+  const { identity } = useGetIdentity();
+  const isAdmin = identity?.administrator === true;
+  const isOwnProfile = record?.sales_id === identity?.id;
+  const canEdit = isAdmin || isOwnProfile;
+
   if (isPending || !record) return null;
 
   const taskCount = record.nb_tasks ?? 0;
@@ -79,11 +85,13 @@ const ContactShowContentMobile = () => {
           contact_id={record.id}
         />
       )}
-      <ContactEditSheet
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        contactId={record.id}
-      />
+      {canEdit && (
+        <ContactEditSheet
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          contactId={record.id}
+        />
+      )}
       <MobileHeader>
         <MobileBackButton />
         <div className="flex flex-1 min-w-0">
@@ -91,16 +99,18 @@ const ContactShowContentMobile = () => {
             <h1 className="truncate text-xl font-semibold">{defaultTitle}</h1>
           </Link>
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="rounded-full"
-          aria-label={translate("ra.action.edit")}
-          onClick={() => setEditOpen(true)}
-        >
-          <Pencil className="size-5" />
-        </Button>
+        {canEdit && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+            aria-label={translate("ra.action.edit")}
+            onClick={() => setEditOpen(true)}
+          >
+            <Pencil className="size-5" />
+          </Button>
+        )}
       </MobileHeader>
       <MobileContent>
         <div className="mb-6">
