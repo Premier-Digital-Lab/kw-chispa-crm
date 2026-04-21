@@ -139,20 +139,18 @@ function buildWelcomeApproved(firstName: string): {
       preheader:
         "Your KW CHISPA Central account is now active. Welcome to the community!",
       englishBody: `
-        <p style="margin:0 0 12px;">Hi <strong>${firstName}</strong>,</p>
-        <p style="margin:0 0 12px;">Great news — your <strong>KW CHISPA Central</strong> account has been approved and is now active!</p>
-        <p style="margin:0 0 8px;">Here's what you can do now:</p>
+        <p style="margin:0 0 12px;">Welcome to KW CHISPA Central, <strong>${firstName}</strong>!</p>
+        <p style="margin:0 0 12px;">Your account has been approved! You now have access to the KW CHISPA member directory.</p>
+        <p style="margin:0 0 8px;">Here's what you can do:</p>
         <ul style="margin:0 0 16px;padding-left:20px;">
-          <li style="margin-bottom:6px;">Manage and grow your contact database</li>
-          <li style="margin-bottom:6px;">Track deals and your sales pipeline</li>
-          <li style="margin-bottom:6px;">Log notes, tasks, and activities</li>
-          <li style="margin-bottom:6px;">Search and connect with fellow KW CHISPA agents</li>
+          <li style="margin-bottom:6px;"><strong>Find an Agent</strong> — Search for referral partners by city, state, country, language or Market Center</li>
+          <li style="margin-bottom:6px;"><strong>Interactive Map</strong> — See KW CHISPA members across the world</li>
+          <li style="margin-bottom:6px;"><strong>Your Profile</strong> — Keep your info updated so other agents can find you</li>
+          <li style="margin-bottom:6px;"><strong>AI Chat Assistant</strong> — Search the directory using natural language in English or Spanish</li>
         </ul>
-        <p style="margin:0 0 16px;">
-          Join our community on Facebook to stay connected with the KW CHISPA network:<br/>
-          <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">${facebookUrl}</a>
-        </p>
-        <p style="margin:0 0 24px;">We're glad to have you with us. Let's grow together!</p>
+        <p style="margin:0 0 16px;">Your request to join the KW CHISPA Facebook group will also be approved. This is where we network and brainstorm daily. Come join us in the <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">KW CHISPA Facebook group</a>!</p>
+        <p style="margin:0 0 16px;">Questions or comments? Please drop us a note at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> and someone will get back to you within the day. We look forward to being in business with you.</p>
+        <p style="margin:0 0 24px;"><em>With Gratitude,</em><br/><em>Your KW CHISPA Leadership Council</em></p>
         <p style="margin:0;">
           <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
             Sign In to KW CHISPA Central &rarr;
@@ -160,23 +158,21 @@ function buildWelcomeApproved(firstName: string): {
         </p>
       `,
       spanishBody: `
-        <p style="margin:0 0 12px;">Hola <strong>${firstName}</strong>,</p>
-        <p style="margin:0 0 12px;">¡Buenas noticias! Tu cuenta de <strong>KW CHISPA Central</strong> ha sido aprobada y ya está activa.</p>
-        <p style="margin:0 0 8px;">Esto es lo que puedes hacer ahora:</p>
+        <p style="margin:0 0 12px;">¡Bienvenido/a a KW CHISPA Central, <strong>${firstName}</strong>!</p>
+        <p style="margin:0 0 12px;">Tu cuenta ha sido aprobada. Ya tienes acceso al directorio de miembros de KW CHISPA.</p>
+        <p style="margin:0 0 8px;">Lo que puedes hacer:</p>
         <ul style="margin:0 0 16px;padding-left:20px;">
-          <li style="margin-bottom:6px;">Gestionar y hacer crecer tu base de contactos</li>
-          <li style="margin-bottom:6px;">Seguir tus negocios y tu pipeline de ventas</li>
-          <li style="margin-bottom:6px;">Registrar notas, tareas y actividades</li>
-          <li style="margin-bottom:6px;">Buscar y conectar con otros agentes de KW CHISPA</li>
+          <li style="margin-bottom:6px;"><strong>Buscar un Agente</strong> — Busca socios de referencia por ciudad, estado, idioma o Market Center</li>
+          <li style="margin-bottom:6px;"><strong>Mapa Interactivo</strong> — Ve a los miembros de KW CHISPA en todo el país</li>
+          <li style="margin-bottom:6px;"><strong>Tu Perfil</strong> — Mantén tu información actualizada para que otros agentes te encuentren</li>
+          <li style="margin-bottom:6px;"><strong>Asistente de Chat IA</strong> — Busca en el directorio usando lenguaje natural en inglés o español</li>
         </ul>
-        <p style="margin:0 0 16px;">
-          Únete a nuestra comunidad en Facebook para mantenerte conectado/a con la red KW CHISPA:<br/>
-          <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">${facebookUrl}</a>
-        </p>
-        <p style="margin:0 0 24px;">Estamos muy contentos de tenerte con nosotros. ¡Crezcamos juntos!</p>
+        <p style="margin:0 0 16px;">Tu solicitud para unirte al grupo de Facebook de KW CHISPA también será aprobada. Allí nos conectamos y compartimos ideas a diario. ¡Únete a nosotras en el <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">grupo de Facebook KW CHISPA</a>!</p>
+        <p style="margin:0 0 16px;">¿Preguntas o comentarios? Por favor, envíenos un mensaje a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> y alguien se pondrá en contacto con usted en el plazo de un día. Esperamos hacer negocios con usted.</p>
+        <p style="margin:0 0 24px;"><em>Con gratitud,</em><br/><em>Su Consejo de Liderazgo de KW CHISPA</em></p>
         <p style="margin:0;">
           <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
-            Ingresar a KW CHISPA Central &rarr;
+            Iniciar sesión en KW CHISPA Central &rarr;
           </a>
         </p>
       `,
