@@ -35,7 +35,7 @@ function buildHtml(params: {
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(135deg,#1a1a1a 0%,#2d0a0a 40%,#CC0000 100%);border-radius:8px 8px 0 0;padding:32px 24px;text-align:center;">
+            <td style="background-color:#1a1a1a;background:linear-gradient(135deg,#1a1a1a 0%,#2d0a0a 40%,#CC0000 100%);border-radius:8px 8px 0 0;padding:32px 24px;text-align:center;">
               <img src="${LOGO_URL}" alt="KW CHISPA" width="200" style="display:inline-block;max-width:200px;height:auto;" />
             </td>
           </tr>
