@@ -229,6 +229,60 @@ function buildAdminNotification(data: {
   };
 }
 
+function buildPasswordChanged(firstName: string): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject:
+      "Your KW CHISPA Password Has Been Changed / Tu contraseña de KW CHISPA ha sido cambiada",
+    html: buildHtml({
+      preheader:
+        "Your KW CHISPA Central password was recently changed.",
+      englishBody: `
+        <p style="margin:0 0 12px;">Hi <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">Your KW CHISPA Central password has been successfully changed.</p>
+        <p style="margin:0 0 12px;">If you made this change, no further action is needed.</p>
+        <p style="margin:0 0 24px;">If you did <strong>NOT</strong> make this change, please contact us immediately at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> to secure your account.</p>
+        <p style="margin:0;"><em>With Gratitude,</em><br/><em>Your KW CHISPA Leadership Council</em></p>
+      `,
+      spanishBody: `
+        <p style="margin:0 0 12px;">Hola <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">Tu contraseña de KW CHISPA Central ha sido cambiada exitosamente.</p>
+        <p style="margin:0 0 12px;">Si realizaste este cambio, no necesitas hacer nada más.</p>
+        <p style="margin:0 0 24px;">Si <strong>NO</strong> realizaste este cambio, por favor contáctanos de inmediato a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> para proteger tu cuenta.</p>
+        <p style="margin:0;"><em>Con gratitud,</em><br/><em>Su Consejo de Liderazgo de KW CHISPA</em></p>
+      `,
+    }),
+  };
+}
+
+function buildAccountDisabled(firstName: string): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject:
+      "KW CHISPA Account Update / Actualización de cuenta KW CHISPA",
+    html: buildHtml({
+      preheader:
+        "An update has been made to your KW CHISPA Central account.",
+      englishBody: `
+        <p style="margin:0 0 12px;">Hi <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">Your KW CHISPA Central account has been deactivated by an administrator.</p>
+        <p style="margin:0 0 24px;">If you believe this was done in error, please contact us at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> and we'll be happy to assist you.</p>
+        <p style="margin:0;"><em>With Gratitude,</em><br/><em>Your KW CHISPA Leadership Council</em></p>
+      `,
+      spanishBody: `
+        <p style="margin:0 0 12px;">Hola <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">Tu cuenta de KW CHISPA Central ha sido desactivada por un administrador.</p>
+        <p style="margin:0 0 24px;">Si crees que esto fue un error, por favor contáctanos a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> y con gusto te ayudaremos.</p>
+        <p style="margin:0;"><em>Con gratitud,</em><br/><em>Su Consejo de Liderazgo de KW CHISPA</em></p>
+      `,
+    }),
+  };
+}
+
 // ─── Postmark sender ──────────────────────────────────────────────────────────
 
 async function sendEmail(to: string, subject: string, html: string): Promise<void> {
@@ -303,6 +357,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
       await sendEmail(to, subject, html);
     } else if (type === "welcome_approved") {
       const { subject, html } = buildWelcomeApproved(data.first_name ?? "");
+      await sendEmail(to, subject, html);
+    } else if (type === "password_changed") {
+      const { subject, html } = buildPasswordChanged(data.first_name ?? "");
+      await sendEmail(to, subject, html);
+    } else if (type === "account_disabled") {
+      const { subject, html } = buildAccountDisabled(data.first_name ?? "");
       await sendEmail(to, subject, html);
     } else {
       return new Response(JSON.stringify({ error: `Unknown type: ${type}` }), {
