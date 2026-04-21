@@ -125,6 +125,65 @@ function buildSignupConfirmation(firstName: string): {
   };
 }
 
+function buildWelcomeApproved(firstName: string): {
+  subject: string;
+  html: string;
+} {
+  const crmUrl = "https://kw-chispa-crm.netlify.app";
+  const facebookUrl = "https://www.facebook.com/groups/kwchispa";
+
+  return {
+    subject:
+      "Your KW CHISPA Account Has Been Approved! / ¡Tu cuenta de KW CHISPA ha sido aprobada!",
+    html: buildHtml({
+      preheader:
+        "Your KW CHISPA Central account is now active. Welcome to the community!",
+      englishBody: `
+        <p style="margin:0 0 12px;">Hi <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">Great news — your <strong>KW CHISPA Central</strong> account has been approved and is now active!</p>
+        <p style="margin:0 0 8px;">Here's what you can do now:</p>
+        <ul style="margin:0 0 16px;padding-left:20px;">
+          <li style="margin-bottom:6px;">Manage and grow your contact database</li>
+          <li style="margin-bottom:6px;">Track deals and your sales pipeline</li>
+          <li style="margin-bottom:6px;">Log notes, tasks, and activities</li>
+          <li style="margin-bottom:6px;">Search and connect with fellow KW CHISPA agents</li>
+        </ul>
+        <p style="margin:0 0 16px;">
+          Join our community on Facebook to stay connected with the KW CHISPA network:<br/>
+          <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">${facebookUrl}</a>
+        </p>
+        <p style="margin:0 0 24px;">We're glad to have you with us. Let's grow together!</p>
+        <p style="margin:0;">
+          <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
+            Sign In to KW CHISPA Central &rarr;
+          </a>
+        </p>
+      `,
+      spanishBody: `
+        <p style="margin:0 0 12px;">Hola <strong>${firstName}</strong>,</p>
+        <p style="margin:0 0 12px;">¡Buenas noticias! Tu cuenta de <strong>KW CHISPA Central</strong> ha sido aprobada y ya está activa.</p>
+        <p style="margin:0 0 8px;">Esto es lo que puedes hacer ahora:</p>
+        <ul style="margin:0 0 16px;padding-left:20px;">
+          <li style="margin-bottom:6px;">Gestionar y hacer crecer tu base de contactos</li>
+          <li style="margin-bottom:6px;">Seguir tus negocios y tu pipeline de ventas</li>
+          <li style="margin-bottom:6px;">Registrar notas, tareas y actividades</li>
+          <li style="margin-bottom:6px;">Buscar y conectar con otros agentes de KW CHISPA</li>
+        </ul>
+        <p style="margin:0 0 16px;">
+          Únete a nuestra comunidad en Facebook para mantenerte conectado/a con la red KW CHISPA:<br/>
+          <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">${facebookUrl}</a>
+        </p>
+        <p style="margin:0 0 24px;">Estamos muy contentos de tenerte con nosotros. ¡Crezcamos juntos!</p>
+        <p style="margin:0;">
+          <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
+            Ingresar a KW CHISPA Central &rarr;
+          </a>
+        </p>
+      `,
+    }),
+  };
+}
+
 function buildAdminNotification(data: {
   firstName: string;
   lastName: string;
@@ -245,6 +304,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
         marketCenterName: data.market_center_name ?? "",
         agentRole: data.agent_role ?? "",
       });
+      await sendEmail(to, subject, html);
+    } else if (type === "welcome_approved") {
+      const { subject, html } = buildWelcomeApproved(data.first_name ?? "");
       await sendEmail(to, subject, html);
     } else {
       return new Response(JSON.stringify({ error: `Unknown type: ${type}` }), {
