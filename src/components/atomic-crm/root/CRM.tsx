@@ -31,6 +31,7 @@ import {
   getAuthProvider as defaultAuthProviderBuilder,
   getDataProvider as defaultDataProviderBuilder,
 } from "../providers/supabase";
+import { getSupabaseClient } from "../providers/supabase/supabase";
 import sales from "../sales";
 import { SettingsPageMobile } from "../settings/SettingsPageMobile";
 import { ProfilePage } from "../settings/ProfilePage";
@@ -134,6 +135,16 @@ export const CRM = ({
   disableTelemetry,
   ...rest
 }: CRMProps) => {
+  useEffect(() => {
+    const { data: { subscription } } =
+      getSupabaseClient().auth.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY" && session) {
+          window.location.href = `/#/set-password?access_token=${session.access_token}&refresh_token=${session.refresh_token}`;
+        }
+      });
+    return () => subscription.unsubscribe();
+  }, []);
+
   useEffect(() => {
     if (
       disableTelemetry ||
