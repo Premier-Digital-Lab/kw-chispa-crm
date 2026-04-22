@@ -258,10 +258,14 @@ exports.handler = async (event) => {
     let nameOrClause = null;
     let stateOrClause = null;
 
-    // Name search: OR across first_name and last_name
+    // Name search: split into words so "Carlos Ruiz" matches first OR last name for each word
     if (input.query && input.query.trim()) {
-      const q = input.query.trim().replace(/[()]/g, '');
-      nameOrClause = `(first_name.ilike.*${q}*,last_name.ilike.*${q}*)`;
+      const words = input.query.trim().replace(/[()]/g, '').split(/\s+/).filter(Boolean);
+      const clauses = words.flatMap((w) => [
+        `first_name.ilike.*${w}*`,
+        `last_name.ilike.*${w}*`,
+      ]);
+      nameOrClause = `(${clauses.join(',')})`;
     }
 
     // State search: OR across abbreviation and full name to handle both storage formats
@@ -424,7 +428,8 @@ exports.handler = async (event) => {
 
         const secondData = await secondResp.json();
         console.log('Anthropic second response:', JSON.stringify(secondData));
-        const reply = secondData?.content?.[0]?.text ?? JSON.stringify(secondData);
+        const textBlock = secondData?.content?.find((b) => b.type === 'text');
+        const reply = textBlock?.text ?? secondData?.content?.[0]?.text ?? JSON.stringify(secondData);
         return { statusCode: 200, body: JSON.stringify({ reply }) };
       }
     }
