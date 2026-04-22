@@ -379,34 +379,36 @@ exports.handler = async (event) => {
     console.log('Anthropic first response stop_reason:', firstData.stop_reason);
 
     if (firstData.stop_reason === 'tool_use') {
-      const toolUseBlock = firstData.content.find((b) => b.type === 'tool_use');
+      const toolUseBlocks = firstData.content.filter((b) => b.type === 'tool_use');
 
-      if (toolUseBlock) {
-        let toolResult;
+      if (toolUseBlocks.length > 0) {
+        // Execute all tool calls in parallel
+        const toolResults = await Promise.all(
+          toolUseBlocks.map(async (toolUseBlock) => {
+            let result;
+            if (toolUseBlock.name === 'create_contact') {
+              result = await handleCreateContact(toolUseBlock.input);
+            } else if (toolUseBlock.name === 'search_members') {
+              result = await handleSearchMembers(toolUseBlock.input);
+            } else {
+              result = { success: false, error: `Unknown tool: ${toolUseBlock.name}` };
+            }
+            console.log(`Tool result [${toolUseBlock.name}]:`, JSON.stringify(result));
+            return { tool_use_id: toolUseBlock.id, content: JSON.stringify(result) };
+          }),
+        );
 
-        if (toolUseBlock.name === 'create_contact') {
-          toolResult = await handleCreateContact(toolUseBlock.input);
-        } else if (toolUseBlock.name === 'search_members') {
-          toolResult = await handleSearchMembers(toolUseBlock.input);
-        } else {
-          toolResult = { success: false, error: `Unknown tool: ${toolUseBlock.name}` };
-        }
-
-        console.log('Tool result:', JSON.stringify(toolResult));
-
-        // Second call: send tool result back to Claude for a natural-language reply
+        // Second call: send all tool results back to Claude for a natural-language reply
         const followUpMessages = [
           ...messages,
           { role: 'assistant', content: firstData.content },
           {
             role: 'user',
-            content: [
-              {
-                type: 'tool_result',
-                tool_use_id: toolUseBlock.id,
-                content: JSON.stringify(toolResult),
-              },
-            ],
+            content: toolResults.map((r) => ({
+              type: 'tool_result',
+              tool_use_id: r.tool_use_id,
+              content: r.content,
+            })),
           },
         ];
 
