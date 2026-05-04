@@ -1,5 +1,6 @@
 import { useGetIdentity, useRecordContext, useTranslate } from "ra-core";
 import { EditButton } from "@/components/admin/edit-button";
+import { Mail } from "lucide-react";
 import { DeleteButton } from "@/components/admin";
 import { ReferenceManyField } from "@/components/admin/reference-many-field";
 import { ShowButton } from "@/components/admin/show-button";
@@ -32,6 +33,16 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
         ) : link === "show" ? (
           <ShowButton label="resources.contacts.action.show" />
         ) : null}
+          {record.email_jsonb && record.email_jsonb.length > 0 && (
+            <a
+              href={`mailto:${record.email_jsonb[0].email}`}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors ml-2"
+              title="Send email"
+            >
+              <Mail className="w-4 h-4" />
+              Send Email
+            </a>
+          )}
       </div>
 
       <AsideSection
