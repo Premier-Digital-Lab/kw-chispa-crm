@@ -86,6 +86,7 @@
   --avatar-7: oklch(0.88 0.09 10);
   --avatar-8: oklch(0.92 0.08 80);
   --avatar-9: oklch(0.86 0.09 270);
+  --crm-bg-gradient: linear-gradient(135deg, #ffffff 0%, #fff5f5 40%, #ffe8e8 70%, #ffffff 100%);
 }
 
 .dark {
@@ -130,7 +131,9 @@
   --avatar-7: oklch(0.38 0.14 10);
   --avatar-8: oklch(0.4 0.11 80);
   --avatar-9: oklch(0.36 0.13 270);
-}
+
+    --crm-bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a0505 40%, #120808 70%, #0a0a0a 100%);
+  }
 
 a,
 button {

@@ -13,6 +13,9 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
   return (
     <PendingApprovalGuard>
+      <div className="min-h-screen" style={{
+        background: 'var(--crm-bg-gradient)',
+      }}>
       <Header />
       <main className="max-w-screen-xl mx-auto pt-4 px-4" id="main-content">
         <ErrorBoundary FallbackComponent={Error}>
@@ -23,6 +26,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
       </main>
       <AIChatbot />
       <Notification />
+      </div>
     </PendingApprovalGuard>
   );
 };
