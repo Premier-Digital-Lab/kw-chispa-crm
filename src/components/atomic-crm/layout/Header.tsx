@@ -89,6 +89,7 @@ const Header = () => {
             </div>
           </div>
         </header>
+        <div style={{height: "3px", background: "linear-gradient(90deg, #CC0000 0%, #e6a817 50%, #CC0000 100%)"}} />
       </nav>
     </>
   );
