@@ -322,7 +322,7 @@ const IdentityTabInputs = () => {
       <TextInput source="last_name" validate={required()} helperText={false} />
       <TextInput source="title" helperText={false} />
       <ReferenceInput source="company_id" reference="companies" perPage={10}>
-        <AutocompleteCompanyInput label="resources.contacts.fields.company_id" />
+        <AutocompleteCompanyInput label="Market Center Name" />
       </ReferenceInput>
       <TextInput
         source="cell_number"
