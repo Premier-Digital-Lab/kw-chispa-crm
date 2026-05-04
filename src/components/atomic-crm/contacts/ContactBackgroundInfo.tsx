@@ -44,16 +44,7 @@ export const ContactBackgroundInfo = () => {
         </span>
       </div>
 
-      {isAdmin && (
-        <div className="inline-flex text-muted-foreground text-sm md:py-0.5">
-          {translate(
-            isCurrentUser
-              ? "resources.contacts.background.followed_by_you"
-              : "resources.contacts.background.followed_by",
-            { name: salesName },
-          )}
-        </div>
-      )}
+
     </div>
   );
 };
