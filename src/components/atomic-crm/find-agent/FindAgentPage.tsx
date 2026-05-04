@@ -368,7 +368,7 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
   const location = locationParts.join(", ");
 
   return (
-    <Card className="hover:bg-muted/50 transition-colors">
+    <Card className="hover:bg-muted/50 transition-colors border-l-3 border-l-[#CC0000]">
       <CardContent className="pt-4 pb-4">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3">
           {/* Name + role */}

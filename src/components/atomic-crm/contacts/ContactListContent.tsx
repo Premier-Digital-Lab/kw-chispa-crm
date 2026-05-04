@@ -111,7 +111,7 @@ const ContactItemContent = ({
     : null;
 
   return (
-    <div className="flex flex-row items-center pl-2 pr-4 py-2 hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl">
+    <div className="flex flex-row items-center pl-2 pr-4 py-2 hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl border-l-3 border-l-[#CC0000]">
       <div
         className="px-4 py-3 flex items-center cursor-pointer"
         onClick={(e) => handleToggleItem(contact.id, e)}
