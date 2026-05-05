@@ -104,6 +104,18 @@ export default function AIChatbot() {
                 </div>
               </div>
             ))}
+
+            {loading && (
+              <div className="text-left">
+                <div className="inline-block px-3 py-2 rounded-md bg-muted">
+                  <div className="flex gap-1 items-center">
+                    <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{animationDelay: "0ms"}} />
+                    <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{animationDelay: "150ms"}} />
+                    <span className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" style={{animationDelay: "300ms"}} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSend} className="px-3 py-2 border-t">
