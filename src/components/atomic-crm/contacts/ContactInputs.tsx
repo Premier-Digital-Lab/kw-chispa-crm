@@ -330,7 +330,7 @@ const IdentityTabInputs = () => {
         helperText={false}
       />
 
-      <ArrayInput source="email_jsonb" helperText={false}>
+      <ArrayInput source="email_jsonb" helperText={false} label="KW Email Address (Put your @kw.com email first. You can add a second email.)">
         <SimpleFormIterator
           inline
           disableReordering
@@ -359,6 +359,13 @@ const IdentityTabInputs = () => {
         </SimpleFormIterator>
       </ArrayInput>
 
+
+      <TextInput
+        source="kw_website"
+        label="KW Website"
+        helperText={false}
+        placeholder="e.g. https://yourname.kw.com"
+      />
       <TextInput source="background" multiline helperText={false} />
     </div>
   );
