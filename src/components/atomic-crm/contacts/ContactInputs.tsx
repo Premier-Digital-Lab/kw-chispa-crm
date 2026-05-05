@@ -11,6 +11,17 @@ import type { InputProps } from "ra-core";
 import type { ClipboardEventHandler, FocusEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
+
+const kwEmailValidator = (value: string, allValues: any) => {
+  if (!value) return undefined;
+  const emailList = allValues?.email_jsonb || [];
+  const idx = emailList.findIndex((e: any) => e?.email === value);
+  if (idx === 0 && !value.toLowerCase().endsWith("@kw.com")) {
+    return "First email must be a @kw.com address";
+  }
+  return undefined;
+};
+
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -343,7 +354,7 @@ const IdentityTabInputs = () => {
             helperText={false}
             label={false}
             placeholder={translate("resources.contacts.fields.email")}
-            validate={[required(), email()]}
+            validate={[required(), email(), kwEmailValidator]}
             onPaste={handleEmailPaste}
             onBlur={handleEmailBlur}
           />

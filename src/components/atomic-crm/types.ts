@@ -27,6 +27,7 @@ export type SignUpData = {
   gender?: string;
   title?: string;
   background?: string;
+  kw_website?: string;
   linkedin_url?: string;
   facebook_url?: string;
   instagram_url?: string;
@@ -153,6 +154,7 @@ export type Contact = {
   tiktok_url?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  kw_website?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {
