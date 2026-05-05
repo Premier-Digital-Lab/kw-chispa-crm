@@ -343,7 +343,7 @@ const IdentityTabInputs = () => {
             helperText={false}
             label={false}
             placeholder={translate("resources.contacts.fields.email")}
-            validate={email()}
+            validate={[required(), email()]}
             onPaste={handleEmailPaste}
             onBlur={handleEmailBlur}
           />
@@ -364,6 +364,7 @@ const IdentityTabInputs = () => {
         source="kw_website"
         label="KW Website"
         helperText={false}
+        validate={required()}
         placeholder="e.g. https://yourname.kw.com"
       />
       <TextInput source="background" multiline helperText={false} />
