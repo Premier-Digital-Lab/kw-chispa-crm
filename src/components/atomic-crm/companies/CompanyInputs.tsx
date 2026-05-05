@@ -36,7 +36,6 @@ export const CompanyInputs = () => {
       <div className={`flex gap-6 ${isMobile ? "flex-col" : "flex-row"}`}>
         <div className="flex flex-col gap-10 flex-1">
           <CompanyContactInputs />
-          <CompanyContextInputs />
         </div>
         <Separator orientation={isMobile ? "horizontal" : "vertical"} />
         <div className="flex flex-col gap-8 flex-1">
@@ -84,43 +83,11 @@ const CompanyContactInputs = () => {
         })}
       </h6>
       <TextInput source="website" helperText={false} validate={isUrl} />
-      <TextInput
-        source="linkedin_url"
-        helperText={false}
-        validate={isLinkedinUrl}
-      />
       <TextInput source="phone_number" helperText={false} />
     </div>
   );
 };
 
-const CompanyContextInputs = () => {
-  const translate = useTranslate();
-  const { companySectors } = useConfigurationContext();
-  const translatedSizes = sizes.map((size) => ({
-    ...size,
-    name: getTranslatedCompanySizeLabel(size, translate),
-  }));
-  return (
-    <div className="flex flex-col gap-4">
-      <h6 className="text-lg font-semibold">
-        {translate("resources.companies.field_categories.context", {
-          _: "Context",
-        })}
-      </h6>
-      <SelectInput
-        source="sector"
-        choices={companySectors}
-        optionText="label"
-        optionValue="value"
-        helperText={false}
-      />
-      <SelectInput source="size" choices={translatedSizes} helperText={false} />
-      <TextInput source="revenue" helperText={false} />
-      <TextInput source="tax_identifier" helperText={false} />
-    </div>
-  );
-};
 
 const CompanyAddressInputs = () => {
   const translate = useTranslate();
@@ -150,25 +117,6 @@ const CompanyAdditionalInformationInputs = () => {
         })}
       </h6>
       <TextInput source="description" multiline helperText={false} />
-      <ArrayInput source="context_links" helperText={false}>
-        <SimpleFormIterator disableReordering fullWidth getItemLabel={false}>
-          <TextInput
-            source=""
-            label={false}
-            helperText={false}
-            validate={isUrl}
-          />
-        </SimpleFormIterator>
-      </ArrayInput>
-      <ReferenceInput
-        source="sales_id"
-        reference="sales"
-        filter={{
-          "disabled@neq": true,
-        }}
-      >
-        <SelectInput helperText={false} optionText={saleOptionRenderer} />
-      </ReferenceInput>
     </div>
   );
 };
