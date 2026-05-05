@@ -49,7 +49,7 @@ const Header = () => {
                   src={lightModeLogo}
                   alt={title}
                 />
-                <h1 className="text-xl font-semibold">Central</h1>
+                <h1 className="text-2xl font-semibold">Central</h1>
               </Link>
               <div>
                 <nav className="flex">
