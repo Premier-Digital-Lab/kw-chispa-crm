@@ -511,18 +511,6 @@ const MembershipTabInputs = () => {
         />
       )}
       <BooleanInput source="has_newsletter" helperText={false} />
-      <ReferenceInput
-        reference="sales"
-        source="sales_id"
-        sort={{ field: "last_name", order: "ASC" }}
-        filter={{ "disabled@neq": true }}
-      >
-        <SelectInput
-          helperText={false}
-          optionText={(choice: any) => choice ? `${choice.first_name} ${choice.last_name}` : ""}
-          validate={required()}
-        />
-      </ReferenceInput>
     </div>
   );
 };

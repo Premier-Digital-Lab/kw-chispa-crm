@@ -21,6 +21,10 @@ export const ContactPersonalInfo = () => {
 
   return (
     <div>
+      <div className="py-1 text-sm font-medium">
+        {record.first_name} {record.last_name}
+      </div>
+
       <ArrayField source="email_jsonb">
         <SingleFieldList className="flex-col gap-y-0">
           <EmailRow />
@@ -31,23 +35,6 @@ export const ContactPersonalInfo = () => {
         <p className="pl-6 py-1 text-sm text-muted-foreground">
           {translate("resources.contacts.fields.has_newsletter")}
         </p>
-      )}
-
-      {record.linkedin_url && (
-        <PersonalInfoRow
-          icon={<Linkedin className="w-4 h-4 text-muted-foreground" />}
-          primary={
-            <a
-              className="underline hover:no-underline text-sm text-muted-foreground"
-              href={record.linkedin_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={record.linkedin_url}
-            >
-              LinkedIn
-            </a>
-          }
-        />
       )}
       <ArrayField source="phone_jsonb">
         <SingleFieldList className="flex-col gap-y-0">
