@@ -197,7 +197,7 @@ const exporter: Exporter<Contact> = async (records, fetchRelatedRecords) => {
         contact.sales_id != null
           ? `${sales[contact.sales_id].first_name} ${sales[contact.sales_id].last_name}`
           : undefined,
-      tags: contact.tags.map((tagId) => tags[tagId].name).join(", "),
+        tags: (contact.tags || []).map((tagId) => tags[tagId]?.name).join(", "),
       email_work: contact.email_jsonb?.find((email) => email.type === "Work")
         ?.email,
       email_home: contact.email_jsonb?.find((email) => email.type === "Home")
