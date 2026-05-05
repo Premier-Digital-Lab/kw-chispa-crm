@@ -78,7 +78,7 @@ export default function AIChatbot() {
       {open && (
         <div className="fixed bottom-20 right-4 z-50 w-[300px] h-[400px] bg-background border rounded-lg shadow-lg flex flex-col overflow-hidden">
           <div className="flex items-center justify-between px-3 py-2 border-b">
-            <div className="text-sm font-semibold">KW CHISPA AI</div>
+            <div className="text-sm font-semibold">KW CHISPA AI Chat</div>
             <Button size="icon" variant="ghost" onClick={() => setOpen(false)}>
               <X />
             </Button>
