@@ -151,13 +151,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     if (!email) return ok("no email");
 
-    if (newStatus === "Rejected" && oldStatus !== "Rejected") {
+    if (newStatus === "Inactive" && oldStatus !== "Inactive") {
       const id = await findSubscriberByEmail(email);
       if (id) await deleteSubscriber(id);
       return ok();
     }
 
-    if (newStatus === "Approved" && oldStatus !== "Approved") {
+    if (newStatus === "Active" && oldStatus !== "Active") {
       const subId = await upsertSubscriber(
         email,
         record?.first_name ?? "",
@@ -168,7 +168,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return ok();
     }
 
-    if (newStatus === "Approved" && newTier !== oldTier) {
+    if (newStatus === "Active" && newTier !== oldTier) {
       const id = await findSubscriberByEmail(email);
       if (id) {
         if (oldTier === "Free" && newTier === "Premier") {
