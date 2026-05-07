@@ -48,14 +48,17 @@ async function upsertSubscriber(
   email: string,
   firstName: string,
   lastName: string,
+  groupId?: string | null,
 ): Promise<string | null> {
+  const body: Record<string, unknown> = {
+    email,
+    fields: { name: firstName, last_name: lastName },
+  };
+  if (groupId) body.groups = [groupId];
   const res = await fetch(`${MAILERLITE_API_BASE}/subscribers`, {
     method: "POST",
     headers: mlHeaders(),
-    body: JSON.stringify({
-      email,
-      fields: { name: firstName, last_name: lastName },
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const text = await res.text();
@@ -77,8 +80,8 @@ async function findSubscriberByEmail(email: string): Promise<string | null> {
 
 async function addToGroup(subscriberId: string, groupId: string): Promise<void> {
   const res = await fetch(
-    `${MAILERLITE_API_BASE}/groups/${groupId}/subscribers/${subscriberId}`,
-    { method: "POST", headers: mlHeaders() },
+    `${MAILERLITE_API_BASE}/subscribers/${subscriberId}/groups/${groupId}`,
+    { method: "PUT", headers: mlHeaders() },
   );
   if (!res.ok) {
     const text = await res.text();
@@ -88,7 +91,7 @@ async function addToGroup(subscriberId: string, groupId: string): Promise<void> 
 
 async function removeFromGroup(subscriberId: string, groupId: string): Promise<void> {
   const res = await fetch(
-    `${MAILERLITE_API_BASE}/groups/${groupId}/subscribers/${subscriberId}`,
+    `${MAILERLITE_API_BASE}/subscribers/${subscriberId}/groups/${groupId}`,
     { method: "DELETE", headers: mlHeaders() },
   );
   if (!res.ok && res.status !== 404) {
@@ -158,13 +161,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     if (newStatus === "Active" && oldStatus !== "Active") {
-      const subId = await upsertSubscriber(
+      await upsertSubscriber(
         email,
         record?.first_name ?? "",
         record?.last_name ?? "",
+        groupForTier(newTier),
       );
-      const groupId = groupForTier(newTier);
-      if (subId && groupId) await addToGroup(subId, groupId);
       return ok();
     }
 
