@@ -53,6 +53,19 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
 
       <ContactBackgroundInfo />
 
+      {record.membership_tier && (
+        <AsideSection
+          title={translate("resources.contacts.field_categories.membership")}
+        >
+          <div className="flex gap-2 text-sm">
+            <span className="text-muted-foreground min-w-0">
+              {translate("resources.contacts.fields.membership_tier")}:
+            </span>
+            <span>{record.membership_tier}</span>
+          </div>
+        </AsideSection>
+      )}
+
       {isAdmin && (
         <AsideSection
           title={translate("resources.tags.name", { smart_count: 2 })}

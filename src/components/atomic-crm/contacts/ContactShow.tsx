@@ -231,6 +231,20 @@ const ContactShowContentMobile = () => {
                   <ContactBackgroundInfo />
                 </div>
               </div>
+              {record.membership_tier && (
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {translate("resources.contacts.field_categories.membership")}
+                  </h3>
+                  <Separator />
+                  <div className="mt-3 flex gap-2 text-sm">
+                    <span className="text-muted-foreground min-w-36 shrink-0">
+                      {translate("resources.contacts.fields.membership_tier")}
+                    </span>
+                    <span>{record.membership_tier}</span>
+                  </div>
+                </div>
+              )}
               <div>
                 <h3 className="text-lg font-semibold">
                   {translate("resources.tags.name", { smart_count: 2 })}
@@ -446,6 +460,17 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
           <ReadOnlyRow
             label={translate("resources.contacts.field_categories.mc_address")}
             value={mcAddressParts || null}
+          />
+        </ReadOnlySection>
+      )}
+
+      {record.membership_tier && (
+        <ReadOnlySection
+          title={translate("resources.contacts.field_categories.membership")}
+        >
+          <ReadOnlyRow
+            label={translate("resources.contacts.fields.membership_tier")}
+            value={record.membership_tier}
           />
         </ReadOnlySection>
       )}

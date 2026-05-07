@@ -513,6 +513,7 @@ const MembershipTabInputs = () => {
       {isAdmin && (
         <SelectInput
           source="membership_tier"
+          label="resources.contacts.fields.membership_tier"
           choices={membershipTierChoices}
           helperText={false}
           translateChoice={false}
