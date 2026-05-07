@@ -20,6 +20,12 @@ import { ATTACHMENTS_BUCKET } from "../commons/attachments";
 import { getIsInitialized } from "./authProvider";
 import { getSupabaseClient } from "./supabase";
 
+export type MailerLiteCampaign = {
+  id: string;
+  name: string;
+  subject: string | null;
+};
+
 const getBaseDataProvider = () =>
   supabaseDataProvider({
     instanceUrl: import.meta.env.VITE_SUPABASE_URL,
@@ -246,6 +252,26 @@ const getDataProviderWithCustomMethods = () => {
         previousData: { id: 1 },
       });
       return data.config as ConfigurationContextValue;
+    },
+    async getNewsletterCampaigns(): Promise<MailerLiteCampaign[]> {
+      const { data, error } = await getSupabaseClient().functions.invoke<{
+        data: MailerLiteCampaign[];
+      }>("mailerlite-campaigns", { method: "GET" });
+      if (error || !data) {
+        console.error("getNewsletterCampaigns.error", error);
+        throw new Error("Failed to fetch campaigns");
+      }
+      return data.data;
+    },
+    async sendNewsletterCampaign(campaignId: string): Promise<void> {
+      const { error } = await getSupabaseClient().functions.invoke(
+        "mailerlite-campaigns",
+        { method: "POST", body: { campaignId } },
+      );
+      if (error) {
+        console.error("sendNewsletterCampaign.error", error);
+        throw new Error("Failed to send campaign");
+      }
     },
   } satisfies DataProvider;
 };
