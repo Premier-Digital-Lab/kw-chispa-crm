@@ -38,7 +38,7 @@ export const RecurringEvents = () => (
         <img
           src={event.image}
           alt={event.name}
-          className="w-full h-44 object-cover"
+          className="w-full object-contain bg-muted"
         />
         <CardContent className="p-4 flex flex-col gap-3">
           <div className="flex items-start justify-between gap-2">
