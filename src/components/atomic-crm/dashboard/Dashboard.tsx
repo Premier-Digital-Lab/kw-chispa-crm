@@ -11,6 +11,7 @@ import { DealsChart } from "./DealsChart";
 import { SendNewsletterButton } from "./SendNewsletterButton";
 import { TasksList } from "./TasksList";
 import { UpcomingEvents } from "./UpcomingEvents";
+import { RecurringEvents } from "../events/RecurringEvents";
 import { Welcome } from "./Welcome";
 
 /**
@@ -136,6 +137,7 @@ export const Dashboard = () => {
       <div className="flex flex-col gap-6 mt-1">
         <MemberWelcomeDashboard />
         <UpcomingEvents />
+        <RecurringEvents />
       </div>
     );
   }
@@ -155,6 +157,7 @@ export const Dashboard = () => {
           {import.meta.env.VITE_IS_DEMO === "true" ? <Welcome /> : null}
           {totalDeal ? <DealsChart /> : null}
           <UpcomingEvents />
+          <RecurringEvents />
         </div>
       </div>
 

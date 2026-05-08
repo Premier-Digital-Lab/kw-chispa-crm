@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useTranslate } from "ra-core";
-import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin, RefreshCw } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { RecurringEvents } from "./RecurringEvents";
 
 type EventbriteEvent = {
   id: string;
@@ -281,6 +282,16 @@ export const EventsPage = () => {
           {translate("crm.events.no_events_this_month")}
         </p>
       )}
+
+      <div className="mt-8">
+        <div className="flex items-center gap-2 mb-4">
+          <RefreshCw className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-xl font-semibold text-muted-foreground">
+            Recurring Events
+          </h2>
+        </div>
+        <RecurringEvents />
+      </div>
     </div>
   );
 };
