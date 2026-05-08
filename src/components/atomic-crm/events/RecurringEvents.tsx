@@ -34,13 +34,13 @@ const RECURRING_EVENTS: RecurringEvent[] = [
 export const RecurringEvents = () => (
   <div className="flex flex-col gap-4 sm:flex-row">
     {RECURRING_EVENTS.map((event) => (
-      <Card key={event.name} className="flex-1 overflow-hidden">
+      <Card key={event.name} className="flex-1 overflow-hidden flex flex-col">
         <img
           src={event.image}
           alt={event.name}
-          className="w-full object-contain bg-muted"
+          className="w-full max-h-64 object-contain bg-muted"
         />
-        <CardContent className="p-4 flex flex-col gap-3">
+        <CardContent className="p-4 flex flex-col gap-3 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold text-sm leading-snug">{event.name}</h3>
             <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-[#CC0000] text-white text-xs font-medium px-2 py-0.5">
