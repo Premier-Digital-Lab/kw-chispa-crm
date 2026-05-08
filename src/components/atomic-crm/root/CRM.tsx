@@ -27,6 +27,8 @@ import { ConfirmationRequired } from "../login/ConfirmationRequired";
 import { PendingApprovalPage } from "../login/PendingApprovalPage";
 import { ImportPage } from "../misc/ImportPage";
 import { FindAgentPage } from "../find-agent/FindAgentPage";
+import { PremierPage } from "../premier/PremierPage";
+import { ContentGeneratorPage } from "../content-generator/ContentGeneratorPage";
 import {
   getAuthProvider as defaultAuthProviderBuilder,
   getDataProvider as defaultDataProviderBuilder,
@@ -280,6 +282,8 @@ const DesktopAdmin = (
         <Route path={SettingsPage.path} element={<SettingsPage />} />
         <Route path={ImportPage.path} element={<ImportPage />} />
         <Route path={FindAgentPage.path} element={<FindAgentPage />} />
+        <Route path={PremierPage.path} element={<PremierPage />} />
+        <Route path={ContentGeneratorPage.path} element={<ContentGeneratorPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -348,6 +352,8 @@ const MobileAdmin = (
             element={<SettingsPageMobile />}
           />
           <Route path={FindAgentPage.path} element={<FindAgentPage />} />
+          <Route path={PremierPage.path} element={<PremierPage />} />
+          <Route path={ContentGeneratorPage.path} element={<ContentGeneratorPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

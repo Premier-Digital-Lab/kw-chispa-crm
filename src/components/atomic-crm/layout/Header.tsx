@@ -1,4 +1,5 @@
-import { Import, Settings, User, Users } from "lucide-react";
+import type { ReactNode } from "react";
+import { Import, Settings, User, Users, Star, Sparkles } from "lucide-react";
 import { CanAccess, useTranslate, useUserMenu } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
 import { RefreshButton } from "@/components/admin/refresh-button";
@@ -25,6 +26,10 @@ const Header = () => {
     currentPath = "/companies";
   } else if (matchPath("/deals/*", location.pathname)) {
     currentPath = "/deals";
+  } else if (matchPath("/premier", location.pathname)) {
+    currentPath = "/premier";
+  } else if (matchPath("/content-generator", location.pathname)) {
+    currentPath = "/content-generator";
   } else {
     currentPath = false;
   }
@@ -70,6 +75,18 @@ const Header = () => {
                     to="/contacts"
                     isActive={currentPath === "/contacts"}
                   />
+                  <NavigationTab
+                    label={translate("crm.premier.nav_label")}
+                    to="/premier"
+                    isActive={currentPath === "/premier"}
+                    icon={<Star className="w-3.5 h-3.5" />}
+                  />
+                  <NavigationTab
+                    label={translate("crm.content_generator.nav_label")}
+                    to="/content-generator"
+                    isActive={currentPath === "/content-generator"}
+                    icon={<Sparkles className="w-3.5 h-3.5" />}
+                  />
                 </nav>
               </div>
               <div className="flex items-center">
@@ -99,19 +116,22 @@ const NavigationTab = ({
   label,
   to,
   isActive,
+  icon,
 }: {
   label: string;
   to: string;
   isActive: boolean;
+  icon?: ReactNode;
 }) => (
   <Link
     to={to}
-    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+    className={`flex items-center gap-1.5 px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
       isActive
         ? "text-secondary-foreground border-secondary-foreground"
         : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
     }`}
   >
+    {icon}
     {label}
   </Link>
 );

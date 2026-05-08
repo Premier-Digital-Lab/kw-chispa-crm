@@ -67,3 +67,12 @@ create policy "Enable update for admins" on public.configuration for update to a
 
 -- Favicons excluded domains
 create policy "Enable access for authenticated users only" on public.favicons_excluded_domains to authenticated using (true) with check (true);
+
+-- Premier Resources
+alter table public.premier_resources enable row level security;
+
+create policy "Premier resources: admin select" on public.premier_resources for select to authenticated using (public.is_admin());
+create policy "Premier resources: admin insert" on public.premier_resources for insert to authenticated with check (public.is_admin());
+create policy "Premier resources: admin update" on public.premier_resources for update to authenticated using (public.is_admin()) with check (public.is_admin());
+create policy "Premier resources: admin delete" on public.premier_resources for delete to authenticated using (public.is_admin());
+create policy "Premier resources: premier member select" on public.premier_resources for select to authenticated using (is_published = true and public.is_premier_member());
