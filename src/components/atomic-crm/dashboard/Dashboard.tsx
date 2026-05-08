@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 import type { Contact, ContactNote } from "../types";
-import { DashboardActivityLog } from "./DashboardActivityLog";
 import { DashboardStepper } from "./DashboardStepper";
 import { DealsChart } from "./DealsChart";
 import { SendNewsletterButton } from "./SendNewsletterButton";
@@ -133,7 +132,12 @@ export const Dashboard = () => {
 
   // Non-admin members see a simplified welcome page that directs them to the chat assistant.
   if (!identity?.administrator) {
-    return <MemberWelcomeDashboard />;
+    return (
+      <div className="flex flex-col gap-6 mt-1">
+        <MemberWelcomeDashboard />
+        <UpcomingEvents />
+      </div>
+    );
   }
 
   if (!totalContact) {
@@ -150,7 +154,6 @@ export const Dashboard = () => {
         <div className="flex flex-col gap-6">
           {import.meta.env.VITE_IS_DEMO === "true" ? <Welcome /> : null}
           {totalDeal ? <DealsChart /> : null}
-          <DashboardActivityLog />
           <UpcomingEvents />
         </div>
       </div>
