@@ -23,8 +23,7 @@ exports.handler = async () => {
   }
 
   try {
-    const today = new Date().toISOString().split('T')[0] + 'T00:00:00';
-    const url = `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue&page_size=50&start_date.range_start=${today}`;
+    const url = `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue&page_size=50`;
     const res = await fetch(
       url,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -36,21 +35,24 @@ exports.handler = async () => {
 
     const { events: rawEvents = [] } = await res.json();
 
-    const events = rawEvents.map((e) => ({
-      id: e.id,
-      name: e.name?.text ?? "",
-      description: e.description?.text ?? "",
-      start: e.start?.local ?? "",
-      end: e.end?.local ?? "",
-      url: e.url ?? "",
-      venue: e.venue
-        ? {
-            name: e.venue.name ?? "",
-            address: e.venue.address?.localized_address_display ?? "",
-          }
-        : null,
-      logo: e.logo?.original?.url ?? e.logo?.url ?? null,
-    }));
+    const now = new Date();
+    const events = rawEvents
+      .map((e) => ({
+        id: e.id,
+        name: e.name?.text ?? "",
+        description: e.description?.text ?? "",
+        start: e.start?.local ?? "",
+        end: e.end?.local ?? "",
+        url: e.url ?? "",
+        venue: e.venue
+          ? {
+              name: e.venue.name ?? "",
+              address: e.venue.address?.localized_address_display ?? "",
+            }
+          : null,
+        logo: e.logo?.original?.url ?? e.logo?.url ?? null,
+      }))
+      .filter((e) => e.start && new Date(e.start) >= now);
 
     cache = { data: events, expiresAt: now + CACHE_TTL_MS };
 
