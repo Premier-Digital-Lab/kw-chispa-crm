@@ -23,8 +23,10 @@ exports.handler = async () => {
   }
 
   try {
+    const today = new Date().toISOString().split('T')[0] + 'T00:00:00';
+    const url = `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue&page_size=50&start_date.range_start=${today}`;
     const res = await fetch(
-      `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue&page_size=50`,
+      url,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
