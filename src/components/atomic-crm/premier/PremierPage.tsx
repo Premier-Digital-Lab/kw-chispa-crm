@@ -374,7 +374,15 @@ const LockScreen = ({ message }: { message: string }) => (
       </div>
     </div>
     <h2 className="text-xl font-semibold mb-3">Premier Members Only</h2>
-    <p className="text-sm text-muted-foreground leading-relaxed">{message}</p>
+    <p className="text-sm text-muted-foreground leading-relaxed mb-5">{message}</p>
+    <a
+      href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGR4FB2RJ95CY"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block px-5 py-2.5 rounded-md text-sm font-medium bg-[#CC0000] text-white hover:bg-[#aa0000] transition-colors"
+    >
+      Upgrade to Premier
+    </a>
   </div>
 );
 
