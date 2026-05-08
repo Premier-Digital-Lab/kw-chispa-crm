@@ -577,5 +577,18 @@ export const frenchCrmMessages = {
       invalid_url: "Doit être une URL valide",
       invalid_linkedin_url: "L'URL doit provenir de linkedin.com",
     },
+    events: {
+      nav_label: "Événements",
+      title: "Événements",
+      view_on_eventbrite: "Voir sur Eventbrite",
+      upcoming_events: "Événements à venir",
+      view_all_events: "Voir tous les événements",
+      register: "S'inscrire",
+      loading: "Chargement des événements...",
+      error: "Impossible de charger les événements. Veuillez réessayer.",
+      no_events_this_month: "Aucun événement ce mois-ci",
+      no_upcoming_events: "Aucun événement à venir",
+      events_on_day: "Événements le %{date}",
+    },
   },
 } satisfies CrmMessages;

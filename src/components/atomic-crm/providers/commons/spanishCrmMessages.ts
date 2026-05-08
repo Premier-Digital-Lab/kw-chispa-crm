@@ -659,6 +659,12 @@ export const spanishCrmMessages: PartialCrmMessages = {
       view_on_eventbrite: "Ver en Eventbrite",
       upcoming_events: "Próximos Eventos",
       view_all_events: "Ver Todos los Eventos",
+      register: "Registrarse",
+      loading: "Cargando eventos...",
+      error: "No se pudieron cargar los eventos. Inténtalo más tarde.",
+      no_events_this_month: "Sin eventos este mes",
+      no_upcoming_events: "Sin próximos eventos",
+      events_on_day: "Eventos el %{date}",
     },
   },
 };

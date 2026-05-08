@@ -657,6 +657,12 @@ export const englishCrmMessages = {
       view_on_eventbrite: "View on Eventbrite",
       upcoming_events: "Upcoming Events",
       view_all_events: "View All Events",
+      register: "Register",
+      loading: "Loading events...",
+      error: "Could not load events. Please try again later.",
+      no_events_this_month: "No events this month",
+      no_upcoming_events: "No upcoming events",
+      events_on_day: "Events on %{date}",
     },
   },
 } as const;
