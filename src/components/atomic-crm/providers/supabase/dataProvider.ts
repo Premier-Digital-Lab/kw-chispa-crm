@@ -371,7 +371,6 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
         "company_name",
         "title",
         "email",
-        "phone",
         "background",
       ])(params);
     },
