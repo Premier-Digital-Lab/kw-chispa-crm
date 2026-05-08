@@ -653,5 +653,12 @@ export const spanishCrmMessages: PartialCrmMessages = {
       try_another: "Generar Otro",
       error: "Ocurrió un error. Por favor intenta de nuevo.",
     },
+    events: {
+      nav_label: "Eventos",
+      title: "Eventos",
+      view_on_eventbrite: "Ver en Eventbrite",
+      upcoming_events: "Próximos Eventos",
+      view_all_events: "Ver Todos los Eventos",
+    },
   },
 };

@@ -651,6 +651,13 @@ export const englishCrmMessages = {
       try_another: "Generate Another",
       error: "An error occurred. Please try again.",
     },
+    events: {
+      nav_label: "Events",
+      title: "Events",
+      view_on_eventbrite: "View on Eventbrite",
+      upcoming_events: "Upcoming Events",
+      view_all_events: "View All Events",
+    },
   },
 } as const;
 

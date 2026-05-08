@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Import, Settings, User, Users, Star, Sparkles } from "lucide-react";
+import { Calendar, Import, Settings, User, Users, Star, Sparkles } from "lucide-react";
 import { CanAccess, useTranslate, useUserMenu } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
 import { RefreshButton } from "@/components/admin/refresh-button";
@@ -30,6 +30,8 @@ const Header = () => {
     currentPath = "/premier";
   } else if (matchPath("/content-generator", location.pathname)) {
     currentPath = "/content-generator";
+  } else if (matchPath("/events", location.pathname)) {
+    currentPath = "/events";
   } else {
     currentPath = false;
   }
@@ -86,6 +88,12 @@ const Header = () => {
                     to="/content-generator"
                     isActive={currentPath === "/content-generator"}
                     icon={<Sparkles className="w-3.5 h-3.5" />}
+                  />
+                  <NavigationTab
+                    label={translate("crm.events.nav_label")}
+                    to="/events"
+                    isActive={currentPath === "/events"}
+                    icon={<Calendar className="w-3.5 h-3.5" />}
                   />
                 </nav>
               </div>

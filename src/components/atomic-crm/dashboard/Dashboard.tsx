@@ -11,6 +11,7 @@ import { DashboardStepper } from "./DashboardStepper";
 import { DealsChart } from "./DealsChart";
 import { SendNewsletterButton } from "./SendNewsletterButton";
 import { TasksList } from "./TasksList";
+import { UpcomingEvents } from "./UpcomingEvents";
 import { Welcome } from "./Welcome";
 
 /**
@@ -150,6 +151,7 @@ export const Dashboard = () => {
           {import.meta.env.VITE_IS_DEMO === "true" ? <Welcome /> : null}
           {totalDeal ? <DealsChart /> : null}
           <DashboardActivityLog />
+          <UpcomingEvents />
         </div>
       </div>
 
