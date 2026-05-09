@@ -366,25 +366,63 @@ PremierPage.path = "/premier";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const LockScreen = ({ message }: { message: string }) => (
-  <div className="max-w-md mx-auto py-24 px-4 text-center">
-    <div className="flex justify-center mb-4">
-      <div className="rounded-full bg-muted p-5">
-        <Lock className="w-10 h-10 text-muted-foreground" />
+const PAYPAL_PLAN_ID = "P-827282237D6907028MLSAPII";
+
+const LockScreen = ({ message }: { message: string }) => {
+  const [success, setSuccess] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
+
+  useEffect(() => {
+    if (document.getElementById("paypal-sdk")) {
+      setSdkReady(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "paypal-sdk";
+    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_CLIENT_ID}&vault=true&intent=subscription`;
+    script.onload = () => setSdkReady(true);
+    document.body.appendChild(script);
+  }, []);
+
+  useEffect(() => {
+    if (!sdkReady || success) return;
+    // @ts-expect-error paypal global injected by SDK script
+    window.paypal
+      .Buttons({
+        createSubscription: (
+          _data: unknown,
+          actions: { subscription: { create: (o: { plan_id: string }) => Promise<string> } },
+        ) => actions.subscription.create({ plan_id: PAYPAL_PLAN_ID }),
+        onApprove: () => setSuccess(true),
+        style: { color: "blue", shape: "rect", label: "subscribe" },
+      })
+      .render("#paypal-button-container");
+  }, [sdkReady, success]);
+
+  if (success) {
+    return (
+      <div className="max-w-md mx-auto py-24 px-4 text-center">
+        <p className="text-sm text-green-600 font-medium leading-relaxed">
+          Payment successful! Your Premier membership is being activated. Please
+          refresh the page in a moment.
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md mx-auto py-24 px-4 text-center">
+      <div className="flex justify-center mb-4">
+        <div className="rounded-full bg-muted p-5">
+          <Lock className="w-10 h-10 text-muted-foreground" />
+        </div>
+      </div>
+      <h2 className="text-xl font-semibold mb-3">Premier Members Only</h2>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{message}</p>
+      <div id="paypal-button-container" />
     </div>
-    <h2 className="text-xl font-semibold mb-3">Premier Members Only</h2>
-    <p className="text-sm text-muted-foreground leading-relaxed mb-5">{message}</p>
-    <a
-      href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGR4FB2RJ95CY"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-block px-5 py-2.5 rounded-md text-sm font-medium bg-[#CC0000] text-white hover:bg-[#aa0000] transition-colors"
-    >
-      Upgrade to Premier
-    </a>
-  </div>
-);
+  );
+};
 
 const ResourceCard = ({
   resource,
