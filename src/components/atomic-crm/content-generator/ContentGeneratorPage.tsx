@@ -55,7 +55,7 @@ export const ContentGeneratorPage = () => {
   return (
     <div style={{ position: "fixed", top: "51px", left: 0, right: 0, bottom: 0 }}>
       <iframe
-        src="https://web-production-283a7.up.railway.app"
+        src={`https://web-production-283a7.up.railway.app?user_id=${identity?.id}`}
         style={{ width: "100%", height: "100%", border: "none", display: "block" }}
         title="Content Generator"
       />
