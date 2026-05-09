@@ -379,8 +379,9 @@ const LockScreen = ({ message }: { message: string }) => {
     }
     const script = document.createElement("script");
     script.id = "paypal-sdk";
-    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_CLIENT_ID}&vault=true&intent=subscription`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=AQwl-kcSXaZ8ymAlMl-LCzUsKXDdKm92lyIKoOds5C-Y5T_NVauwPFGN4Y2Y9sbJstBGduucFDwsLkS7&vault=true&intent=subscription`;
     script.onload = () => setSdkReady(true);
+    script.onerror = () => console.error('PayPal SDK failed to load');
     document.body.appendChild(script);
   }, []);
 
