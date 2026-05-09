@@ -36,6 +36,15 @@ const usePremierAccess = (identityId: number | undefined, isAdmin: boolean) => {
 export const ContentGeneratorPage = () => {
   const translate = useTranslate();
   const { identity, isPending: identityPending } = useGetIdentity();
+  const [authUUID, setAuthUUID] = useState<string>("");
+
+  useEffect(() => {
+    getSupabaseClient()
+      .auth.getSession()
+      .then(({ data }) => {
+        setAuthUUID(data.session?.user?.id ?? "");
+      });
+  }, []);
 
   const isAdmin = !!identity?.administrator;
   const { isPremier, isChecking } = usePremierAccess(identity?.id, isAdmin);
@@ -55,7 +64,7 @@ export const ContentGeneratorPage = () => {
   return (
     <div style={{ position: "fixed", top: "51px", left: 0, right: 0, bottom: 0 }}>
       <iframe
-        src={`https://web-production-283a7.up.railway.app?user_id=${identity?.id}`}
+        src={`https://web-production-283a7.up.railway.app?user_id=${authUUID}`}
         style={{ width: "100%", height: "100%", border: "none", display: "block" }}
         title="Content Generator"
       />
