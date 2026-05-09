@@ -12,9 +12,6 @@ export type ContactImportSchema = {
   email_work: string;
   email_home: string;
   email_other: string;
-  phone_work: string;
-  phone_home: string;
-  phone_other: string;
   background: string;
   avatar: string;
   first_seen: string;
@@ -22,6 +19,28 @@ export type ContactImportSchema = {
   has_newsletter: string;
   tags: string;
   linkedin_url: string;
+  cell_number: string;
+  agent_role: string;
+  market_center_name: string;
+  mc_street_address: string;
+  mc_city: string;
+  mc_state: string;
+  mc_zip_code: string;
+  market_center_team_leader: string;
+  market_center_tl_phone: string;
+  market_center_tl_email: string;
+  languages_spoken: string;
+  countries_served: string;
+  cities_served: string;
+  counties_served: string;
+  states_served: string;
+  facebook_url: string;
+  instagram_url: string;
+  tiktok_url: string;
+  kw_website: string;
+  membership_tier: string;
+  join_date: string;
+  member_status: string;
 };
 
 export function useContactImport() {
@@ -92,9 +111,6 @@ export function useContactImport() {
             email_work,
             email_home,
             email_other,
-            phone_work,
-            phone_home,
-            phone_other,
             background,
             first_seen,
             last_seen,
@@ -102,17 +118,34 @@ export function useContactImport() {
             company: companyName,
             tags: tagNames,
             linkedin_url,
+            cell_number,
+            agent_role,
+            market_center_name,
+            mc_street_address,
+            mc_city,
+            mc_state,
+            mc_zip_code,
+            market_center_team_leader,
+            market_center_tl_phone,
+            market_center_tl_email,
+            languages_spoken,
+            countries_served,
+            cities_served,
+            counties_served,
+            states_served,
+            facebook_url,
+            instagram_url,
+            tiktok_url,
+            kw_website,
+            membership_tier,
+            join_date,
+            member_status,
           }) => {
             const email_jsonb = [
               { email: email_work, type: "Work" },
               { email: email_home, type: "Home" },
               { email: email_other, type: "Other" },
             ].filter(({ email }) => email);
-            const phone_jsonb = [
-              { number: phone_work, type: "Work" },
-              { number: phone_home, type: "Home" },
-              { number: phone_other, type: "Other" },
-            ].filter(({ number }) => number);
             const company = companyName?.trim()
               ? companies.get(companyName.trim())
               : undefined;
@@ -127,7 +160,6 @@ export function useContactImport() {
                 gender,
                 title,
                 email_jsonb,
-                phone_jsonb,
                 background,
                 first_seen: first_seen
                   ? new Date(first_seen).toISOString()
@@ -139,7 +171,29 @@ export function useContactImport() {
                 company_id: company?.id,
                 tags: tagList.map((tag) => tag.id),
                 sales_id: user?.identity?.id,
-                linkedin_url,
+                linkedin_url: linkedin_url || undefined,
+                cell_number: cell_number || undefined,
+                agent_role: agent_role || undefined,
+                market_center_name: market_center_name || undefined,
+                mc_street_address: mc_street_address || undefined,
+                mc_city: mc_city || undefined,
+                mc_state: mc_state || undefined,
+                mc_zip_code: mc_zip_code || undefined,
+                market_center_team_leader: market_center_team_leader || undefined,
+                market_center_tl_phone: market_center_tl_phone || undefined,
+                market_center_tl_email: market_center_tl_email || undefined,
+                languages_spoken: parseArray(languages_spoken),
+                countries_served: parseArray(countries_served),
+                cities_served: parseArray(cities_served),
+                counties_served: parseArray(counties_served),
+                states_served: parseArray(states_served),
+                facebook_url: facebook_url || undefined,
+                instagram_url: instagram_url || undefined,
+                tiktok_url: tiktok_url || undefined,
+                kw_website: kw_website || undefined,
+                membership_tier: membership_tier || undefined,
+                join_date: join_date || undefined,
+                member_status: member_status || undefined,
               },
             });
           },
@@ -201,3 +255,6 @@ const parseTags = (tags: string) =>
     ?.split(",")
     ?.map((tag: string) => tag.trim())
     ?.filter((tag: string) => tag) ?? [];
+
+const parseArray = (value: string): string[] =>
+  value?.split("|").map((s) => s.trim()).filter(Boolean) ?? [];
