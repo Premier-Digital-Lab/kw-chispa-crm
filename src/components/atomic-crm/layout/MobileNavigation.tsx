@@ -89,7 +89,6 @@ export const MobileNavigation = () => {
             label={translate("resources.tasks.name", { smart_count: 2 })}
             isActive={currentPath === "/tasks"}
           />
-          <SettingsButton />
           <NavigationButton
             href="/premier"
             Icon={Star}
@@ -108,6 +107,7 @@ export const MobileNavigation = () => {
             label={translate("crm.events.nav_label")}
             isActive={currentPath === "/events"}
           />
+          <SettingsButton />
         </>
       </div>
     </nav>
