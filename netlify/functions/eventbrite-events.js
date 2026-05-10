@@ -51,7 +51,7 @@ exports.handler = async () => {
               address: e.venue.address?.localized_address_display ?? "",
             }
           : null,
-        logo: e.logo?.original?.url ?? e.logo?.url ?? null,
+        logo: e.logo?.original?.url ?? e.logo?.["1024x1024"]?.url ?? e.logo?.["480x270"]?.url ?? e.logo?.url ?? null,
       }))
       .filter((e) => e.start && new Date(e.start) >= now);
 

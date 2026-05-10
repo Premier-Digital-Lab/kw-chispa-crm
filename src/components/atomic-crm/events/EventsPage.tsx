@@ -333,7 +333,7 @@ export const EventsPage = () => {
                     <img
                       src={event.logo}
                       alt={event.name}
-                      className="w-full max-h-[200px] object-cover"
+                      className="w-full max-h-[300px] object-contain bg-black"
                     />
                   )}
                   <CardContent className="p-4">
