@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslate } from "ra-core";
-import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin, RefreshCw } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin, RefreshCw, Star } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,19 @@ function truncate(text: string, max = 160): string {
   return text.length <= max ? text : text.slice(0, max).trimEnd() + "…";
 }
 
+function formatEventDateTime(dateStr: string): string {
+  if (!dateStr) return "";
+  const [datePart, timePart] = dateStr.split("T");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [h, min] = (timePart ?? "00:00").split(":").map(Number);
+  const date = new Date(y, m - 1, d, h, min);
+  return (
+    date.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) +
+    " · " +
+    date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+  );
+}
+
 export const EventsPage = () => {
   const translate = useTranslate();
   const today = new Date();
@@ -110,6 +123,10 @@ export const EventsPage = () => {
   const selectedEvents = selectedDay
     ? getEventsOnDay(events, year, month, selectedDay)
     : [];
+
+  const featuredEvents = events
+    .filter((e) => events.filter((ev) => ev.name === e.name).length === 1)
+    .sort((a, b) => a.start.localeCompare(b.start));
 
   const goToPrevMonth = () => {
     setSelectedDay(null);
@@ -281,6 +298,58 @@ export const EventsPage = () => {
         <p className="mt-8 text-center text-sm text-muted-foreground">
           {translate("crm.events.no_events_this_month")}
         </p>
+      )}
+
+      {!loading && !error && (
+        <div className="mt-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Star className="w-5 h-5 text-muted-foreground" />
+            <h2 className="text-xl font-semibold text-muted-foreground">
+              Featured Events
+            </h2>
+          </div>
+          {featuredEvents.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No upcoming featured events</p>
+          ) : (
+            <div className="space-y-3">
+              {featuredEvents.map((event) => (
+                <Card key={event.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-base leading-snug mb-1.5">
+                          {event.name}
+                        </h4>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 shrink-0" />
+                            {formatEventDateTime(event.start)}
+                          </span>
+                          {event.venue && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3.5 h-3.5 shrink-0" />
+                              {event.venue.name}
+                              {event.venue.address && ` · ${event.venue.address}`}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="shrink-0 bg-[#CC0000] hover:bg-[#aa0000] text-white"
+                      >
+                        <a href={event.url} target="_blank" rel="noopener noreferrer">
+                          Register on Eventbrite
+                        </a>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       <div className="mt-8">
