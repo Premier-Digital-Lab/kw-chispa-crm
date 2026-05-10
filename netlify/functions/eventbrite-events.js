@@ -43,6 +43,7 @@ exports.handler = async () => {
         description: e.description?.text ?? "",
         start: e.start?.local ?? "",
         end: e.end?.local ?? "",
+        timezone: e.start?.timezone ?? "",
         url: e.url ?? "",
         venue: e.venue
           ? {

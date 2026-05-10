@@ -12,6 +12,7 @@ type EventbriteEvent = {
   description: string;
   start: string;
   end: string;
+  timezone: string;
   url: string;
   venue: { name: string; address: string } | null;
   logo: string | null;
@@ -58,17 +59,31 @@ function truncate(text: string, max = 160): string {
   return text.length <= max ? text : text.slice(0, max).trimEnd() + "…";
 }
 
-function formatEventDateTime(dateStr: string): string {
+const TIMEZONE_LABELS: Record<string, string> = {
+  "America/New_York": "EST",
+  "America/Chicago": "CST",
+  "America/Denver": "MST",
+  "America/Phoenix": "MST",
+  "America/Los_Angeles": "PST",
+  "America/Anchorage": "AKST",
+  "Pacific/Honolulu": "HST",
+};
+
+function getTimezoneLabel(tz: string): string {
+  return TIMEZONE_LABELS[tz] ?? tz;
+}
+
+function formatEventDateTime(dateStr: string, tz = ""): string {
   if (!dateStr) return "";
   const [datePart, timePart] = dateStr.split("T");
   const [y, m, d] = datePart.split("-").map(Number);
   const [h, min] = (timePart ?? "00:00").split(":").map(Number);
   const date = new Date(y, m - 1, d, h, min);
-  return (
+  const timeStr =
     date.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) +
     " · " +
-    date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
-  );
+    date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return tz ? `${timeStr} ${getTimezoneLabel(tz)}` : timeStr;
 }
 
 export const EventsPage = () => {
@@ -313,7 +328,14 @@ export const EventsPage = () => {
           ) : (
             <div className="space-y-3">
               {featuredEvents.map((event) => (
-                <Card key={event.id}>
+                <Card key={event.id} className="overflow-hidden">
+                  {event.logo && (
+                    <img
+                      src={event.logo}
+                      alt={event.name}
+                      className="w-full max-h-[200px] object-cover"
+                    />
+                  )}
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       <div className="flex-1 min-w-0">
@@ -323,7 +345,7 @@ export const EventsPage = () => {
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Clock className="w-3.5 h-3.5 shrink-0" />
-                            {formatEventDateTime(event.start)}
+                            {formatEventDateTime(event.start, event.timezone)}
                           </span>
                           {event.venue && (
                             <span className="flex items-center gap-1">
