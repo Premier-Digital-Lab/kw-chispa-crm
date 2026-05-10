@@ -58,7 +58,7 @@ const Header = () => {
                 />
                 <h1 className="text-2xl font-semibold">Central</h1>
               </Link>
-              <div>
+              <div className="flex-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <nav className="flex">
                   <NavigationTab
                     label={translate("ra.page.dashboard")}
@@ -133,7 +133,7 @@ const NavigationTab = ({
 }) => (
   <Link
     to={to}
-    className={`flex items-center gap-1.5 px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+    className={`flex items-center gap-1.5 px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
       isActive
         ? "text-secondary-foreground border-secondary-foreground"
         : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"

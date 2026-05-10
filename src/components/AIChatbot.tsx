@@ -62,13 +62,12 @@ export default function AIChatbot() {
   return (
     <>
       {/* Floating button */}
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-[9999]">
         <Button
           size="icon"
-          variant="secondary"
           onClick={() => setOpen((v) => !v)}
           aria-label="Open chat"
-          className="rounded-full p-2"
+          className="rounded-full h-12 w-12 bg-[#CC0000] hover:bg-[#aa0000] text-white shadow-lg"
         >
           <MessageCircle />
         </Button>
