@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Home, ListTodo, Plus, Search, Settings, Users } from "lucide-react";
+import { Calendar, Home, ListTodo, Plus, Search, Settings, Sparkles, Star, Users } from "lucide-react";
 import { useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useMatch } from "react-router";
 import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
@@ -31,6 +31,12 @@ export const MobileNavigation = () => {
     currentPath = "/tasks";
   } else if (matchPath("/deals/*", location.pathname)) {
     currentPath = "/deals";
+  } else if (matchPath("/premier", location.pathname)) {
+    currentPath = "/premier";
+  } else if (matchPath("/content-generator", location.pathname)) {
+    currentPath = "/content-generator";
+  } else if (matchPath("/events", location.pathname)) {
+    currentPath = "/events";
   } else {
     currentPath = false;
   }
@@ -54,7 +60,7 @@ export const MobileNavigation = () => {
           "calc(var(--spacing)) * 6" + (isPwa && isWebiOS ? " + 15px" : ""),
       }}
     >
-      <div className="flex justify-center">
+      <div className="flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <>
           <NavigationButton
             href="/"
@@ -84,6 +90,24 @@ export const MobileNavigation = () => {
             isActive={currentPath === "/tasks"}
           />
           <SettingsButton />
+          <NavigationButton
+            href="/premier"
+            Icon={Star}
+            label={translate("crm.premier.nav_label")}
+            isActive={currentPath === "/premier"}
+          />
+          <NavigationButton
+            href="/content-generator"
+            Icon={Sparkles}
+            label={translate("crm.content_generator.nav_label")}
+            isActive={currentPath === "/content-generator"}
+          />
+          <NavigationButton
+            href="/events"
+            Icon={Calendar}
+            label={translate("crm.events.nav_label")}
+            isActive={currentPath === "/events"}
+          />
         </>
       </div>
     </nav>
