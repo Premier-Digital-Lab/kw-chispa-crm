@@ -3,7 +3,6 @@ import MobileHeader from "../layout/MobileHeader";
 import { MobileContent } from "../layout/MobileContent";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { Dashboard } from "./Dashboard";
-import { DashboardActivityLog } from "./DashboardActivityLog";
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const { darkModeLogo, lightModeLogo, title } = useConfigurationContext();
@@ -32,10 +31,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 export const MobileDashboard = () => {
   return (
     <Wrapper>
-      <div className="flex flex-col gap-6">
-        <Dashboard />
-        <DashboardActivityLog />
-      </div>
+      <Dashboard />
     </Wrapper>
   );
 };
