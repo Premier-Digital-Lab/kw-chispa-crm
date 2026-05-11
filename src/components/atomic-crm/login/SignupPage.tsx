@@ -43,6 +43,7 @@ const FIELD_TO_TAB: Record<string, string> = {
   cell_number: "account",
   market_center_name: "kw_info",
   agent_role: "kw_info",
+  kw_website: "kw_info",
   languages_spoken: "service_areas",
   cities_served: "service_areas",
   counties_served: "service_areas",
@@ -169,7 +170,7 @@ export const SignupPage = () => {
               sanitizeEmptyValues={false}
               defaultValues={{
                 membership_tier: "Free",
-                has_newsletter: false,
+                has_newsletter: true,
                 gender: contactGender[0].value,
               }}
             >
@@ -338,6 +339,11 @@ const AccountTabInputs = () => (
   </div>
 );
 
+const httpsUrl = (value: string) =>
+  value && !value.startsWith("https://")
+    ? 'Must start with "https://"'
+    : undefined;
+
 const SignupKwInfoTabInputs = () => {
   const translate = useTranslate();
 
@@ -385,6 +391,11 @@ const SignupKwInfoTabInputs = () => {
           </div>
         </div>
       </div>
+      <TextInput
+        source="kw_website"
+        validate={[required(), httpsUrl]}
+        helperText={false}
+      />
     </div>
   );
 };

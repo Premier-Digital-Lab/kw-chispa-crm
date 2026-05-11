@@ -1,11 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   useDataProvider,
+  useGetList,
   useNotify,
   useRecordContext,
   useRefresh,
   useTranslate,
 } from "ra-core";
+import { Link } from "react-router";
 import { CreateButton } from "@/components/admin/create-button";
 import { DataTable } from "@/components/admin/data-table";
 import { DateField } from "@/components/admin/date-field";
@@ -19,6 +21,29 @@ import { Button } from "@/components/ui/button";
 import type { CrmDataProvider } from "../providers/types";
 import type { Sale } from "../types";
 import { TopToolbar } from "../layout/TopToolbar";
+
+const NameLinkField = (_props: { label?: string | boolean }) => {
+  const record = useRecordContext<Sale>();
+  const { data: contacts } = useGetList(
+    "contacts",
+    {
+      filter: { sales_id: record?.id },
+      pagination: { page: 1, perPage: 1 },
+      sort: { field: "id", order: "ASC" },
+    },
+    { enabled: !!record?.id },
+  );
+  if (!record) return null;
+  const name = `${record.first_name} ${record.last_name}`;
+  const contactId = contacts?.[0]?.id;
+  return contactId ? (
+    <Link to={`/contacts/${contactId}/show`} className="font-medium hover:underline">
+      {name}
+    </Link>
+  ) : (
+    <span>{name}</span>
+  );
+};
 
 const SalesListActions = () => (
   <TopToolbar>
@@ -151,8 +176,9 @@ export function SalesList() {
       sort={{ field: "first_name", order: "ASC" }}
     >
       <DataTable>
-        <DataTable.Col source="first_name" />
-        <DataTable.Col source="last_name" />
+        <DataTable.Col source="first_name" label="resources.sales.fields.first_name">
+          <NameLinkField />
+        </DataTable.Col>
         <DataTable.Col source="email" />
         <DataTable.Col source="created_at" label="Signup Date">
           <DateField source="created_at" />
