@@ -7,7 +7,6 @@ import {
   useRefresh,
   useTranslate,
 } from "ra-core";
-import { Link } from "react-router";
 import { CreateButton } from "@/components/admin/create-button";
 import { DataTable } from "@/components/admin/data-table";
 import { DateField } from "@/components/admin/date-field";
@@ -37,9 +36,15 @@ const NameLinkField = (_props: { label?: string | boolean }) => {
   const name = `${record.first_name} ${record.last_name}`;
   const contactId = contacts?.[0]?.id;
   return contactId ? (
-    <Link to={`/contacts/${contactId}/show`} className="font-medium hover:underline">
+    <a
+      href={`/contacts/${contactId}/show`}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="font-medium hover:underline"
+    >
       {name}
-    </Link>
+    </a>
   ) : (
     <span>{name}</span>
   );
