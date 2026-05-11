@@ -19,7 +19,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -104,7 +103,10 @@ const MemberProfileDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col gap-0 overflow-hidden p-0">
+      <DialogContent
+        className="max-w-2xl max-h-[85vh] flex flex-col gap-0 overflow-hidden p-0"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DialogHeader className="px-6 pt-6 pb-4 shrink-0 border-b">
           <DialogTitle className="text-xl">
             {contact.first_name} {contact.last_name}
@@ -174,11 +176,13 @@ const MemberProfileDialog = ({
         </div>
 
         <DialogFooter className="px-6 py-4 border-t shrink-0">
-          <DialogClose asChild>
-            <Button variant="outline" type="button">
-              Close
-            </Button>
-          </DialogClose>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onOpenChange(false); }}
+          >
+            Close
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
