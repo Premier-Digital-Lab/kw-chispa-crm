@@ -44,6 +44,11 @@ const FIELD_TO_TAB: Record<string, string> = {
   market_center_name: "kw_info",
   agent_role: "kw_info",
   kw_website: "kw_info",
+  mc_street_address: "kw_info",
+  mc_city: "kw_info",
+  mc_state: "kw_info",
+  mc_zip_code: "kw_info",
+  mc_country: "kw_info",
   languages_spoken: "service_areas",
   cities_served: "service_areas",
   counties_served: "service_areas",
@@ -91,16 +96,8 @@ export const SignupPage = () => {
           });
           queryClient.invalidateQueries({ queryKey: ["auth", "canAccess"] });
         })
-        .catch((err) => {
-          if (err.code === "email_not_confirmed") {
-            navigate(ConfirmationRequired.path);
-          } else {
-            notify("crm.auth.sign_in_failed", {
-              type: "error",
-              messageArgs: { _: "Failed to log in." },
-            });
-            navigate("/login");
-          }
+        .catch(() => {
+          navigate(ConfirmationRequired.path);
         });
     },
     onError: (error) => {
