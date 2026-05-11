@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
 import {
   useDataProvider,
   useGetList,
@@ -174,24 +173,12 @@ const MemberProfileDialog = ({
           </div>
         </div>
 
-        <DialogFooter className="px-6 py-4 border-t shrink-0 sm:justify-between">
+        <DialogFooter className="px-6 py-4 border-t shrink-0">
           <DialogClose asChild>
             <Button variant="outline" type="button">
               Close
             </Button>
           </DialogClose>
-          {contact.id && (
-            <Button asChild variant="default" type="button">
-              <a
-                href={`/contacts/${contact.id}/show`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="w-4 h-4 mr-1" />
-                View Full Profile
-              </a>
-            </Button>
-          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
