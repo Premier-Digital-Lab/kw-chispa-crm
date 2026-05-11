@@ -334,7 +334,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
     <div className="flex gap-2">
       <Button
         size="sm"
-        onClick={() => approve()}
+        onClick={(e) => { e.stopPropagation(); approve(); }}
         disabled={busy}
       >
         {isApproving ? "Approving…" : "Approve"}
@@ -342,7 +342,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
       <Button
         size="sm"
         variant="outline"
-        onClick={() => reject()}
+        onClick={(e) => { e.stopPropagation(); reject(); }}
         disabled={busy}
       >
         {isRejecting ? "Rejecting…" : "Reject"}
