@@ -11,7 +11,7 @@ import {
   useRecordContext,
   useTranslate,
 } from "ra-core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormState } from "react-hook-form";
 import { RecordField } from "@/components/admin/record-field";
 import { TextInput } from "@/components/admin/text-input";
@@ -161,9 +161,16 @@ const ProfileForm = ({
       });
     },
   });
+  const [authEmail, setAuthEmail] = useState<string>("");
+  useEffect(() => {
+    getSupabaseClient().auth.getSession().then(({ data }) => {
+      setAuthEmail(data.session?.user?.email ?? "");
+    });
+  }, []);
+
   if (!identity) return null;
 
-  const isSuperAdmin = identity?.email === "lortiz@kw.com";
+  const isSuperAdmin = authEmail === "lortiz@kw.com";
 
   const handleClickOpenPasswordChange = () => {
     updatePassword();

@@ -23,7 +23,7 @@ exports.handler = async () => {
   }
 
   try {
-    const url = `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue&page_size=50&status=live&time_filter=current_future`;
+    const url = `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?order_by=start_asc&expand=venue,logo&page_size=50&status=live&time_filter=current_future`;
     const res = await fetch(
       url,
       { headers: { Authorization: `Bearer ${token}` } }
