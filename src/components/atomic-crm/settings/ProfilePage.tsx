@@ -33,6 +33,7 @@ import {
 
 import ImageEditorField from "../misc/ImageEditorField";
 import type { CrmDataProvider } from "../providers/types";
+import { getSupabaseClient } from "../providers/supabase/supabase";
 import type { Sale, SalesFormData } from "../types";
 
 export const ProfilePage = () => {
@@ -163,9 +164,11 @@ const ProfileForm = ({
   });
   const [authEmail, setAuthEmail] = useState<string>("");
   useEffect(() => {
-    getSupabaseClient().auth.getSession().then(({ data }) => {
-      setAuthEmail(data.session?.user?.email ?? "");
-    });
+    try {
+      getSupabaseClient().auth.getSession().then(({ data }) => {
+        setAuthEmail(data.session?.user?.email ?? "");
+      });
+    } catch {}
   }, []);
 
   if (!identity) return null;
