@@ -127,8 +127,13 @@ export const FindAgentPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("cards");
   const { results, setResults, isSearching, search } = useAgentSearch();
 
-  // Restore search state when navigating back
+  // Restore search state when navigating back within the SPA, but clear on hard reload/refresh
   useEffect(() => {
+    const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (navEntry?.type === "reload") {
+      sessionStorage.removeItem(STORAGE_KEY);
+      return;
+    }
     const saved = loadSearchState();
     if (saved) {
       setFields(saved.fields);

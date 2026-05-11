@@ -25,7 +25,6 @@ import { MobileLayout } from "../layout/MobileLayout";
 import { SignupPage } from "../login/SignupPage";
 import { ConfirmationRequired } from "../login/ConfirmationRequired";
 import { PendingApprovalPage } from "../login/PendingApprovalPage";
-import { ImportPage } from "../misc/ImportPage";
 import { FindAgentPage } from "../find-agent/FindAgentPage";
 import { PremierPage } from "../premier/PremierPage";
 import { ContentGeneratorPage } from "../content-generator/ContentGeneratorPage";
@@ -281,7 +280,6 @@ const DesktopAdmin = (
       <CustomRoutes>
         <Route path={ProfilePage.path} element={<ProfilePage />} />
         <Route path={SettingsPage.path} element={<SettingsPage />} />
-        <Route path={ImportPage.path} element={<ImportPage />} />
         <Route path={FindAgentPage.path} element={<FindAgentPage />} />
         <Route path={PremierPage.path} element={<PremierPage />} />
         <Route path={ContentGeneratorPage.path} element={<ContentGeneratorPage />} />
