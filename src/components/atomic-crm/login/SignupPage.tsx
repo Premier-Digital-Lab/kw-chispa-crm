@@ -459,7 +459,7 @@ const SignupProfileTabInputs = () => {
         helperText={false}
         translateChoice={false}
       />
-      <BooleanInput source="has_newsletter" helperText={false} />
+      <BooleanInput source="has_newsletter" defaultValue={true} helperText={false} />
     </div>
   );
 };

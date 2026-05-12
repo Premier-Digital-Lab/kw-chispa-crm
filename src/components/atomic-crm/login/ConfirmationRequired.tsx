@@ -1,5 +1,6 @@
 import { Notification } from "@/components/admin/notification";
 import { useTranslate } from "ra-core";
+import { Link } from "react-router";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 
 export const ConfirmationRequired = () => {
@@ -47,6 +48,9 @@ export const ConfirmationRequired = () => {
             })}
           </p>
         </div>
+        <Link to="/login" className="text-sm text-white/70 hover:underline mt-4">
+          Back to Sign In / Volver al inicio de sesión
+        </Link>
       </div>
 
       <Notification />

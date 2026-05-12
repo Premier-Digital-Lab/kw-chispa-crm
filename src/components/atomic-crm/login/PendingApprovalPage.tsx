@@ -41,12 +41,12 @@ export const PendingApprovalPage = () => {
           <div className="space-y-4">
             <p className="text-base">
               Your account is pending approval. An administrator will review
-              your application shortly. You'll be able to access the CRM once
+              your application shortly. You'll be able to access KW CHISPA Central once
               approved.
             </p>
             <p className="text-base text-muted-foreground">
               Tu cuenta está pendiente de aprobación. Un administrador revisará
-              tu solicitud pronto. Podrás acceder al CRM una vez que seas
+              tu solicitud pronto. Podrás acceder a KW CHISPA Central una vez que seas
               aprobado/a.
             </p>
           </div>
