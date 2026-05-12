@@ -231,18 +231,30 @@ const ContactShowContentMobile = () => {
                   <ContactBackgroundInfo />
                 </div>
               </div>
-              {record.membership_tier && (
+              {(record.membership_tier || record.is_chapter_leader) && (
                 <div>
                   <h3 className="text-lg font-semibold">
                     {translate("resources.contacts.field_categories.membership")}
                   </h3>
                   <Separator />
-                  <div className="mt-3 flex gap-2 text-sm">
-                    <span className="text-muted-foreground min-w-36 shrink-0">
-                      {translate("resources.contacts.fields.membership_tier")}
-                    </span>
-                    <span>{record.membership_tier}</span>
-                  </div>
+                  {record.membership_tier && (
+                    <div className="mt-3 flex gap-2 text-sm">
+                      <span className="text-muted-foreground min-w-36 shrink-0">
+                        {translate("resources.contacts.fields.membership_tier")}
+                      </span>
+                      <span>{record.membership_tier}</span>
+                    </div>
+                  )}
+                  {record.is_chapter_leader && (
+                    <div className="mt-2">
+                      <span
+                        className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                        style={{ background: "#e6a817", color: "#1a1a1a" }}
+                      >
+                        Chapter Leader
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
               <div>
@@ -464,14 +476,27 @@ const ContactReadOnlyProfile = ({ record }: { record: Contact }) => {
         </ReadOnlySection>
       )}
 
-      {record.membership_tier && (
+      {(record.membership_tier || record.is_chapter_leader) && (
         <ReadOnlySection
           title={translate("resources.contacts.field_categories.membership")}
         >
-          <ReadOnlyRow
-            label={translate("resources.contacts.fields.membership_tier")}
-            value={record.membership_tier}
-          />
+          {record.membership_tier && (
+            <ReadOnlyRow
+              label={translate("resources.contacts.fields.membership_tier")}
+              value={record.membership_tier}
+            />
+          )}
+          {record.is_chapter_leader && (
+            <div className="flex gap-2 py-1 text-sm items-center">
+              <span className="text-muted-foreground min-w-36 shrink-0">Chapter Leader</span>
+              <span
+                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                style={{ background: "#e6a817", color: "#1a1a1a" }}
+              >
+                Yes
+              </span>
+            </div>
+          )}
         </ReadOnlySection>
       )}
 

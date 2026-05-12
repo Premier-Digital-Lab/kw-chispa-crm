@@ -53,16 +53,28 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
 
       <ContactBackgroundInfo />
 
-      {record.membership_tier && (
+      {(record.membership_tier || record.is_chapter_leader) && (
         <AsideSection
           title={translate("resources.contacts.field_categories.membership")}
         >
-          <div className="flex gap-2 text-sm">
-            <span className="text-muted-foreground min-w-0">
-              {translate("resources.contacts.fields.membership_tier")}:
-            </span>
-            <span>{record.membership_tier}</span>
-          </div>
+          {record.membership_tier && (
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted-foreground min-w-0">
+                {translate("resources.contacts.fields.membership_tier")}:
+              </span>
+              <span>{record.membership_tier}</span>
+            </div>
+          )}
+          {record.is_chapter_leader && (
+            <div className="mt-1.5">
+              <span
+                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                style={{ background: "#e6a817", color: "#1a1a1a" }}
+              >
+                Chapter Leader
+              </span>
+            </div>
+          )}
         </AsideSection>
       )}
 
