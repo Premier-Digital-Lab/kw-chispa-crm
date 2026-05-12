@@ -29,6 +29,7 @@ import { FindAgentPage } from "../find-agent/FindAgentPage";
 import { PremierPage } from "../premier/PremierPage";
 import { ContentGeneratorPage } from "../content-generator/ContentGeneratorPage";
 import { EventsPage } from "../events/EventsPage";
+import { ChapterLeadersPage } from "../chapter-leaders/ChapterLeadersPage";
 import {
   getAuthProvider as defaultAuthProviderBuilder,
   getDataProvider as defaultDataProviderBuilder,
@@ -284,6 +285,7 @@ const DesktopAdmin = (
         <Route path={PremierPage.path} element={<PremierPage />} />
         <Route path={ContentGeneratorPage.path} element={<ContentGeneratorPage />} />
         <Route path={EventsPage.path} element={<EventsPage />} />
+        <Route path={ChapterLeadersPage.path} element={<ChapterLeadersPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -355,6 +357,7 @@ const MobileAdmin = (
           <Route path={PremierPage.path} element={<PremierPage />} />
           <Route path={ContentGeneratorPage.path} element={<ContentGeneratorPage />} />
           <Route path={EventsPage.path} element={<EventsPage />} />
+          <Route path={ChapterLeadersPage.path} element={<ChapterLeadersPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

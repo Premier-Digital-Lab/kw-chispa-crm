@@ -31,6 +31,8 @@ const Header = () => {
     currentPath = "/content-generator";
   } else if (matchPath("/events", location.pathname)) {
     currentPath = "/events";
+  } else if (matchPath("/chapter-leaders", location.pathname)) {
+    currentPath = "/chapter-leaders";
   } else {
     currentPath = false;
   }
@@ -93,6 +95,12 @@ const Header = () => {
                     to="/events"
                     isActive={currentPath === "/events"}
                     icon={<Calendar className="w-3.5 h-3.5" />}
+                  />
+                  <NavigationTab
+                    label={translate("crm.chapter_leaders.nav_label")}
+                    to="/chapter-leaders"
+                    isActive={currentPath === "/chapter-leaders"}
+                    icon={<Users className="w-3.5 h-3.5" />}
                   />
                 </nav>
               </div>

@@ -37,6 +37,8 @@ export const MobileNavigation = () => {
     currentPath = "/content-generator";
   } else if (matchPath("/events", location.pathname)) {
     currentPath = "/events";
+  } else if (matchPath("/chapter-leaders", location.pathname)) {
+    currentPath = "/chapter-leaders";
   } else {
     currentPath = false;
   }
@@ -106,6 +108,12 @@ export const MobileNavigation = () => {
             Icon={Calendar}
             label={translate("crm.events.nav_label")}
             isActive={currentPath === "/events"}
+          />
+          <NavigationButton
+            href="/chapter-leaders"
+            Icon={Users}
+            label={translate("crm.chapter_leaders.nav_label")}
+            isActive={currentPath === "/chapter-leaders"}
           />
           <SettingsButton />
         </>

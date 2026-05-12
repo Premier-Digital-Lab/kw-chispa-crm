@@ -530,6 +530,9 @@ const MembershipTabInputs = () => {
           defaultValue="Pending"
         />
       )}
+      {isAdmin && (
+        <BooleanInput source="is_chapter_leader" label="Chapter Leader" helperText={false} />
+      )}
       <BooleanInput source="has_newsletter" helperText={false} />
     </div>
   );
