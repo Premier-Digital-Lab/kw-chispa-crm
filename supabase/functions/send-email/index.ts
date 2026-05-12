@@ -147,9 +147,13 @@ function buildWelcomeApproved(firstName: string): {
           <li style="margin-bottom:6px;"><strong>Interactive Map</strong> — See KW CHISPA members across the world</li>
           <li style="margin-bottom:6px;"><strong>Your Profile</strong> — Keep your info updated so other agents can find you</li>
           <li style="margin-bottom:6px;"><strong>AI Chat Assistant</strong> — Search the directory using natural language in English or Spanish</li>
+          <li style="margin-bottom:6px;"><strong>Resource Section</strong> — Access documents, recordings and templates <em>(Premier member access only)</em></li>
+          <li style="margin-bottom:6px;"><strong>Content Generator</strong> — Generate social media content with a click of a button <em>(Premier member access only)</em></li>
+          <li style="margin-bottom:6px;"><strong>Events</strong> — Search and register for KW CHISPA events</li>
+          <li style="margin-bottom:6px;"><strong>Chapter Leaders</strong> — Resources for Chapter Leaders <em>(Chapter Leaders only)</em></li>
         </ul>
         <p style="margin:0 0 16px;">Your request to join the KW CHISPA Facebook group will also be approved. This is where we network and brainstorm daily. Come join us in the <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">KW CHISPA Facebook group</a>!</p>
-        <p style="margin:0 0 16px;">Questions or comments? Please drop us a note at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> and someone will get back to you within the day. We look forward to being in business with you.</p>
+        <p style="margin:0 0 16px;">Questions, comments or interested in leadership with KW CHISPA? Please drop us a note at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> and someone will get back to you within the day. We look forward to being in business with you.</p>
         <p style="margin:0 0 24px;"><em>With Gratitude,</em><br/><em>Your KW CHISPA Leadership Council</em></p>
         <p style="margin:0;">
           <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
@@ -166,9 +170,13 @@ function buildWelcomeApproved(firstName: string): {
           <li style="margin-bottom:6px;"><strong>Mapa Interactivo</strong> — Ve a los miembros de KW CHISPA en todo el país</li>
           <li style="margin-bottom:6px;"><strong>Tu Perfil</strong> — Mantén tu información actualizada para que otros agentes te encuentren</li>
           <li style="margin-bottom:6px;"><strong>Asistente de Chat IA</strong> — Busca en el directorio usando lenguaje natural en inglés o español</li>
+          <li style="margin-bottom:6px;"><strong>Sección de Recursos</strong> — Accede a documentos, grabaciones y plantillas <em>(solo miembros Premier)</em></li>
+          <li style="margin-bottom:6px;"><strong>Generador de Contenido</strong> — Genera contenido para redes sociales con un solo clic <em>(solo miembros Premier)</em></li>
+          <li style="margin-bottom:6px;"><strong>Eventos</strong> — Busca y regístrate en eventos de KW CHISPA</li>
+          <li style="margin-bottom:6px;"><strong>Líderes de Capítulo</strong> — Recursos para Líderes de Capítulo <em>(solo Líderes de Capítulo)</em></li>
         </ul>
         <p style="margin:0 0 16px;">Tu solicitud para unirte al grupo de Facebook de KW CHISPA también será aprobada. Allí nos conectamos y compartimos ideas a diario. ¡Únete a nosotras en el <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">grupo de Facebook KW CHISPA</a>!</p>
-        <p style="margin:0 0 16px;">¿Preguntas o comentarios? Por favor, envíenos un mensaje a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> y alguien se pondrá en contacto con usted en el plazo de un día. Esperamos hacer negocios con usted.</p>
+        <p style="margin:0 0 16px;">¿Preguntas, comentarios o interesado/a en el liderazgo de KW CHISPA? Por favor, envíenos un mensaje a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> y alguien se pondrá en contacto con usted en el plazo de un día. Esperamos hacer negocios con usted.</p>
         <p style="margin:0 0 24px;"><em>Con gratitud,</em><br/><em>Su Consejo de Liderazgo de KW CHISPA</em></p>
         <p style="margin:0;">
           <a href="${crmUrl}" style="display:inline-block;background-color:#CC0000;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:6px;font-size:14px;">
