@@ -682,6 +682,8 @@ export const englishCrmMessages = {
         title_label: "Title",
         category: "Category",
         category_placeholder: "e.g. Training, Communication",
+        subcategory: "Subcategory",
+        subcategory_placeholder: "e.g. California Chapter (optional)",
         description: "Description",
         url: "URL",
         save: "Save",

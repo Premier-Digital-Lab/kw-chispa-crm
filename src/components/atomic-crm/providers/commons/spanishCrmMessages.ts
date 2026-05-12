@@ -684,6 +684,8 @@ export const spanishCrmMessages: PartialCrmMessages = {
         title_label: "Título",
         category: "Categoría",
         category_placeholder: "ej. Capacitación, Comunicación",
+        subcategory: "Subcategoría",
+        subcategory_placeholder: "ej. Capítulo California (opcional)",
         description: "Descripción",
         url: "URL",
         save: "Guardar",

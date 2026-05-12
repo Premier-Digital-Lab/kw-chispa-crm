@@ -30,6 +30,7 @@ type ChapterLeaderResource = {
   description: string | null;
   url: string;
   category: string | null;
+  subcategory: string | null;
   created_at: string;
   created_by: number | null;
   sort_order: number;
@@ -40,6 +41,7 @@ type ResourceFormData = {
   description: string;
   url: string;
   category: string;
+  subcategory: string;
 };
 
 const emptyForm: ResourceFormData = {
@@ -47,6 +49,7 @@ const emptyForm: ResourceFormData = {
   description: "",
   url: "",
   category: "",
+  subcategory: "",
 };
 
 const useChapterLeaderAccess = (identityId: number | undefined, isAdmin: boolean) => {
@@ -87,8 +90,10 @@ export const ChapterLeadersPage = () => {
   const [resources, setResources] = useState<ChapterLeaderResource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // null = category grid (Level 1), string = resource list for that category (Level 2)
+  // null = Level 1 (categories)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // null = Level 2 (subcategories or direct links); string = Level 3 (links)
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingResource, setEditingResource] = useState<ChapterLeaderResource | null>(null);
@@ -96,6 +101,11 @@ export const ChapterLeadersPage = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+  const resetNav = () => {
+    setSelectedCategory(null);
+    setSelectedSubcategory(null);
+  };
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
@@ -131,6 +141,7 @@ export const ChapterLeadersPage = () => {
       description: resource.description ?? "",
       url: resource.url,
       category: resource.category ?? "",
+      subcategory: resource.subcategory ?? "",
     });
     setDialogOpen(true);
   };
@@ -145,6 +156,7 @@ export const ChapterLeadersPage = () => {
       description: form.description.trim() || null,
       url: form.url.trim(),
       category: form.category.trim() || null,
+      subcategory: form.subcategory.trim() || null,
     };
 
     if (editingResource) {
@@ -157,7 +169,7 @@ export const ChapterLeadersPage = () => {
       } else {
         notify("ra.notification.updated", { type: "success", messageArgs: { smart_count: 1 } });
         setDialogOpen(false);
-        setSelectedCategory(null);
+        resetNav();
         fetchResources();
       }
     } else {
@@ -169,7 +181,7 @@ export const ChapterLeadersPage = () => {
       } else {
         notify("ra.notification.created", { type: "success" });
         setDialogOpen(false);
-        setSelectedCategory(null);
+        resetNav();
         fetchResources();
       }
     }
@@ -187,7 +199,7 @@ export const ChapterLeadersPage = () => {
     } else {
       notify("ra.notification.deleted", { type: "success", messageArgs: { smart_count: 1 } });
       setDeleteTargetId(null);
-      setSelectedCategory(null);
+      resetNav();
       fetchResources();
     }
   };
@@ -206,32 +218,150 @@ export const ChapterLeadersPage = () => {
 
   const uncategorizedLabel = translate("crm.chapter_leaders.uncategorized");
 
+  // Level 1: group all resources by category
   const grouped = resources.reduce<Record<string, ChapterLeaderResource[]>>((acc, r) => {
     const key = r.category ?? uncategorizedLabel;
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
     return acc;
   }, {});
-
   const groupKeys = Object.keys(grouped).sort();
 
-  // ── Level 2: resource list for a selected category ──────────────────────────
-  if (selectedCategory !== null) {
-    const categoryResources = grouped[selectedCategory] ?? [];
-    return (
-      <div className="max-w-4xl mx-auto py-6 px-4">
-        <Button
-          variant="ghost"
-          className="mb-4 -ml-2 gap-1 text-muted-foreground hover:text-foreground"
-          onClick={() => setSelectedCategory(null)}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Back to Categories
-        </Button>
+  // Level 2: resources in the selected category
+  const categoryResources = selectedCategory ? (grouped[selectedCategory] ?? []) : [];
+  const hasSubcategories = categoryResources.some(r => r.subcategory);
 
-        <h1 className="text-2xl font-bold mb-6">{selectedCategory}</h1>
+  // Level 2 subcategory grouping (used only when hasSubcategories)
+  const subgrouped = categoryResources.reduce<Record<string, ChapterLeaderResource[]>>((acc, r) => {
+    const key = r.subcategory ?? uncategorizedLabel;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(r);
+    return acc;
+  }, {});
+  const subgroupKeys = Object.keys(subgrouped).sort();
 
-        {categoryResources.length === 0 ? (
+  // Level 3: resources matching both category and subcategory
+  const level3Resources = (selectedCategory && selectedSubcategory)
+    ? categoryResources.filter(r => (r.subcategory ?? uncategorizedLabel) === selectedSubcategory)
+    : [];
+
+  const isLevel1 = selectedCategory === null;
+  const isLevel2 = selectedCategory !== null && selectedSubcategory === null;
+  const isLevel3 = selectedCategory !== null && selectedSubcategory !== null;
+
+  const resourceCount = (items: ChapterLeaderResource[]) =>
+    `${items.length} ${items.length === 1
+      ? translate("crm.chapter_leaders.resource_singular")
+      : translate("crm.chapter_leaders.resource_plural")}`;
+
+  return (
+    <div className="max-w-4xl mx-auto py-6 px-4">
+
+      {/* ── Header ────────────────────────────────────────────────────────── */}
+      {isLevel1 && (
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">{translate("crm.chapter_leaders.title")}</h1>
+          {isAdmin && (
+            <Button onClick={openAddDialog} className="gap-2">
+              <Plus className="w-4 h-4" />
+              {translate("crm.chapter_leaders.add_resource")}
+            </Button>
+          )}
+        </div>
+      )}
+
+      {isLevel2 && (
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            className="-ml-2 mb-3 gap-1 text-muted-foreground hover:text-foreground"
+            onClick={() => setSelectedCategory(null)}
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Categories
+          </Button>
+          <h1 className="text-2xl font-bold">{selectedCategory}</h1>
+        </div>
+      )}
+
+      {isLevel3 && (
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            className="-ml-2 mb-3 gap-1 text-muted-foreground hover:text-foreground"
+            onClick={() => setSelectedSubcategory(null)}
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to {selectedCategory}
+          </Button>
+          <h1 className="text-2xl font-bold">{selectedSubcategory}</h1>
+        </div>
+      )}
+
+      {/* ── Content ───────────────────────────────────────────────────────── */}
+      {isLoading && (
+        <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
+      )}
+
+      {/* Level 1: category cards */}
+      {!isLoading && isLevel1 && (
+        groupKeys.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {groupKeys.map((category) => (
+              <Card
+                key={category}
+                className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+                onClick={() => setSelectedCategory(category)}
+              >
+                <CardContent className="py-4 px-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-base truncate">{category}</p>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        {resourceCount(grouped[category])}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )
+      )}
+
+      {/* Level 2a: subcategory cards (when category has subcategories) */}
+      {!isLoading && isLevel2 && hasSubcategories && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {subgroupKeys.map((subcategory) => (
+            <Card
+              key={subcategory}
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() => setSelectedSubcategory(subcategory)}
+            >
+              <CardContent className="py-4 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-base truncate">{subcategory}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {resourceCount(subgrouped[subcategory])}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Level 2b: resource list directly (when category has no subcategories) */}
+      {!isLoading && isLevel2 && !hasSubcategories && (
+        categoryResources.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
           </div>
@@ -248,103 +378,40 @@ export const ChapterLeadersPage = () => {
               />
             ))}
           </div>
-        )}
-
-        {/* Edit dialog (accessible from Level 2) */}
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>{translate("crm.chapter_leaders.form.edit_title")}</DialogTitle>
-            </DialogHeader>
-            <ResourceFormFields form={form} setForm={setForm} translate={translate} />
-            <div className="flex gap-2 justify-end pt-1">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                {translate("crm.chapter_leaders.form.cancel")}
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isSaving || !form.title.trim() || !form.url.trim()}
-              >
-                {isSaving ? translate("crm.common.loading") : translate("crm.chapter_leaders.form.save")}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Delete confirm dialog */}
-        <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
-          <DialogContent className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle>{translate("crm.chapter_leaders.delete_confirm")}</DialogTitle>
-            </DialogHeader>
-            <div className="flex gap-2 justify-end pt-2">
-              <Button variant="outline" onClick={() => setDeleteTargetId(null)}>
-                {translate("crm.chapter_leaders.form.cancel")}
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
-              >
-                {translate("crm.chapter_leaders.delete")}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
-  }
-
-  // ── Level 1: category grid ───────────────────────────────────────────────────
-  return (
-    <div className="max-w-4xl mx-auto py-6 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">{translate("crm.chapter_leaders.title")}</h1>
-        {isAdmin && (
-          <Button onClick={openAddDialog} className="gap-2">
-            <Plus className="w-4 h-4" />
-            {translate("crm.chapter_leaders.add_resource")}
-          </Button>
-        )}
-      </div>
-
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
-      ) : groupKeys.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
-          <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {groupKeys.map((category) => (
-            <Card
-              key={category}
-              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
-              onClick={() => setSelectedCategory(category)}
-            >
-              <CardContent className="py-4 px-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="font-semibold text-base truncate">{category}</p>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                      {grouped[category].length}{" "}
-                      {grouped[category].length === 1
-                        ? translate("crm.chapter_leaders.resource_singular")
-                        : translate("crm.chapter_leaders.resource_plural")}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        )
       )}
 
-      {/* Add dialog */}
+      {/* Level 3: resource list for selected category + subcategory */}
+      {!isLoading && isLevel3 && (
+        level3Resources.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {level3Resources.map((resource) => (
+              <ResourceCard
+                key={resource.id}
+                resource={resource}
+                isAdmin={isAdmin}
+                onEdit={openEditDialog}
+                onDelete={(id) => setDeleteTargetId(id)}
+                translate={translate}
+              />
+            ))}
+          </div>
+        )
+      )}
+
+      {/* ── Add / Edit dialog ─────────────────────────────────────────────── */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{translate("crm.chapter_leaders.form.add_title")}</DialogTitle>
+            <DialogTitle>
+              {editingResource
+                ? translate("crm.chapter_leaders.form.edit_title")
+                : translate("crm.chapter_leaders.form.add_title")}
+            </DialogTitle>
           </DialogHeader>
           <ResourceFormFields form={form} setForm={setForm} translate={translate} />
           <div className="flex gap-2 justify-end pt-1">
@@ -355,7 +422,29 @@ export const ChapterLeadersPage = () => {
               onClick={handleSave}
               disabled={isSaving || !form.title.trim() || !form.url.trim()}
             >
-              {isSaving ? translate("crm.common.loading") : translate("crm.chapter_leaders.form.save")}
+              {isSaving
+                ? translate("crm.common.loading")
+                : translate("crm.chapter_leaders.form.save")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Delete confirm dialog ─────────────────────────────────────────── */}
+      <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{translate("crm.chapter_leaders.delete_confirm")}</DialogTitle>
+          </DialogHeader>
+          <div className="flex gap-2 justify-end pt-2">
+            <Button variant="outline" onClick={() => setDeleteTargetId(null)}>
+              {translate("crm.chapter_leaders.form.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
+            >
+              {translate("crm.chapter_leaders.delete")}
             </Button>
           </div>
         </DialogContent>
@@ -391,6 +480,14 @@ const ResourceFormFields = ({
         value={form.category}
         onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
         placeholder={translate("crm.chapter_leaders.form.category_placeholder")}
+      />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>{translate("crm.chapter_leaders.form.subcategory")}</Label>
+      <Input
+        value={form.subcategory}
+        onChange={(e) => setForm((f) => ({ ...f, subcategory: e.target.value }))}
+        placeholder={translate("crm.chapter_leaders.form.subcategory_placeholder")}
       />
     </div>
     <div className="flex flex-col gap-1.5">
