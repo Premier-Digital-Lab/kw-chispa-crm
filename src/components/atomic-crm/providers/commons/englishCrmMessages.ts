@@ -672,6 +672,8 @@ export const englishCrmMessages = {
       empty: "No resources available yet.",
       uncategorized: "General",
       add_resource: "Add Resource",
+      resource_singular: "resource",
+      resource_plural: "resources",
       open: "Open",
       edit: "Edit",
       delete: "Delete",

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGetIdentity, useTranslate, useNotify } from "ra-core";
 import {
+  ChevronLeft,
+  ChevronRight,
   ExternalLink,
   Lock,
   Pencil,
@@ -85,6 +87,9 @@ export const ChapterLeadersPage = () => {
   const [resources, setResources] = useState<ChapterLeaderResource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // null = category grid (Level 1), string = resource list for that category (Level 2)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingResource, setEditingResource] = useState<ChapterLeaderResource | null>(null);
   const [form, setForm] = useState<ResourceFormData>(emptyForm);
@@ -152,6 +157,7 @@ export const ChapterLeadersPage = () => {
       } else {
         notify("ra.notification.updated", { type: "success", messageArgs: { smart_count: 1 } });
         setDialogOpen(false);
+        setSelectedCategory(null);
         fetchResources();
       }
     } else {
@@ -163,6 +169,7 @@ export const ChapterLeadersPage = () => {
       } else {
         notify("ra.notification.created", { type: "success" });
         setDialogOpen(false);
+        setSelectedCategory(null);
         fetchResources();
       }
     }
@@ -180,6 +187,7 @@ export const ChapterLeadersPage = () => {
     } else {
       notify("ra.notification.deleted", { type: "success", messageArgs: { smart_count: 1 } });
       setDeleteTargetId(null);
+      setSelectedCategory(null);
       fetchResources();
     }
   };
@@ -196,9 +204,10 @@ export const ChapterLeadersPage = () => {
     return <LockScreen />;
   }
 
-  // Group resources by category
+  const uncategorizedLabel = translate("crm.chapter_leaders.uncategorized");
+
   const grouped = resources.reduce<Record<string, ChapterLeaderResource[]>>((acc, r) => {
-    const key = r.category ?? translate("crm.chapter_leaders.uncategorized");
+    const key = r.category ?? uncategorizedLabel;
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
     return acc;
@@ -206,12 +215,90 @@ export const ChapterLeadersPage = () => {
 
   const groupKeys = Object.keys(grouped).sort();
 
+  // ── Level 2: resource list for a selected category ──────────────────────────
+  if (selectedCategory !== null) {
+    const categoryResources = grouped[selectedCategory] ?? [];
+    return (
+      <div className="max-w-4xl mx-auto py-6 px-4">
+        <Button
+          variant="ghost"
+          className="mb-4 -ml-2 gap-1 text-muted-foreground hover:text-foreground"
+          onClick={() => setSelectedCategory(null)}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to Categories
+        </Button>
+
+        <h1 className="text-2xl font-bold mb-6">{selectedCategory}</h1>
+
+        {categoryResources.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {categoryResources.map((resource) => (
+              <ResourceCard
+                key={resource.id}
+                resource={resource}
+                isAdmin={isAdmin}
+                onEdit={openEditDialog}
+                onDelete={(id) => setDeleteTargetId(id)}
+                translate={translate}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Edit dialog (accessible from Level 2) */}
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{translate("crm.chapter_leaders.form.edit_title")}</DialogTitle>
+            </DialogHeader>
+            <ResourceFormFields form={form} setForm={setForm} translate={translate} />
+            <div className="flex gap-2 justify-end pt-1">
+              <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                {translate("crm.chapter_leaders.form.cancel")}
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isSaving || !form.title.trim() || !form.url.trim()}
+              >
+                {isSaving ? translate("crm.common.loading") : translate("crm.chapter_leaders.form.save")}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete confirm dialog */}
+        <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
+          <DialogContent className="sm:max-w-sm">
+            <DialogHeader>
+              <DialogTitle>{translate("crm.chapter_leaders.delete_confirm")}</DialogTitle>
+            </DialogHeader>
+            <div className="flex gap-2 justify-end pt-2">
+              <Button variant="outline" onClick={() => setDeleteTargetId(null)}>
+                {translate("crm.chapter_leaders.form.cancel")}
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
+              >
+                {translate("crm.chapter_leaders.delete")}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // ── Level 1: category grid ───────────────────────────────────────────────────
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">{translate("crm.chapter_leaders.title")}</h1>
-        </div>
+        <h1 className="text-2xl font-bold">{translate("crm.chapter_leaders.title")}</h1>
         {isAdmin && (
           <Button onClick={openAddDialog} className="gap-2">
             <Plus className="w-4 h-4" />
@@ -222,108 +309,53 @@ export const ChapterLeadersPage = () => {
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
-      ) : resources.length === 0 ? (
+      ) : groupKeys.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <p className="mt-3 text-sm">{translate("crm.chapter_leaders.empty")}</p>
+          <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {groupKeys.map((category) => (
-            <div key={category}>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                {category}
-              </h2>
-              <div className="flex flex-col gap-3">
-                {grouped[category].map((resource) => (
-                  <ResourceCard
-                    key={resource.id}
-                    resource={resource}
-                    isAdmin={isAdmin}
-                    onEdit={openEditDialog}
-                    onDelete={(id) => setDeleteTargetId(id)}
-                    translate={translate}
-                  />
-                ))}
-              </div>
-            </div>
+            <Card
+              key={category}
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() => setSelectedCategory(category)}
+            >
+              <CardContent className="py-4 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-base truncate">{category}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {grouped[category].length}{" "}
+                      {grouped[category].length === 1
+                        ? translate("crm.chapter_leaders.resource_singular")
+                        : translate("crm.chapter_leaders.resource_plural")}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
 
-      {/* Add / Edit dialog */}
+      {/* Add dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {editingResource
-                ? translate("crm.chapter_leaders.form.edit_title")
-                : translate("crm.chapter_leaders.form.add_title")}
-            </DialogTitle>
+            <DialogTitle>{translate("crm.chapter_leaders.form.add_title")}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-4 pt-2">
-            <div className="flex flex-col gap-1.5">
-              <Label>{translate("crm.chapter_leaders.form.title_label")}</Label>
-              <Input
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>{translate("crm.chapter_leaders.form.category")}</Label>
-              <Input
-                value={form.category}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-                placeholder={translate("crm.chapter_leaders.form.category_placeholder")}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>{translate("crm.chapter_leaders.form.description")}</Label>
-              <Textarea
-                value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                rows={3}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>{translate("crm.chapter_leaders.form.url")}</Label>
-              <Input
-                value={form.url}
-                onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-                placeholder="https://"
-              />
-            </div>
-            <div className="flex gap-2 justify-end pt-1">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                {translate("crm.chapter_leaders.form.cancel")}
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isSaving || !form.title.trim() || !form.url.trim()}
-              >
-                {isSaving
-                  ? translate("crm.common.loading")
-                  : translate("crm.chapter_leaders.form.save")}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete confirm dialog */}
-      <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{translate("crm.chapter_leaders.delete_confirm")}</DialogTitle>
-          </DialogHeader>
-          <div className="flex gap-2 justify-end pt-2">
-            <Button variant="outline" onClick={() => setDeleteTargetId(null)}>
+          <ResourceFormFields form={form} setForm={setForm} translate={translate} />
+          <div className="flex gap-2 justify-end pt-1">
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {translate("crm.chapter_leaders.form.cancel")}
             </Button>
             <Button
-              variant="destructive"
-              onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
+              onClick={handleSave}
+              disabled={isSaving || !form.title.trim() || !form.url.trim()}
             >
-              {translate("crm.chapter_leaders.delete")}
+              {isSaving ? translate("crm.common.loading") : translate("crm.chapter_leaders.form.save")}
             </Button>
           </div>
         </DialogContent>
@@ -335,6 +367,50 @@ export const ChapterLeadersPage = () => {
 ChapterLeadersPage.path = "/chapter-leaders";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
+const ResourceFormFields = ({
+  form,
+  setForm,
+  translate,
+}: {
+  form: ResourceFormData;
+  setForm: React.Dispatch<React.SetStateAction<ResourceFormData>>;
+  translate: (key: string) => string;
+}) => (
+  <div className="flex flex-col gap-4 pt-2">
+    <div className="flex flex-col gap-1.5">
+      <Label>{translate("crm.chapter_leaders.form.title_label")}</Label>
+      <Input
+        value={form.title}
+        onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+      />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>{translate("crm.chapter_leaders.form.category")}</Label>
+      <Input
+        value={form.category}
+        onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+        placeholder={translate("crm.chapter_leaders.form.category_placeholder")}
+      />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>{translate("crm.chapter_leaders.form.description")}</Label>
+      <Textarea
+        value={form.description}
+        onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+        rows={3}
+      />
+    </div>
+    <div className="flex flex-col gap-1.5">
+      <Label>{translate("crm.chapter_leaders.form.url")}</Label>
+      <Input
+        value={form.url}
+        onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+        placeholder="https://"
+      />
+    </div>
+  </div>
+);
 
 const LockScreen = () => {
   const translate = useTranslate();

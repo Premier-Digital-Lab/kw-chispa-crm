@@ -674,6 +674,8 @@ export const spanishCrmMessages: PartialCrmMessages = {
       empty: "Aún no hay recursos disponibles.",
       uncategorized: "General",
       add_resource: "Agregar Recurso",
+      resource_singular: "recurso",
+      resource_plural: "recursos",
       open: "Abrir",
       edit: "Editar",
       delete: "Eliminar",
