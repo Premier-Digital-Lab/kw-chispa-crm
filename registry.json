@@ -526,6 +526,18 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/legal/TermsOfUsePage.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/legal/PrivacyPolicyPage.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/legal/CookiePolicyPage.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/layout/TopToolbar.tsx",
           "type": "registry:component"
         },
