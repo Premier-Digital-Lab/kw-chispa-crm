@@ -303,13 +303,13 @@ const SignupFormBody = ({
             _: "Already have an account? Sign In",
           })}
         </Link>
-        <p className="text-xs text-center text-white/50 mt-3">
+        <p className="text-xs text-center text-white/70 mt-3">
           By creating an account you agree to our{" "}
-          <Link to="/terms-of-use" className="underline hover:text-white/80">Terms of Use</Link>
+          <Link to="/terms-of-use" className="underline text-white/90 hover:text-white">Terms of Use</Link>
           {", "}
-          <Link to="/privacy-policy" className="underline hover:text-white/80">Privacy Policy</Link>
+          <Link to="/privacy-policy" className="underline text-white/90 hover:text-white">Privacy Policy</Link>
           {", and "}
-          <Link to="/cookie-policy" className="underline hover:text-white/80">Cookie Policy</Link>
+          <Link to="/cookie-policy" className="underline text-white/90 hover:text-white">Cookie Policy</Link>
           {"."}
         </p>
       </div>
