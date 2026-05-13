@@ -144,6 +144,28 @@
       </div>
     </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      // The app uses HashRouter (ra-core default). Direct URL access to a known
+      // public path (e.g. /privacy-policy) lands on window.location.pathname but
+      // HashRouter only reads the hash fragment. Convert it before React loads.
+      (function () {
+        var path = window.location.pathname;
+        var knownPaths = [
+          '/privacy-policy',
+          '/terms-of-use',
+          '/cookie-policy',
+          '/sign-up',
+          '/confirmation-required',
+          '/pending-approval',
+          '/set-password',
+          '/forgot-password',
+          '/login',
+        ];
+        if (!window.location.hash && knownPaths.indexOf(path) !== -1) {
+          window.location.replace('/#' + path + window.location.search);
+        }
+      })();
+    </script>
     <script type="module" src="<%= mainScript %>"></script>
   </body>
 </html>
