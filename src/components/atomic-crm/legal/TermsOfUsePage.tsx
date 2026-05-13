@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 
 const SECTIONS = [
@@ -21,6 +21,7 @@ const SECTIONS = [
 
 export const TermsOfUsePage = () => {
   const { darkModeLogo, title } = useConfigurationContext();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -52,9 +53,12 @@ export const TermsOfUsePage = () => {
 
       {/* Footer */}
       <footer className="shrink-0 py-6 text-center border-t">
-        <Link to="/login" className="text-sm text-muted-foreground hover:underline">
-          ← Back to Sign In
-        </Link>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm text-muted-foreground hover:underline"
+        >
+          ← Go Back
+        </button>
       </footer>
     </div>
   );
