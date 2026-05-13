@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 
-const SECTIONS = [
-  "Who We Are",
-  "Information We Collect",
-  "How We Use Your Information",
-  "Information We Share",
-  "Artificial Intelligence Features",
-  "Cookies and Tracking Technologies",
-  "Mapping Technology",
-  "Data Retention",
-  "Your Rights",
-  "Data Security",
-  "Children's Privacy",
-  "Changes to This Policy",
-  "Contact Us",
-];
+const PRIVACY_POLICY_HTML = `<h1>Privacy Policy</h1><p>Content coming soon.</p>`;
+
+const LEGAL_STYLES = `
+  .legal-content h1, .legal-content h2, .legal-content h3 {
+    color: var(--foreground);
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .legal-content h1 { font-size: 1.5rem; }
+  .legal-content h2 { font-size: 1.2rem; }
+  .legal-content a { color: #CC0000; text-decoration: underline; }
+  .legal-content ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+  .legal-content p { margin-bottom: 0.75rem; }
+`;
 
 export const PrivacyPolicyPage = () => {
   const { darkModeLogo, title } = useConfigurationContext();
@@ -23,6 +23,8 @@ export const PrivacyPolicyPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <style>{LEGAL_STYLES}</style>
+
       {/* Header */}
       <header className="bg-secondary shrink-0">
         <div className="px-4 py-3 flex items-center gap-3">
@@ -33,20 +35,12 @@ export const PrivacyPolicyPage = () => {
       </header>
 
       {/* Document */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-6 py-10">
-        <h1 className="text-3xl font-bold mb-1">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mb-8">
-          Last Updated: [DATE PENDING ATTORNEY REVIEW]
-        </p>
-
-        {SECTIONS.map((section) => (
-          <section key={section} className="mb-8">
-            <h2 className="text-lg font-semibold mb-2">{section}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              [CONTENT PENDING ATTORNEY REVIEW]
-            </p>
-          </section>
-        ))}
+      <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-10">
+        <div
+          className="legal-content text-sm leading-relaxed"
+          style={{ color: "var(--foreground)" }}
+          dangerouslySetInnerHTML={{ __html: PRIVACY_POLICY_HTML }}
+        />
       </main>
 
       {/* Footer */}
