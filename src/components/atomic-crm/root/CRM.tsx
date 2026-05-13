@@ -30,6 +30,9 @@ import { PremierPage } from "../premier/PremierPage";
 import { ContentGeneratorPage } from "../content-generator/ContentGeneratorPage";
 import { EventsPage } from "../events/EventsPage";
 import { ChapterLeadersPage } from "../chapter-leaders/ChapterLeadersPage";
+import { PrivacyPolicyPage } from "../legal/PrivacyPolicyPage";
+import { TermsOfUsePage } from "../legal/TermsOfUsePage";
+import { CookiePolicyPage } from "../legal/CookiePolicyPage";
 import {
   getAuthProvider as defaultAuthProviderBuilder,
   getDataProvider as defaultDataProviderBuilder,
@@ -276,6 +279,9 @@ const DesktopAdmin = (
           element={<ForgotPasswordPage />}
         />
         <Route path={OAuthConsentPage.path} element={<OAuthConsentPage />} />
+        <Route path={PrivacyPolicyPage.path} element={<PrivacyPolicyPage />} />
+        <Route path={TermsOfUsePage.path} element={<TermsOfUsePage />} />
+        <Route path={CookiePolicyPage.path} element={<CookiePolicyPage />} />
       </CustomRoutes>
 
       <CustomRoutes>
@@ -347,6 +353,9 @@ const MobileAdmin = (
             element={<ForgotPasswordPage />}
           />
           <Route path={OAuthConsentPage.path} element={<OAuthConsentPage />} />
+          <Route path={PrivacyPolicyPage.path} element={<PrivacyPolicyPage />} />
+          <Route path={TermsOfUsePage.path} element={<TermsOfUsePage />} />
+          <Route path={CookiePolicyPage.path} element={<CookiePolicyPage />} />
         </CustomRoutes>
         <CustomRoutes>
           <Route
