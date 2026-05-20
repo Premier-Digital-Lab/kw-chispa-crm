@@ -14,6 +14,7 @@ import { AsideSection } from "../misc/AsideSection";
 import type { Contact } from "../types";
 import { ContactMergeButton } from "./ContactMergeButton";
 import { ExportVCardButton } from "./ExportVCardButton";
+import { DataDeletionButton } from "../misc/DataDeletionButton";
 
 export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const record = useRecordContext<Contact>();
@@ -112,6 +113,12 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
             <DeleteButton
               className="h-6 cursor-pointer hover:bg-destructive/10! text-destructive! border-destructive! focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40"
               size="sm"
+            />
+            <DataDeletionButton
+              firstName={record.first_name ?? ""}
+              lastName={record.last_name ?? ""}
+              email={record.email_jsonb?.[0]?.email ?? ""}
+              id={record.id}
             />
           </div>
         </>

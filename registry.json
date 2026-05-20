@@ -478,6 +478,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/misc/DataDeletionButton.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/misc/CreateSheet.tsx",
           "type": "registry:component"
         },
