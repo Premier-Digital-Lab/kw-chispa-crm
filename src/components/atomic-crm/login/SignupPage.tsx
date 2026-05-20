@@ -392,7 +392,7 @@ const SignupKwInfoTabInputs = () => {
   const agentRoleChoices = [
     { id: "Solo Agent", name: "Solo Agent" },
     { id: "Team Member", name: "Team Member" },
-    { id: "Team Lead", name: "Team Lead" },
+    { id: "Team Lead", name: "Team Leader of your Team" },
   ];
 
   return (

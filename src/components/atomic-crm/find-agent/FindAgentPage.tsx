@@ -244,7 +244,7 @@ export const FindAgentPage = () => {
                   <SelectItem value="_all">{translate("crm.find_agent.form.agent_role_all")}</SelectItem>
                   <SelectItem value="Solo Agent">Solo Agent</SelectItem>
                   <SelectItem value="Team Member">Team Member</SelectItem>
-                  <SelectItem value="Team Lead">Team Lead</SelectItem>
+                  <SelectItem value="Team Lead">Team Leader of your Team</SelectItem>
                 </SelectContent>
               </Select>
             </div>
