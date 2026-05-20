@@ -82,7 +82,7 @@ export const DataDeletionButton = ({
           <DialogFooter>
             {status === "success" ? (
               <Button type="button" variant="outline" onClick={handleClose}>
-                {translate("crm.dataDeletion.dialogCancel")}
+                {translate("crm.dataDeletion.dialogClose")}
               </Button>
             ) : (
               <>

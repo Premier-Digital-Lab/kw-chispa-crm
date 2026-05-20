@@ -701,6 +701,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         "¿Estás seguro de que deseas solicitar la eliminación de tus datos? Tu cuenta no se eliminará de inmediato. KW CHISPA procesará tu solicitud en un plazo de 30 días.",
       dialogConfirm: "Sí, enviar solicitud",
       dialogCancel: "Cancelar",
+      dialogClose: "Cerrar",
       successMessage:
         "Tu solicitud ha sido recibida. La procesaremos en un plazo de 30 días.",
       errorMessage:

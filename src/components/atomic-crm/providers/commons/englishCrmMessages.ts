@@ -699,6 +699,7 @@ export const englishCrmMessages = {
         "Are you sure you want to request deletion of your data? Your account will not be deleted immediately. KW CHISPA will process your request within 30 days.",
       dialogConfirm: "Yes, Submit Request",
       dialogCancel: "Cancel",
+      dialogClose: "Close",
       successMessage:
         "Your request has been received. We'll process it within 30 days.",
       errorMessage:
