@@ -113,20 +113,13 @@ export const SignupPage = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Background video — fixed so it stays behind scrollable content */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
+      {/* Static background image */}
+      <img
+        src="/signup-bg.jpg"
+        alt=""
+        aria-hidden="true"
         className="fixed inset-0 w-full h-full object-cover -z-10"
-        style={{
-          background:
-            "linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 40%, #CC0000 100%)",
-        }}
-      >
-        <source src="/login-bg.mp4" type="video/mp4" />
-      </video>
+      />
       <div className="fixed inset-0 bg-black/55 -z-10" />
 
       {/* Scrollable content */}
@@ -154,10 +147,10 @@ export const SignupPage = () => {
           <div
             className="rounded-xl p-6 sm:p-8"
             style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "0.5px solid rgba(255,255,255,0.15)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
+              background: "rgba(0,0,0,0.50)",
+              border: "0.5px solid rgba(255,255,255,0.20)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
             }}
           >
             <Form
@@ -198,99 +191,142 @@ const SignupFormBody = ({
 }) => {
   const translate = useTranslate();
   const [activeTab, setActiveTab] = useState<string>("account");
+  const [tabIndex, setTabIndex] = useState(0);
   const { formState } = useFormContext();
+
+  const goToTab = (index: number) => {
+    setTabIndex(index);
+    setActiveTab(TAB_ORDER[index]);
+  };
 
   // After each failed submit, jump to the first tab that has an error.
   useEffect(() => {
     if (formState.submitCount === 0) return;
     const errorKeys = Object.keys(formState.errors);
     if (errorKeys.length === 0) return;
-    const firstErrorTab = TAB_ORDER.find((tab) =>
+    const firstErrorTabIndex = TAB_ORDER.findIndex((tab) =>
       errorKeys.some((key) => FIELD_TO_TAB[key] === tab),
     );
-    if (firstErrorTab && firstErrorTab !== activeTab) {
-      setActiveTab(firstErrorTab);
+    if (firstErrorTabIndex !== -1 && TAB_ORDER[firstErrorTabIndex] !== activeTab) {
+      goToTab(firstErrorTabIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.submitCount]);
 
+  const isLastTab = tabIndex === TAB_ORDER.length - 1;
+
   return (
     <div className="flex flex-col gap-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-auto">
-          <TabsTrigger
-            value="account"
-            className="text-xs py-2 whitespace-normal text-center leading-tight"
-          >
-            {translate("crm.auth.signup.tabs.account", { _: "Account" })}
-          </TabsTrigger>
-          <TabsTrigger
-            value="kw_info"
-            className="text-xs py-2 whitespace-normal text-center leading-tight"
-          >
-            {translate("crm.auth.signup.tabs.kw_info", { _: "KW Info" })}
-          </TabsTrigger>
-          <TabsTrigger
-            value="service_areas"
-            className="text-xs py-2 whitespace-normal text-center leading-tight"
-          >
-            {translate("crm.auth.signup.tabs.service_areas", {
-              _: "Service Areas",
-            })}
-          </TabsTrigger>
-          <TabsTrigger
-            value="profile"
-            className="text-xs py-2 whitespace-normal text-center leading-tight"
-          >
-            {translate("crm.auth.signup.tabs.profile", { _: "Profile" })}
-          </TabsTrigger>
-        </TabsList>
+      <div className="[&_input]:bg-white/10 [&_input]:border-white/40 [&_input]:text-white [&_input::placeholder]:text-white/50 [&_label]:text-white [&_label]:font-semibold [&_label]:text-sm [&_select]:bg-white/10 [&_select]:border-white/40 [&_select]:text-white [&_textarea]:bg-white/10 [&_textarea]:border-white/40 [&_textarea]:text-white">
+        <Tabs value={activeTab} onValueChange={(val) => {
+          const idx = TAB_ORDER.indexOf(val as typeof TAB_ORDER[number]);
+          if (idx !== -1) goToTab(idx);
+        }} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger
+              value="account"
+              className="text-xs py-2 whitespace-normal text-center leading-tight"
+            >
+              {translate("crm.auth.signup.tabs.account", { _: "Account" })}
+            </TabsTrigger>
+            <TabsTrigger
+              value="kw_info"
+              className="text-xs py-2 whitespace-normal text-center leading-tight"
+            >
+              {translate("crm.auth.signup.tabs.kw_info", { _: "KW Info" })}
+            </TabsTrigger>
+            <TabsTrigger
+              value="service_areas"
+              className="text-xs py-2 whitespace-normal text-center leading-tight"
+            >
+              {translate("crm.auth.signup.tabs.service_areas", {
+                _: "Service Areas",
+              })}
+            </TabsTrigger>
+            <TabsTrigger
+              value="profile"
+              className="text-xs py-2 whitespace-normal text-center leading-tight"
+            >
+              {translate("crm.auth.signup.tabs.profile", { _: "Profile" })}
+            </TabsTrigger>
+          </TabsList>
 
-        {/* forceMount keeps every tab's fields in the DOM so validation runs
-            across all tabs on every submit, not just the active one. */}
-        <TabsContent
-          value="account"
-          className="mt-4 data-[state=inactive]:hidden"
-          forceMount
-        >
-          <AccountTabInputs />
-        </TabsContent>
-        <TabsContent
-          value="kw_info"
-          className="mt-4 data-[state=inactive]:hidden"
-          forceMount
-        >
-          <SignupKwInfoTabInputs />
-        </TabsContent>
-        <TabsContent
-          value="service_areas"
-          className="mt-4 data-[state=inactive]:hidden"
-          forceMount
-        >
-          <SignupServiceAreasTabInputs />
-        </TabsContent>
-        <TabsContent
-          value="profile"
-          className="mt-4 data-[state=inactive]:hidden"
-          forceMount
-        >
-          <SignupProfileTabInputs />
-        </TabsContent>
-      </Tabs>
+          {/* forceMount keeps every tab's fields in the DOM so validation runs
+              across all tabs on every submit, not just the active one. */}
+          <TabsContent
+            value="account"
+            className="mt-4 data-[state=inactive]:hidden"
+            forceMount
+          >
+            <AccountTabInputs />
+          </TabsContent>
+          <TabsContent
+            value="kw_info"
+            className="mt-4 data-[state=inactive]:hidden"
+            forceMount
+          >
+            <SignupKwInfoTabInputs />
+          </TabsContent>
+          <TabsContent
+            value="service_areas"
+            className="mt-4 data-[state=inactive]:hidden"
+            forceMount
+          >
+            <SignupServiceAreasTabInputs />
+          </TabsContent>
+          <TabsContent
+            value="profile"
+            className="mt-4 data-[state=inactive]:hidden"
+            forceMount
+          >
+            <SignupProfileTabInputs />
+          </TabsContent>
+        </Tabs>
+      </div>
 
       <div className="flex flex-col gap-4">
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              {translate("crm.auth.signup.creating", { _: "Creating..." })}
-            </>
-          ) : (
-            translate("crm.auth.signup.create_account", {
-              _: "Create account",
-            })
+        {/* Navigation row: Back on left, Next/Create on right */}
+        <div className="flex gap-3">
+          {tabIndex > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 border-white/40 text-white bg-transparent hover:bg-white/10 font-semibold"
+              onClick={() => goToTab(tabIndex - 1)}
+            >
+              ← Back
+            </Button>
           )}
-        </Button>
+          {isLastTab ? (
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 font-semibold text-white"
+              style={{ backgroundColor: "#CC0000" }}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  {translate("crm.auth.signup.creating", { _: "Creating..." })}
+                </>
+              ) : (
+                translate("crm.auth.signup.create_account", {
+                  _: "Create account",
+                })
+              )}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 border-white/40 text-white bg-transparent hover:bg-white/10 font-semibold"
+              onClick={() => goToTab(tabIndex + 1)}
+            >
+              Next →
+            </Button>
+          )}
+        </div>
+
         {googleWorkplaceDomain ? (
           <SSOAuthButton className="w-full" domain={googleWorkplaceDomain}>
             {translate("crm.auth.sign_in_google_workspace", {
@@ -298,7 +334,7 @@ const SignupFormBody = ({
             })}
           </SSOAuthButton>
         ) : null}
-        <Link to="/login" className="text-sm text-center hover:underline">
+        <Link to="/login" className="text-sm text-center text-white font-semibold hover:underline">
           {translate("crm.auth.already_have_account", {
             _: "Already have an account? Sign In",
           })}
