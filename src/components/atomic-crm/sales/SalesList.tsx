@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useDataProvider,
   useGetList,
@@ -284,6 +284,11 @@ const PendingActions = (_props: { label?: string | boolean }) => {
   const dataProvider = useDataProvider<CrmDataProvider>();
   const notify = useNotify();
   const refresh = useRefresh();
+  const queryClient = useQueryClient();
+
+  const invalidatePendingCount = () => {
+    queryClient.invalidateQueries({ queryKey: ["sales", "getList"] });
+  };
 
   const { mutate: approve, isPending: isApproving } = useMutation({
     // Only send the fields that actually need to change for approval.
@@ -297,6 +302,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
       }),
     onSuccess: () => {
       notify("Member approved!", { type: "success" });
+      invalidatePendingCount();
       refresh();
     },
     onError: (error) => {
@@ -325,6 +331,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
     },
     onSuccess: () => {
       notify("Member rejected", { type: "info" });
+      invalidatePendingCount();
       refresh();
     },
     onError: (error) => {
