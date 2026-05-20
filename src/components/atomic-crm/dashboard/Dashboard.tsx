@@ -63,9 +63,8 @@ const PendingApprovalsCard = () => {
     {
       enabled: !isPendingAccess && isAdmin,
       queryOptions: {
-        refetchOnMount: true,
+        refetchInterval: 5000,
         staleTime: 0,
-        refetchOnWindowFocus: true,
       },
     },
   );
