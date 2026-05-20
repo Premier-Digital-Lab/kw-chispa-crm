@@ -109,18 +109,18 @@ export const LoginPage = (props: { redirectTo?: string }) => {
         <div
           className="w-full rounded-xl p-8 space-y-5"
           style={{
-            background: "rgba(255,255,255,0.08)",
-            border: "0.5px solid rgba(255,255,255,0.15)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
+            background: "rgba(0,0,0,0.50)",
+            border: "0.5px solid rgba(255,255,255,0.20)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
         >
-          <h1 className="text-2xl font-semibold text-white text-center">
+          <h1 className="text-2xl font-bold text-white text-center">
             {translate("ra.auth.sign_in")}
           </h1>
 
           {disableEmailPasswordAuthentication ? null : (
-            <div className="[&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input::placeholder]:text-white/50 [&_label]:text-white/80 [&_label]:text-sm">
+            <div className="[&_input]:bg-white/10 [&_input]:border-white/40 [&_input]:text-white [&_input::placeholder]:text-white/50 [&_label]:text-white [&_label]:font-semibold [&_label]:text-sm">
               <Form className="space-y-4" onSubmit={handleSubmit}>
                 <TextInput
                   label="ra.auth.email"
@@ -159,7 +159,7 @@ export const LoginPage = (props: { redirectTo?: string }) => {
           {disableEmailPasswordAuthentication ? null : (
             <Link
               to="/forgot-password"
-              className="block text-sm text-center text-white/70 hover:text-white hover:underline"
+              className="block text-sm font-semibold text-center text-white hover:underline"
             >
               {translate("ra-supabase.auth.forgot_password", {
                 _: "Forgot password?",
@@ -169,7 +169,7 @@ export const LoginPage = (props: { redirectTo?: string }) => {
 
           <Link
             to="/sign-up"
-            className="block text-sm text-center text-white/70 hover:text-white hover:underline"
+            className="block text-sm font-semibold text-center text-white hover:underline"
           >
             {translate("crm.auth.dont_have_account", {
               _: "Don't have an account? Sign Up",
