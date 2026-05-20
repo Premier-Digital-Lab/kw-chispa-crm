@@ -60,7 +60,14 @@ const PendingApprovalsCard = () => {
       filter: { disabled: true },
       pagination: { page: 1, perPage: 1 },
     },
-    { enabled: !isPendingAccess && isAdmin },
+    {
+      enabled: !isPendingAccess && isAdmin,
+      queryOptions: {
+        refetchOnMount: true,
+        staleTime: 0,
+        refetchOnWindowFocus: true,
+      },
+    },
   );
 
   // Hide while loading, hide for non-admins, hide when nothing is pending
