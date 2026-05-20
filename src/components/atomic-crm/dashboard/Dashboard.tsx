@@ -1,6 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { useCanAccess, useGetIdentity, useGetList } from "ra-core";
 import { Link } from "react-router";
 import { MessageCircle, UserCheck } from "lucide-react";
+
+import { getSupabaseClient } from "@/components/atomic-crm/providers/supabase/supabase";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -54,20 +57,20 @@ const PendingApprovalsCard = () => {
     action: "list",
   });
 
-  const { total, isPending: isPendingCount } = useGetList(
-    "sales",
-    {
-      filter: { disabled: true },
-      pagination: { page: 1, perPage: 1 },
+  const { data: total, isPending: isPendingCount } = useQuery({
+    queryKey: ["pending-approvals-count"],
+    queryFn: async () => {
+      const supabase = getSupabaseClient();
+      const { count } = await supabase
+        .from("sales")
+        .select("*", { count: "exact", head: true })
+        .eq("disabled", true);
+      return count ?? 0;
     },
-    {
-      enabled: !isPendingAccess && isAdmin,
-      queryOptions: {
-        refetchInterval: 5000,
-        staleTime: 0,
-      },
-    },
-  );
+    enabled: !isPendingAccess && isAdmin,
+    refetchInterval: 3000,
+    staleTime: 0,
+  });
 
   // Hide while loading, hide for non-admins, hide when nothing is pending
   if (isPendingAccess || isPendingCount || !isAdmin || !total) return null;

@@ -3,9 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useDataProvider,
   useGetList,
+  useListContext,
   useNotify,
   useRecordContext,
-  useRefresh,
   useTranslate,
 } from "ra-core";
 import { CreateButton } from "@/components/admin/create-button";
@@ -283,11 +283,11 @@ const PendingActions = (_props: { label?: string | boolean }) => {
   const record = useRecordContext<Sale>();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const notify = useNotify();
-  const refresh = useRefresh();
   const queryClient = useQueryClient();
+  const { refetch } = useListContext();
 
   const invalidatePendingCount = () => {
-    queryClient.invalidateQueries({ queryKey: ["sales", "getList"] });
+    queryClient.invalidateQueries({ queryKey: ["pending-approvals-count"] });
   };
 
   const { mutate: approve, isPending: isApproving } = useMutation({
@@ -303,7 +303,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
     onSuccess: () => {
       notify("Member approved!", { type: "success" });
       invalidatePendingCount();
-      refresh();
+      refetch();
     },
     onError: (error) => {
       console.error("[PendingActions] approve failed:", error);
@@ -332,7 +332,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
     onSuccess: () => {
       notify("Member rejected", { type: "info" });
       invalidatePendingCount();
-      refresh();
+      refetch();
     },
     onError: (error) => {
       console.error("[PendingActions] reject failed:", error);
