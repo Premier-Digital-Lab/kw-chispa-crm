@@ -237,7 +237,7 @@ const NameLinkField = (_props: { label?: string | boolean }) => {
 
 const SalesListActions = () => (
   <TopToolbar>
-    <ToggleFilterButton label="Pending Approval" value={{ disabled: true }} />
+    <ToggleFilterButton label="Pending Approval" value={{ disabled: true, review_status: "pending" }} />
     <ExportButton />
     <CreateButton label="resources.sales.action.new" />
   </TopToolbar>
@@ -294,6 +294,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
       dataProvider.salesUpdate(record!.id, {
         disabled: false,
         administrator: record!.administrator,
+        review_status: "approved",
       }),
     onSuccess: () => {
       notify("Member approved!", { type: "success" });
@@ -322,6 +323,9 @@ const PendingActions = (_props: { label?: string | boolean }) => {
           previousData: contacts[0],
         });
       }
+      await dataProvider.salesUpdate(record!.id, {
+        review_status: "rejected",
+      });
     },
     onSuccess: () => {
       notify("Member rejected", { type: "info" });

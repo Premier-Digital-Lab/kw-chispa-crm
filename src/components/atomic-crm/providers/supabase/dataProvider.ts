@@ -144,7 +144,7 @@ const getDataProviderWithCustomMethods = () => {
       id: Identifier,
       data: Partial<Omit<SalesFormData, "password">>,
     ) {
-      const { email, first_name, last_name, administrator, avatar, disabled } =
+      const { email, first_name, last_name, administrator, avatar, disabled, review_status } =
         data;
 
       const { data: updatedData, error } =
@@ -160,6 +160,7 @@ const getDataProviderWithCustomMethods = () => {
             administrator,
             disabled,
             avatar,
+            review_status,
           },
         });
 

@@ -187,6 +187,7 @@ async function patchUser(req: Request, currentUserSale: any) {
     avatar,
     administrator,
     disabled,
+    review_status,
   } = await req.json();
   const { data: sale } = await supabaseAdmin
     .from("sales")
@@ -213,9 +214,10 @@ async function patchUser(req: Request, currentUserSale: any) {
   // clear metadata (e.g. when the approve action omits email/first_name/last_name).
   const updatePayload: Parameters<
     typeof supabaseAdmin.auth.admin.updateUserById
-  >[1] = {
-    ban_duration: disabled ? "87600h" : "none",
-  };
+  >[1] = {};
+  if (disabled !== undefined) {
+    updatePayload.ban_duration = disabled ? "87600h" : "none";
+  }
   if (email !== undefined) updatePayload.email = email;
   if (first_name !== undefined || last_name !== undefined) {
     updatePayload.user_metadata = {};
@@ -256,7 +258,15 @@ async function patchUser(req: Request, currentUserSale: any) {
   }
 
   try {
-    await updateSaleDisabled(data.user.id, disabled);
+    if (disabled !== undefined) {
+      await updateSaleDisabled(data.user.id, disabled);
+    }
+    if (review_status !== undefined) {
+      await supabaseAdmin
+        .from("sales")
+        .update({ review_status })
+        .eq("user_id", data.user.id);
+    }
     const sale = await updateSaleAdministrator(data.user.id, administrator);
     return new Response(
       JSON.stringify({

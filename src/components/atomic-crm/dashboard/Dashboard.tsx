@@ -64,7 +64,8 @@ const PendingApprovalsCard = () => {
       const { count } = await supabase
         .from("sales")
         .select("*", { count: "exact", head: true })
-        .eq("disabled", true);
+        .eq("disabled", true)
+        .eq("review_status", "pending");
       return count ?? 0;
     },
     enabled: !isPendingAccess && isAdmin,
@@ -75,7 +76,7 @@ const PendingApprovalsCard = () => {
   // Hide while loading, hide for non-admins, hide when nothing is pending
   if (isPendingAccess || isPendingCount || !isAdmin || !total) return null;
 
-  const filterParam = encodeURIComponent(JSON.stringify({ disabled: true }));
+  const filterParam = encodeURIComponent(JSON.stringify({ disabled: true, review_status: "pending" }));
 
   return (
     <div className="flex flex-col gap-2">
