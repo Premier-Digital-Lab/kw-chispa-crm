@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import {
   useDataProvider,
   useGetList,
-  useListContext,
   useNotify,
   useRecordContext,
   useTranslate,
@@ -283,8 +283,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
   const record = useRecordContext<Sale>();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const notify = useNotify();
-  const queryClient = useQueryClient();
-  const { refetch } = useListContext();
+  const navigate = useNavigate();
 
   const { mutate: approve, isPending: isApproving } = useMutation({
     // Only send the fields that actually need to change for approval.
@@ -298,9 +297,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
       }),
     onSuccess: () => {
       notify("Member approved!", { type: "success" });
-      queryClient.invalidateQueries({ queryKey: ["sales", "getList"] });
-      queryClient.invalidateQueries({ queryKey: ["pending-approvals-count"] });
-      refetch();
+      navigate("/");
     },
     onError: (error) => {
       console.error("[PendingActions] approve failed:", error);
@@ -328,9 +325,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
     },
     onSuccess: () => {
       notify("Member rejected", { type: "info" });
-      queryClient.invalidateQueries({ queryKey: ["sales", "getList"] });
-      queryClient.invalidateQueries({ queryKey: ["pending-approvals-count"] });
-      refetch();
+      navigate("/");
     },
     onError: (error) => {
       console.error("[PendingActions] reject failed:", error);
