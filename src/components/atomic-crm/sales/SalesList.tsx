@@ -323,9 +323,13 @@ const PendingActions = (_props: { label?: string | boolean }) => {
           previousData: contacts[0],
         });
       }
-      await dataProvider.salesUpdate(record!.id, {
-        review_status: "rejected",
-      });
+      try {
+        await dataProvider.salesUpdate(record!.id, {
+          review_status: "rejected",
+        });
+      } catch (err) {
+        console.warn("[PendingActions] review_status update failed (non-fatal):", err);
+      }
     },
     onSuccess: () => {
       notify("Member rejected", { type: "info" });
