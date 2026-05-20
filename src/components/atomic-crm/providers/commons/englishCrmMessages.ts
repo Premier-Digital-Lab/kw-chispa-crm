@@ -692,6 +692,18 @@ export const englishCrmMessages = {
         edit_title: "Edit Resource",
       },
     },
+    dataDeletion: {
+      buttonLabel: "Request Data Deletion",
+      dialogTitle: "Request Data Deletion",
+      dialogMessage:
+        "Are you sure you want to request deletion of your data? Your account will not be deleted immediately. KW CHISPA will process your request within 30 days.",
+      dialogConfirm: "Yes, Submit Request",
+      dialogCancel: "Cancel",
+      successMessage:
+        "Your request has been received. We'll process it within 30 days.",
+      errorMessage:
+        "Something went wrong. Please try again or contact info@kwchispa.com.",
+    },
   },
 } as const;
 

@@ -29,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import type { CrmDataProvider } from "../providers/types";
 import type { Sale } from "../types";
 import { TopToolbar } from "../layout/TopToolbar";
+import { DataDeletionButton } from "../misc/DataDeletionButton";
 
 // ── Helpers for the profile popup ────────────────────────────────────────────
 
@@ -176,6 +177,12 @@ const MemberProfileDialog = ({
         </div>
 
         <DialogFooter className="px-6 py-4 border-t shrink-0">
+          <DataDeletionButton
+            firstName={contact.first_name ?? ""}
+            lastName={contact.last_name ?? ""}
+            email={primaryEmail ?? sale.email ?? ""}
+            id={sale.id}
+          />
           <Button
             variant="outline"
             type="button"

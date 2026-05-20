@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import ImageEditorField from "../misc/ImageEditorField";
+import { DataDeletionButton } from "../misc/DataDeletionButton";
 import type { CrmDataProvider } from "../providers/types";
 import { getSupabaseClient } from "../providers/supabase/supabase";
 import type { Sale, SalesFormData } from "../types";
@@ -281,6 +282,16 @@ const ProfileForm = ({
           </CardContent>
         </Card>
       )}
+      <Card>
+        <CardContent className="flex justify-end">
+          <DataDeletionButton
+            firstName={identity.first_name ?? ""}
+            lastName={identity.last_name ?? ""}
+            email={authEmail}
+            id={identity.id}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
