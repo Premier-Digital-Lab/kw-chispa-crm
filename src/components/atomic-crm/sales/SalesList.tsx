@@ -285,6 +285,7 @@ const PendingActions = (_props: { label?: string | boolean }) => {
   const notify = useNotify();
   const queryClient = useQueryClient();
   const { refetch } = useListContext();
+  console.log("refetch type:", typeof refetch);
 
   const invalidatePendingCount = () => {
     queryClient.invalidateQueries({ queryKey: ["pending-approvals-count"] });
@@ -300,12 +301,14 @@ const PendingActions = (_props: { label?: string | boolean }) => {
         disabled: false,
         administrator: record!.administrator,
       }),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("APPROVE SUCCESS", data);
       notify("Member approved!", { type: "success" });
       invalidatePendingCount();
       refetch();
     },
     onError: (error) => {
+      console.log("APPROVE ERROR", error);
       console.error("[PendingActions] approve failed:", error);
       notify("Failed to approve member", { type: "error" });
     },
@@ -329,12 +332,14 @@ const PendingActions = (_props: { label?: string | boolean }) => {
         });
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("REJECT SUCCESS", data);
       notify("Member rejected", { type: "info" });
       invalidatePendingCount();
       refetch();
     },
     onError: (error) => {
+      console.log("REJECT ERROR", error);
       console.error("[PendingActions] reject failed:", error);
       notify("Failed to reject member", { type: "error" });
     },

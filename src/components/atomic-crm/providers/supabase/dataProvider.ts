@@ -144,6 +144,7 @@ const getDataProviderWithCustomMethods = () => {
       id: Identifier,
       data: Partial<Omit<SalesFormData, "password">>,
     ) {
+      console.log("salesUpdate called with", id, data);
       const { email, first_name, last_name, administrator, avatar, disabled } =
         data;
 
@@ -163,6 +164,7 @@ const getDataProviderWithCustomMethods = () => {
           },
         });
 
+      console.log("salesUpdate result", updatedData, error);
       if (!updatedData || error) {
         console.error("salesUpdate.error", error);
         const errorDetails = await (async () => {
