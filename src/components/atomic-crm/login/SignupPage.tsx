@@ -105,9 +105,18 @@ export const SignupPage = () => {
     },
   });
 
+  const [activeTab, setActiveTab] = useState<string>("account");
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const goToTab = (index: number) => {
+    setTabIndex(index);
+    setActiveTab(TAB_ORDER[index]);
+  };
+
   if (isPending) return <LoginSkeleton />;
 
   const onSubmit = (data: FieldValues) => {
+    if (tabIndex < TAB_ORDER.length - 1) return;
     mutate(data as SignUpData);
   };
 
@@ -167,6 +176,9 @@ export const SignupPage = () => {
               <SignupFormBody
                 isSubmitting={isSignUpPending}
                 googleWorkplaceDomain={googleWorkplaceDomain}
+                tabIndex={tabIndex}
+                activeTab={activeTab}
+                goToTab={goToTab}
               />
             </Form>
           </div>
@@ -185,19 +197,18 @@ SignupPage.path = "/sign-up";
 const SignupFormBody = ({
   isSubmitting,
   googleWorkplaceDomain,
+  tabIndex,
+  activeTab,
+  goToTab,
 }: {
   isSubmitting: boolean;
   googleWorkplaceDomain?: string;
+  tabIndex: number;
+  activeTab: string;
+  goToTab: (index: number) => void;
 }) => {
   const translate = useTranslate();
-  const [activeTab, setActiveTab] = useState<string>("account");
-  const [tabIndex, setTabIndex] = useState(0);
   const { formState } = useFormContext();
-
-  const goToTab = (index: number) => {
-    setTabIndex(index);
-    setActiveTab(TAB_ORDER[index]);
-  };
 
   // After each failed submit, jump to the first tab that has an error.
   useEffect(() => {
