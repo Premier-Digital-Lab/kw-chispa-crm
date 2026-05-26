@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import {
@@ -107,16 +107,18 @@ export const SignupPage = () => {
 
   const [activeTab, setActiveTab] = useState<string>("account");
   const [tabIndex, setTabIndex] = useState(0);
+  const tabIndexRef = useRef(0);
 
   const goToTab = (index: number) => {
     setTabIndex(index);
     setActiveTab(TAB_ORDER[index]);
+    tabIndexRef.current = index;
   };
 
   if (isPending) return <LoginSkeleton />;
 
   const onSubmit = (data: FieldValues) => {
-    if (tabIndex < TAB_ORDER.length - 1) return;
+    if (tabIndexRef.current < TAB_ORDER.length - 1) return;
     mutate(data as SignUpData);
   };
 
