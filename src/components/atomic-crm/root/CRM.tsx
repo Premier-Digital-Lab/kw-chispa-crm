@@ -276,7 +276,7 @@ const ProfileGuard = ({ children }: { children: ReactNode }) => {
     const path = location.pathname;
     const isExempt =
       path === "/" ||
-      (authUserId !== null && path.startsWith(`/sales/${authUserId}`));
+      path === '/profile';
     if (!isExempt) {
       navigate("/", { replace: true });
     }

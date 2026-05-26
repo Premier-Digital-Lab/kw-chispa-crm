@@ -42,7 +42,7 @@ const ProfileIncompleteBanner = () => {
       </div>
       {authUserId && (
         <button
-          onClick={() => navigate(`/sales/${authUserId}`)}
+          onClick={() => navigate('/profile')}
           className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
         >
           <span className="block">
