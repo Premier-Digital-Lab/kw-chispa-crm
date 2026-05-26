@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCanAccess, useGetIdentity, useGetList, useTranslate } from "ra-core";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { MessageCircle, UserCheck, AlertTriangle } from "lucide-react";
 import { useProfileComplete } from "../hooks/useProfileComplete";
 
@@ -22,6 +22,7 @@ const ProfileIncompleteBanner = () => {
   const { isComplete, isLoading } = useProfileComplete();
   const { identity } = useGetIdentity();
   const translate = useTranslate();
+  const navigate = useNavigate();
 
   if (isLoading || isComplete) return null;
 
@@ -41,8 +42,8 @@ const ProfileIncompleteBanner = () => {
         </p>
       </div>
       {identity?.id && (
-        <Link
-          to={`/sales/${identity.id}`}
+        <button
+          onClick={() => navigate(`/sales/${identity.id}`)}
           className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
         >
           <span className="block">
@@ -55,7 +56,7 @@ const ProfileIncompleteBanner = () => {
               _: "Completar perfil",
             })}
           </span>
-        </Link>
+        </button>
       )}
     </div>
   );
