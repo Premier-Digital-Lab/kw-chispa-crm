@@ -35,10 +35,13 @@ export const useProfileComplete = () => {
     queryKey: ["profile-complete", identity?.id],
     queryFn: async (): Promise<ContactRow | null> => {
       const supabase = getSupabaseClient();
+      const { data: sessionData } = await supabase.auth.getSession();
+      const authUserId = sessionData.session?.user?.id;
+      if (!authUserId) return null;
       const { data } = await supabase
         .from("contacts")
         .select(REQUIRED_FIELDS.join(", "))
-        .eq("sales_id", identity!.id)
+        .eq("sales_id", authUserId)
         .single();
       return data as ContactRow | null;
     },
