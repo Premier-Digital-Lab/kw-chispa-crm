@@ -578,6 +578,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/hooks/useProfileComplete.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/find-agent/FindAgentPage.tsx",
           "type": "registry:component"
         },

@@ -261,6 +261,7 @@ const ProfileGuard = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   useEffect(() => {
+    console.log("ProfileGuard:", { identityPending, isLoading, isComplete, path: location.pathname, identityId: identity?.id });
     if (identityPending || isLoading) return;
     if (!identity || identity.administrator) return;
     if (isComplete) return;
