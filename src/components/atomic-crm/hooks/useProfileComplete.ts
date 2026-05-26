@@ -1,5 +1,6 @@
 import { useGetIdentity } from "ra-core";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { getSupabaseClient } from "../providers/supabase/supabase";
 
 const REQUIRED_FIELDS = [
@@ -30,18 +31,32 @@ const isFieldFilled = (value: unknown): boolean => {
 
 export const useProfileComplete = () => {
   const { identity, isPending: isPendingIdentity } = useGetIdentity();
+  const [authUserId, setAuthUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    getSupabaseClient().auth.getSession().then(({ data }) => {
+      setAuthUserId(data.session?.user.id ?? null);
+    });
+  }, []);
 
   const { data, isPending: isPendingQuery } = useQuery({
     queryKey: ["profile-complete", identity?.id],
     queryFn: async (): Promise<ContactRow | null> => {
       const supabase = getSupabaseClient();
       const { data: sessionData } = await supabase.auth.getSession();
-      const authUserId = sessionData.session?.user?.id;
-      if (!authUserId) return null;
+      const uid = sessionData.session?.user?.id;
+      if (!uid) return null;
+      // sales_id is bigint; look up the sales row first to get the integer id
+      const { data: salesRow } = await supabase
+        .from("sales")
+        .select("id")
+        .eq("user_id", uid)
+        .single();
+      if (!salesRow?.id) return null;
       const { data } = await supabase
         .from("contacts")
         .select(REQUIRED_FIELDS.join(", "))
-        .eq("sales_id", authUserId)
+        .eq("sales_id", salesRow.id)
         .single();
       return data as ContactRow | null;
     },
@@ -58,5 +73,5 @@ export const useProfileComplete = () => {
 
   const contactId = data ? String((data as ContactRow)["id"]) : null;
 
-  return { isComplete, isLoading, contactId };
+  return { isComplete, isLoading, contactId, authUserId };
 };

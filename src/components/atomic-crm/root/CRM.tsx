@@ -5,7 +5,7 @@ import type {
   LayoutComponent,
 } from "ra-core";
 import { CustomRoutes, localStorageStore, Resource, useGetIdentity } from "ra-core";
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Route, useLocation, useNavigate } from "react-router";
 import { useProfileComplete } from "../hooks/useProfileComplete";
 import { QueryClient } from "@tanstack/react-query";
@@ -253,15 +253,21 @@ export const CRM = ({
 };
 
 // Redirects non-admin members with incomplete profiles to the dashboard.
-// Exempt paths: "/" (dashboard) and "/sales/:id" (their own profile edit page).
+// Exempt paths: "/" (dashboard) and "/sales/:authUUID" (their own profile edit page).
 const ProfileGuard = ({ children }: { children: ReactNode }) => {
   const { identity, isPending: identityPending } = useGetIdentity();
   const { isComplete, isLoading } = useProfileComplete();
   const navigate = useNavigate();
   const location = useLocation();
+  const [authUserId, setAuthUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("ProfileGuard:", { identityPending, isLoading, isComplete, path: location.pathname, identityId: identity?.id });
+    getSupabaseClient().auth.getSession().then(({ data }) => {
+      setAuthUserId(data.session?.user.id ?? null);
+    });
+  }, []);
+
+  useEffect(() => {
     if (identityPending || isLoading) return;
     if (!identity || identity.administrator) return;
     if (isComplete) return;
@@ -269,11 +275,11 @@ const ProfileGuard = ({ children }: { children: ReactNode }) => {
     const path = location.pathname;
     const isExempt =
       path === "/" ||
-      (identity.id != null && path.startsWith(`/sales/${identity.id}`));
+      (authUserId !== null && path.startsWith(`/sales/${authUserId}`));
     if (!isExempt) {
       navigate("/", { replace: true });
     }
-  }, [identityPending, isLoading, identity, isComplete, location.pathname, navigate]);
+  }, [identityPending, isLoading, identity, isComplete, location.pathname, navigate, authUserId]);
 
   return <>{children}</>;
 };
