@@ -269,6 +269,7 @@ const ProfileGuard = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (identityPending || isLoading) return;
+    if (authUserId === null) return;
     if (!identity || identity.administrator) return;
     if (isComplete) return;
 
