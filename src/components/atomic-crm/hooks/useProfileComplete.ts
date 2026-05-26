@@ -39,6 +39,8 @@ export const useProfileComplete = () => {
 
   const { data, isPending: isPendingQuery } = useQuery({
     queryKey: ["profile-complete", identity?.id],
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     queryFn: async (): Promise<ContactRow | null> => {
       const supabase = getSupabaseClient();
       const { data: sessionData } = await supabase.auth.getSession();
