@@ -13,8 +13,6 @@ const REQUIRED_FIELDS = [
   "mc_zip_code",
   "mc_country",
   "market_center_team_leader",
-  "mc_tl_phone",
-  "mc_tl_email",
   "languages_spoken",
   "cities_served",
   "states_served",
