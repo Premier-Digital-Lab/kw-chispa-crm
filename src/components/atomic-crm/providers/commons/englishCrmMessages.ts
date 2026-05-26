@@ -705,6 +705,12 @@ export const englishCrmMessages = {
       errorMessage:
         "Something went wrong. Please try again or contact info@kwchispa.com.",
     },
+    profileCompletion: {
+      banner_title: "Your profile is incomplete. Please complete your profile to access all features of KW CHISPA Central.",
+      banner_title_es: "Tu perfil está incompleto. Por favor completa tu perfil para acceder a todas las funciones de KW CHISPA Central.",
+      complete_profile: "Complete Profile",
+      complete_profile_es: "Completar perfil",
+    },
   },
 } as const;
 

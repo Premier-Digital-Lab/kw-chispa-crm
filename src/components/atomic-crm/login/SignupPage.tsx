@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import {
   Form,
@@ -11,21 +10,11 @@ import {
   useTranslate,
 } from "ra-core";
 import type { FieldValues } from "react-hook-form";
-import { useFormContext } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { TextInput } from "@/components/admin/text-input";
-import { SelectInput } from "@/components/admin/select-input";
 import { BooleanInput } from "@/components/admin/boolean-input";
-import { RadioButtonGroupInput } from "@/components/admin/radio-button-group-input";
 
-import { CommaSeparatedInput } from "../contacts/ContactInputs";
-import {
-  contactGender,
-  translateContactGenderLabel,
-} from "../contacts/contactModel";
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { SignUpData } from "../types";
@@ -33,35 +22,6 @@ import { LoginSkeleton } from "./LoginSkeleton";
 import { Notification } from "@/components/admin/notification";
 import { ConfirmationRequired } from "./ConfirmationRequired";
 import { SSOAuthButton } from "./SSOAuthButton";
-
-// Which tab each validated field belongs to — used to auto-switch on error.
-const FIELD_TO_TAB: Record<string, string> = {
-  first_name: "account",
-  last_name: "account",
-  email: "account",
-  password: "account",
-  cell_number: "account",
-  market_center_name: "kw_info",
-  agent_role: "kw_info",
-  kw_website: "kw_info",
-  mc_street_address: "kw_info",
-  mc_city: "kw_info",
-  mc_state: "kw_info",
-  mc_zip_code: "kw_info",
-  mc_country: "kw_info",
-  languages_spoken: "service_areas",
-  cities_served: "service_areas",
-  counties_served: "service_areas",
-  states_served: "service_areas",
-  countries_served: "service_areas",
-};
-
-const TAB_ORDER = [
-  "account",
-  "kw_info",
-  "service_areas",
-  "profile",
-] as const;
 
 export const SignupPage = () => {
   const queryClient = useQueryClient();
@@ -105,20 +65,9 @@ export const SignupPage = () => {
     },
   });
 
-  const [activeTab, setActiveTab] = useState<string>("account");
-  const [tabIndex, setTabIndex] = useState(0);
-  const tabIndexRef = useRef(0);
-
-  const goToTab = (index: number) => {
-    setTabIndex(index);
-    setActiveTab(TAB_ORDER[index]);
-    tabIndexRef.current = index;
-  };
-
   if (isPending) return <LoginSkeleton />;
 
   const onSubmit = (data: FieldValues) => {
-    if (tabIndexRef.current < TAB_ORDER.length - 1) return;
     mutate(data as SignUpData);
   };
 
@@ -172,15 +121,11 @@ export const SignupPage = () => {
               defaultValues={{
                 membership_tier: "Free",
                 has_newsletter: true,
-                gender: contactGender[0].value,
               }}
             >
               <SignupFormBody
                 isSubmitting={isSignUpPending}
                 googleWorkplaceDomain={googleWorkplaceDomain}
-                tabIndex={tabIndex}
-                activeTab={activeTab}
-                goToTab={goToTab}
               />
             </Form>
           </div>
@@ -194,151 +139,74 @@ export const SignupPage = () => {
 
 SignupPage.path = "/sign-up";
 
-// ─── Inner form body — must be a child of <Form> to access useFormContext ────
+// ─── Inner form body — must be a child of <Form> to access form context ───────
+
+const httpsUrl = (value: string) =>
+  value && !value.startsWith("https://")
+    ? 'Must start with "https://"'
+    : undefined;
 
 const SignupFormBody = ({
   isSubmitting,
   googleWorkplaceDomain,
-  tabIndex,
-  activeTab,
-  goToTab,
 }: {
   isSubmitting: boolean;
   googleWorkplaceDomain?: string;
-  tabIndex: number;
-  activeTab: string;
-  goToTab: (index: number) => void;
 }) => {
   const translate = useTranslate();
-  const { formState } = useFormContext();
-
-  // After each failed submit, jump to the first tab that has an error.
-  useEffect(() => {
-    if (formState.submitCount === 0) return;
-    const errorKeys = Object.keys(formState.errors);
-    if (errorKeys.length === 0) return;
-    const firstErrorTabIndex = TAB_ORDER.findIndex((tab) =>
-      errorKeys.some((key) => FIELD_TO_TAB[key] === tab),
-    );
-    if (firstErrorTabIndex !== -1 && TAB_ORDER[firstErrorTabIndex] !== activeTab) {
-      goToTab(firstErrorTabIndex);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formState.submitCount]);
-
-  const isLastTab = tabIndex === TAB_ORDER.length - 1;
 
   return (
     <div className="flex flex-col gap-6">
       <div className="[&_input]:bg-white/10 [&_input]:border-white/40 [&_input]:text-white [&_input::placeholder]:text-white/50 [&_label]:text-white [&_label]:font-semibold [&_label]:text-sm [&_select]:bg-white/10 [&_select]:border-white/40 [&_select]:text-white [&_textarea]:bg-white/10 [&_textarea]:border-white/40 [&_textarea]:text-white">
-        <Tabs value={activeTab} onValueChange={(val) => {
-          const idx = TAB_ORDER.indexOf(val as typeof TAB_ORDER[number]);
-          if (idx !== -1) goToTab(idx);
-        }} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger
-              value="account"
-              className="text-xs py-2 whitespace-normal text-center leading-tight"
-            >
-              {translate("crm.auth.signup.tabs.account", { _: "Account" })}
-            </TabsTrigger>
-            <TabsTrigger
-              value="kw_info"
-              className="text-xs py-2 whitespace-normal text-center leading-tight"
-            >
-              {translate("crm.auth.signup.tabs.kw_info", { _: "KW Info" })}
-            </TabsTrigger>
-            <TabsTrigger
-              value="service_areas"
-              className="text-xs py-2 whitespace-normal text-center leading-tight"
-            >
-              {translate("crm.auth.signup.tabs.service_areas", {
-                _: "Service Areas",
-              })}
-            </TabsTrigger>
-            <TabsTrigger
-              value="profile"
-              className="text-xs py-2 whitespace-normal text-center leading-tight"
-            >
-              {translate("crm.auth.signup.tabs.profile", { _: "Profile" })}
-            </TabsTrigger>
-          </TabsList>
-
-          {/* forceMount keeps every tab's fields in the DOM so validation runs
-              across all tabs on every submit, not just the active one. */}
-          <TabsContent
-            value="account"
-            className="mt-4 data-[state=inactive]:hidden"
-            forceMount
-          >
-            <AccountTabInputs />
-          </TabsContent>
-          <TabsContent
-            value="kw_info"
-            className="mt-4 data-[state=inactive]:hidden"
-            forceMount
-          >
-            <SignupKwInfoTabInputs />
-          </TabsContent>
-          <TabsContent
-            value="service_areas"
-            className="mt-4 data-[state=inactive]:hidden"
-            forceMount
-          >
-            <SignupServiceAreasTabInputs />
-          </TabsContent>
-          <TabsContent
-            value="profile"
-            className="mt-4 data-[state=inactive]:hidden"
-            forceMount
-          >
-            <SignupProfileTabInputs />
-          </TabsContent>
-        </Tabs>
+        <div className="flex flex-col gap-4">
+          <TextInput source="first_name" validate={required()} helperText={false} />
+          <TextInput source="last_name" validate={required()} helperText={false} />
+          <TextInput
+            source="email"
+            type="email"
+            label="ra.auth.email"
+            validate={[required(), emailValidator()]}
+            helperText={false}
+          />
+          <TextInput
+            source="password"
+            type="password"
+            label="ra.auth.password"
+            validate={required()}
+            helperText={false}
+          />
+          <TextInput
+            source="cell_number"
+            validate={required()}
+            helperText={false}
+          />
+          <TextInput
+            source="kw_website"
+            validate={[required(), httpsUrl]}
+            helperText={false}
+          />
+          <BooleanInput source="has_newsletter" defaultValue={true} helperText={false} />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">
-        {/* Navigation row: Back on left, Next/Create on right */}
-        <div className="flex gap-3">
-          {tabIndex > 0 && (
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1 border-white/40 text-white bg-transparent hover:bg-white/10 font-semibold"
-              onClick={() => goToTab(tabIndex - 1)}
-            >
-              ← Back
-            </Button>
-          )}
-          {isLastTab ? (
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 font-semibold text-white"
-              style={{ backgroundColor: "#CC0000" }}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  {translate("crm.auth.signup.creating", { _: "Creating..." })}
-                </>
-              ) : (
-                translate("crm.auth.signup.create_account", {
-                  _: "Create account",
-                })
-              )}
-            </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full font-semibold text-white"
+          style={{ backgroundColor: "#CC0000" }}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              {translate("crm.auth.signup.creating", { _: "Creating..." })}
+            </>
           ) : (
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1 border-white/40 text-white bg-transparent hover:bg-white/10 font-semibold"
-              onClick={() => goToTab(tabIndex + 1)}
-            >
-              Next →
-            </Button>
+            translate("crm.auth.signup.create_account", {
+              _: "Create account",
+            })
           )}
-        </div>
+        </Button>
 
         {googleWorkplaceDomain ? (
           <SSOAuthButton className="w-full" domain={googleWorkplaceDomain}>
@@ -362,162 +230,6 @@ const SignupFormBody = ({
           {"."}
         </p>
       </div>
-    </div>
-  );
-};
-
-// ─── Tab content components ───────────────────────────────────────────────────
-
-const AccountTabInputs = () => (
-  <div className="flex flex-col gap-4">
-    <TextInput source="first_name" validate={required()} helperText={false} />
-    <TextInput source="last_name" validate={required()} helperText={false} />
-    <TextInput
-      source="email"
-      type="email"
-      label="ra.auth.email"
-      validate={[required(), emailValidator()]}
-      helperText={false}
-    />
-    <TextInput
-      source="password"
-      type="password"
-      label="ra.auth.password"
-      validate={required()}
-      helperText={false}
-    />
-    <TextInput
-      source="cell_number"
-      validate={required()}
-      helperText={false}
-    />
-  </div>
-);
-
-const httpsUrl = (value: string) =>
-  value && !value.startsWith("https://")
-    ? 'Must start with "https://"'
-    : undefined;
-
-const SignupKwInfoTabInputs = () => {
-  const translate = useTranslate();
-
-  const agentRoleChoices = [
-    { id: "Solo Agent", name: "Solo Agent" },
-    { id: "Team Member", name: "Team Member" },
-    { id: "Team Lead", name: "Team Leader of your Team" },
-  ];
-
-  return (
-    <div className="flex flex-col gap-4">
-      <TextInput
-        source="market_center_name"
-        validate={required()}
-        helperText={false}
-      />
-      <SelectInput
-        source="agent_role"
-        choices={agentRoleChoices}
-        validate={required()}
-        helperText={false}
-        translateChoice={false}
-      />
-      <TextInput source="market_center_team_leader" helperText={false} />
-      <TextInput source="market_center_tl_phone" helperText={false} />
-      <TextInput source="market_center_tl_email" helperText={false} />
-
-      <div>
-        <h6 className="text-sm font-semibold mb-2">
-          {translate("resources.contacts.field_categories.mc_address", {
-            _: "Market Center Address",
-          })}
-        </h6>
-        <Separator className="mb-4" />
-        <div className="flex flex-col gap-4">
-          <TextInput source="mc_street_address" validate={required()} helperText={false} />
-          <TextInput source="mc_suite_unit" helperText={false} />
-          <div className="grid grid-cols-2 gap-4">
-            <TextInput source="mc_city" validate={required()} helperText={false} />
-            <TextInput source="mc_state" validate={required()} helperText={false} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <TextInput source="mc_zip_code" validate={required()} helperText={false} />
-            <TextInput source="mc_country" validate={required()} helperText={false} />
-          </div>
-        </div>
-      </div>
-      <TextInput
-        source="kw_website"
-        validate={[required(), httpsUrl]}
-        helperText={false}
-      />
-    </div>
-  );
-};
-
-const SignupServiceAreasTabInputs = () => (
-  <div className="flex flex-col gap-4">
-    <CommaSeparatedInput
-      source="languages_spoken"
-      validate={required()}
-      helperText={false}
-    />
-    <CommaSeparatedInput
-      source="cities_served"
-      validate={required()}
-      helperText={false}
-    />
-    <CommaSeparatedInput
-      source="counties_served"
-      validate={required()}
-      helperText={false}
-    />
-    <CommaSeparatedInput
-      source="states_served"
-      validate={required()}
-      helperText={false}
-    />
-    <CommaSeparatedInput
-      source="countries_served"
-      validate={required()}
-      helperText={false}
-    />
-  </div>
-);
-
-const SignupProfileTabInputs = () => {
-  const translate = useTranslate();
-
-  const membershipTierChoices = [
-    { id: "Free", name: "Free" },
-    { id: "Premier", name: "Premier" },
-  ];
-
-  return (
-    <div className="flex flex-col gap-4">
-      <RadioButtonGroupInput
-        label={false}
-        row
-        source="gender"
-        choices={contactGender}
-        helperText={false}
-        optionText={(choice) => translateContactGenderLabel(choice, translate)}
-        translateChoice={false}
-        optionValue="value"
-      />
-      <TextInput source="title" helperText={false} />
-      <TextInput source="background" multiline helperText={false} />
-      <TextInput source="linkedin_url" helperText={false} />
-      <TextInput source="facebook_url" helperText={false} />
-      <TextInput source="instagram_url" helperText={false} />
-      <TextInput source="tiktok_url" helperText={false} />
-      <SelectInput
-        source="membership_tier"
-        choices={membershipTierChoices}
-        helperText={false}
-        translateChoice={false}
-      />
-      <BooleanInput source="has_newsletter" defaultValue={true} helperText={false} />
     </div>
   );
 };

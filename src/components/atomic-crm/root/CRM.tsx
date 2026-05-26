@@ -4,9 +4,10 @@ import type {
   DashboardComponent,
   LayoutComponent,
 } from "ra-core";
-import { CustomRoutes, localStorageStore, Resource } from "ra-core";
-import { useEffect, useMemo } from "react";
-import { Route } from "react-router";
+import { CustomRoutes, localStorageStore, Resource, useGetIdentity } from "ra-core";
+import { useEffect, useMemo, type ReactNode } from "react";
+import { Route, useLocation, useNavigate } from "react-router";
+import { useProfileComplete } from "../hooks/useProfileComplete";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
@@ -251,6 +252,37 @@ export const CRM = ({
   );
 };
 
+// Redirects non-admin members with incomplete profiles to the dashboard.
+// Exempt paths: "/" (dashboard) and "/sales/:contactId" (profile edit).
+const ProfileGuard = ({ children }: { children: ReactNode }) => {
+  const { identity, isPending: identityPending } = useGetIdentity();
+  const { isComplete, isLoading, contactId } = useProfileComplete();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (identityPending || isLoading) return;
+    if (!identity || identity.administrator) return;
+    if (isComplete) return;
+
+    const path = location.pathname;
+    const isExempt =
+      path === "/" ||
+      (contactId !== null && path.startsWith(`/sales/${contactId}`));
+    if (!isExempt) {
+      navigate("/", { replace: true });
+    }
+  }, [identityPending, isLoading, identity, isComplete, contactId, location.pathname, navigate]);
+
+  return <>{children}</>;
+};
+
+const GuardedDesktopLayout: LayoutComponent = (props) => (
+  <ProfileGuard>
+    <Layout {...props} />
+  </ProfileGuard>
+);
+
 const DesktopAdmin = (
   props: CoreAdminProps & {
     dashboard?: DashboardComponent;
@@ -259,7 +291,7 @@ const DesktopAdmin = (
 ) => {
   return (
     <Admin
-      layout={props.layout ?? Layout}
+      layout={props.layout ?? GuardedDesktopLayout}
       dashboard={props.dashboard ?? Dashboard}
       {...props}
     >

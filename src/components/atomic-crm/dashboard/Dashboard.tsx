@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useCanAccess, useGetIdentity, useGetList } from "ra-core";
+import { useCanAccess, useGetIdentity, useGetList, useTranslate } from "ra-core";
 import { Link } from "react-router";
-import { MessageCircle, UserCheck } from "lucide-react";
+import { MessageCircle, UserCheck, AlertTriangle } from "lucide-react";
+import { useProfileComplete } from "../hooks/useProfileComplete";
 
 import { getSupabaseClient } from "@/components/atomic-crm/providers/supabase/supabase";
 
@@ -16,6 +17,48 @@ import { TasksList } from "./TasksList";
 import { UpcomingEvents } from "./UpcomingEvents";
 import { RecurringEvents } from "../events/RecurringEvents";
 import { Welcome } from "./Welcome";
+
+const ProfileIncompleteBanner = () => {
+  const { isComplete, isLoading, contactId } = useProfileComplete();
+  const translate = useTranslate();
+
+  if (isLoading || isComplete) return null;
+
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-red-500 bg-red-50 dark:bg-red-950/30 p-4 text-red-800 dark:text-red-300">
+      <AlertTriangle className="w-5 h-5 mt-0.5 shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold">
+          {translate("crm.profileCompletion.banner_title", {
+            _: "Your profile is incomplete. Please complete your profile to access all features of KW CHISPA Central.",
+          })}
+        </p>
+        <p className="text-sm mt-1 text-red-700 dark:text-red-400">
+          {translate("crm.profileCompletion.banner_title_es", {
+            _: "Tu perfil está incompleto. Por favor completa tu perfil para acceder a todas las funciones de KW CHISPA Central.",
+          })}
+        </p>
+      </div>
+      {contactId && (
+        <Link
+          to={`/sales/${contactId}`}
+          className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+        >
+          <span className="block">
+            {translate("crm.profileCompletion.complete_profile", {
+              _: "Complete Profile",
+            })}
+          </span>
+          <span className="block text-red-200">
+            {translate("crm.profileCompletion.complete_profile_es", {
+              _: "Completar perfil",
+            })}
+          </span>
+        </Link>
+      )}
+    </div>
+  );
+};
 
 /**
  * Shown to approved non-admin members in place of the admin dashboard.
@@ -145,6 +188,7 @@ export const Dashboard = () => {
   if (!identity?.administrator) {
     return (
       <div className="flex flex-col gap-6 mt-1">
+        <ProfileIncompleteBanner />
         <MemberWelcomeDashboard />
         <UpcomingEvents />
         <RecurringEvents />
