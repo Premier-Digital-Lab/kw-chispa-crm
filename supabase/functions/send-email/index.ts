@@ -2,7 +2,6 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 
 const POSTMARK_API_TOKEN = Deno.env.get("POSTMARK_API_TOKEN") ?? "";
-const WEBHOOK_SECRET = Deno.env.get("SEND_EMAIL_WEBHOOK_SECRET") ?? "";
 const FROM_EMAIL = "info@kwchispa.com";
 const LOGO_URL = "https://kw-chispa-crm.netlify.app/logo-white.png";
 
@@ -321,15 +320,6 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
-  }
-
-  // Verify webhook secret
-  const incomingSecret = req.headers.get("x-webhook-secret");
-  if (!WEBHOOK_SECRET || incomingSecret !== WEBHOOK_SECRET) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   }
 
   let body: {
