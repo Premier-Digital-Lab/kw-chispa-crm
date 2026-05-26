@@ -19,7 +19,8 @@ import { RecurringEvents } from "../events/RecurringEvents";
 import { Welcome } from "./Welcome";
 
 const ProfileIncompleteBanner = () => {
-  const { isComplete, isLoading, contactId } = useProfileComplete();
+  const { isComplete, isLoading } = useProfileComplete();
+  const { identity } = useGetIdentity();
   const translate = useTranslate();
 
   if (isLoading || isComplete) return null;
@@ -39,9 +40,9 @@ const ProfileIncompleteBanner = () => {
           })}
         </p>
       </div>
-      {contactId && (
+      {identity?.id && (
         <Link
-          to={`/sales/${contactId}`}
+          to={`/sales/${identity.id}`}
           className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
         >
           <span className="block">

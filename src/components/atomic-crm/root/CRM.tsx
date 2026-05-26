@@ -253,10 +253,10 @@ export const CRM = ({
 };
 
 // Redirects non-admin members with incomplete profiles to the dashboard.
-// Exempt paths: "/" (dashboard) and "/sales/:contactId" (profile edit).
+// Exempt paths: "/" (dashboard) and "/sales/:id" (their own profile edit page).
 const ProfileGuard = ({ children }: { children: ReactNode }) => {
   const { identity, isPending: identityPending } = useGetIdentity();
-  const { isComplete, isLoading, contactId } = useProfileComplete();
+  const { isComplete, isLoading } = useProfileComplete();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -268,11 +268,11 @@ const ProfileGuard = ({ children }: { children: ReactNode }) => {
     const path = location.pathname;
     const isExempt =
       path === "/" ||
-      (contactId !== null && path.startsWith(`/sales/${contactId}`));
+      (identity.id != null && path.startsWith(`/sales/${identity.id}`));
     if (!isExempt) {
       navigate("/", { replace: true });
     }
-  }, [identityPending, isLoading, identity, isComplete, contactId, location.pathname, navigate]);
+  }, [identityPending, isLoading, identity, isComplete, location.pathname, navigate]);
 
   return <>{children}</>;
 };
