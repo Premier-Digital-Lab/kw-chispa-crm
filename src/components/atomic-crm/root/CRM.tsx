@@ -291,6 +291,12 @@ const GuardedDesktopLayout: LayoutComponent = (props) => (
   </ProfileGuard>
 );
 
+const GuardedMobileLayout: LayoutComponent = (props) => (
+  <ProfileGuard>
+    <MobileLayout {...props} />
+  </ProfileGuard>
+);
+
 const DesktopAdmin = (
   props: CoreAdminProps & {
     dashboard?: DashboardComponent;
@@ -373,7 +379,7 @@ const MobileAdmin = (
     >
       <Admin
         queryClient={queryClient}
-        layout={props.layout ?? MobileLayout}
+        layout={props.layout ?? GuardedMobileLayout}
         dashboard={props.dashboard ?? MobileDashboard}
         {...props}
       >
