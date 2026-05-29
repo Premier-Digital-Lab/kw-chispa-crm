@@ -182,6 +182,7 @@ const SignupFormBody = ({
           />
           <TextInput
             source="kw_website"
+            label={translate("resources.contacts.fields.kw_website")}
             validate={[required(), httpsUrl]}
             helperText={false}
           />

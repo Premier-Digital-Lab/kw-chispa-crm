@@ -115,6 +115,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
         membership_tier: "Nivel de membresía",
         join_date: "Fecha de ingreso",
         member_status: "Estado de membresía",
+        kw_website: "Sitio Web KW",
       },
       action: {
         add: "Agregar miembro",

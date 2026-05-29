@@ -113,6 +113,7 @@ export const englishCrmMessages = {
         membership_tier: "Membership Tier",
         join_date: "Join Date",
         member_status: "Member Status",
+        kw_website: "KW Website",
       },
       action: {
         add: "Add member",
