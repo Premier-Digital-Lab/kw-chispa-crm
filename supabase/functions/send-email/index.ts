@@ -174,7 +174,7 @@ function buildWelcomeApproved(firstName: string): {
           <li style="margin-bottom:6px;"><strong>Eventos</strong> — Busca y regístrate en eventos de KW CHISPA</li>
           <li style="margin-bottom:6px;"><strong>Líderes de Capítulo</strong> — Recursos para Líderes de Capítulo <em>(solo Líderes de Capítulo)</em></li>
         </ul>
-        <p style="margin:0 0 16px;">Tu solicitud para unirte al grupo de Facebook de KW CHISPA también será aprobada. Allí nos conectamos y compartimos ideas a diario. ¡Únete a nosotras en el <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">grupo de Facebook KW CHISPA</a>!</p>
+        <p style="margin:0 0 16px;color:#CC0000;font-weight:bold;text-decoration:underline;">IMPORTANTE: Para aprobar tu solicitud de unirte al grupo de Facebook de KW CHISPA, por favor usa el enlace para regresar al grupo (<a href="${facebookUrl}" style="color:#CC0000;">https://www.facebook.com/groups/kwchispa</a>) y agrega el siguiente código de acceso en la pregunta requerida para unirte al grupo — <span style="font-style:italic;">somoskwchispa</span></p>
         <p style="margin:0 0 16px;">¿Preguntas, comentarios o interesado/a en el liderazgo de KW CHISPA? Por favor, envíenos un mensaje a <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> y alguien se pondrá en contacto con usted en el plazo de un día. Esperamos hacer negocios con usted.</p>
         <p style="margin:0 0 24px;"><em>Con gratitud,</em><br/><em>Su Consejo de Liderazgo de KW CHISPA</em></p>
         <p style="margin:0;">
