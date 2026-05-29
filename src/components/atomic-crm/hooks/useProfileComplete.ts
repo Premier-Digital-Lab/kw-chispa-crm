@@ -12,11 +12,9 @@ const REQUIRED_FIELDS = [
   "mc_state",
   "mc_zip_code",
   "mc_country",
-  "market_center_team_leader",
   "languages_spoken",
   "cities_served",
   "states_served",
-  "title",
 ] as const;
 
 type ContactRow = Record<(typeof REQUIRED_FIELDS)[number], unknown>;
