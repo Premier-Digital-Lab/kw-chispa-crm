@@ -61,44 +61,54 @@ const ProfileIncompleteBanner = () => {
   );
 };
 
+const NAV_LINKS = [
+  { label: "Find an Agent", sublabel: "Buscar un Agente", to: "/find-agent" },
+  { label: "Members", sublabel: "Miembros", to: "/contacts" },
+  { label: "Premier", sublabel: "Premier", to: "/premier" },
+  { label: "Content Generator", sublabel: "Generador de Contenido", to: "/content-generator" },
+  { label: "Events", sublabel: "Eventos", to: "/events" },
+  { label: "Chapter Leaders", sublabel: "Líderes de Capítulo", to: "/chapter-leaders" },
+  { label: "Interested in Becoming a Chapter Leader?", sublabel: "¿Interesado/a en ser Líder de Capítulo?", to: "https://docs.google.com/forms/d/e/1FAIpQLSfFI8NNbLl1otXTbHXorMQd_InBJwpqFqtiUJvMvpsHiaE68A/viewform?usp=header", external: true },
+];
+
+const NavBoxes = ({ compact = false }: { compact?: boolean }) => (
+  <div className={`grid grid-cols-2 ${compact ? "sm:grid-cols-4 gap-2" : "sm:grid-cols-2 gap-4"}`}>
+    {NAV_LINKS.map(({ label, sublabel, to, external }) =>
+      external ? (
+        <a
+          key={to}
+          href={to}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-card rounded-r-lg px-3 py-2 shadow-sm hover:bg-accent transition-colors no-underline"
+        >
+          <span className={`font-semibold text-foreground ${compact ? "text-xs" : "text-sm"}`}>{label}</span>
+          <span className="text-muted-foreground text-xs">{sublabel}</span>
+        </a>
+      ) : (
+        <Link
+          key={to}
+          to={to}
+          className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-card rounded-r-lg px-3 py-2 shadow-sm hover:bg-accent transition-colors no-underline"
+        >
+          <span className={`font-semibold text-foreground ${compact ? "text-xs" : "text-sm"}`}>{label}</span>
+          <span className="text-muted-foreground text-xs">{sublabel}</span>
+        </Link>
+      )
+    )}
+  </div>
+);
+
 const MemberWelcomeDashboard = () => (
   <div className="max-w-2xl mx-auto mt-8 flex flex-col gap-8 px-4">
     <div className="flex flex-col gap-1 text-center">
       <h2 className="text-2xl font-bold">Welcome to KW CHISPA!</h2>
-      <p className="text-muted-foreground text-base">
-        ¡Bienvenido/a a KW CHISPA!
-      </p>
+      <p className="text-muted-foreground text-base">¡Bienvenido/a a KW CHISPA!</p>
     </div>
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {[
-        { label: "Find an Agent", sublabel: "Buscar un Agente", to: "/find-agent" },
-        { label: "Members", sublabel: "Miembros", to: "/contacts" },
-        { label: "Premier", sublabel: "Premier", to: "/premier" },
-        { label: "Content Generator", sublabel: "Generador de Contenido", to: "/content-generator" },
-        { label: "Events", sublabel: "Eventos", to: "/events" },
-        { label: "Chapter Leaders", sublabel: "Líderes de Capítulo", to: "/chapter-leaders" },
-      ].map(({ label, sublabel, to }) => (
-        <Link
-          key={to}
-          to={to}
-          className="flex flex-col gap-1 border-l-4 border-red-600 bg-card rounded-r-lg px-4 py-3 shadow-sm hover:bg-accent transition-colors no-underline"
-        >
-          <span className="font-semibold text-foreground text-sm">{label}</span>
-          <span className="text-muted-foreground text-xs">{sublabel}</span>
-        </Link>
-      ))}
-    </div>
-
+    <NavBoxes />
     <div className="flex flex-col gap-2 text-sm text-muted-foreground text-center">
-      <p>
-        Use the chat assistant to search for members by city, state, language,
-        or Market Center.
-      </p>
-      <p>
-        Usa el asistente de chat para buscar miembros por ciudad, estado,
-        idioma o Market Center.
-      </p>
+      <p>Use the chat assistant to search for members by city, state, language, or Market Center.</p>
+      <p>Usa el asistente de chat para buscar miembros por ciudad, estado, idioma o Market Center.</p>
       <p>Click the chat bubble in the bottom-right corner to get started →</p>
     </div>
   </div>
@@ -224,6 +234,13 @@ export const Dashboard = () => {
         <div className="flex flex-col gap-6">
           {import.meta.env.VITE_IS_DEMO === "true" ? <Welcome /> : null}
           {totalDeal ? <DealsChart /> : null}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-lg font-bold">Welcome to KW CHISPA!</h2>
+              <p className="text-muted-foreground text-sm">¡Bienvenido/a a KW CHISPA!</p>
+            </div>
+            <NavBoxes compact />
+          </div>
           <UpcomingEvents />
           <RecurringEvents />
         </div>
