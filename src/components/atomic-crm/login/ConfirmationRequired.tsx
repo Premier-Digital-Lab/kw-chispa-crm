@@ -47,7 +47,7 @@ export const ConfirmationRequired = () => {
               _: "Please follow the link we just sent you by email to confirm your account.",
             })}
           </p>
-          <p className="text-sm text-white/60">
+          <p className="text-base text-white/80">
             {translate("crm.auth.check_spam", {
               _: "Please check your spam folder if you don't see the email in your inbox.",
             })}
