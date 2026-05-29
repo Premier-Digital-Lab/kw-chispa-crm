@@ -93,10 +93,10 @@ const NavBoxes = ({ compact = false }: { compact?: boolean }) => {
         href={callToAction.to}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-red-950/40 rounded-r-lg px-3 py-2 shadow-sm hover:bg-red-950/60 transition-colors no-underline w-full"
+        className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-red-950/40 dark:bg-red-950/40 rounded-r-lg px-3 py-2 shadow-sm hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors no-underline w-full"
       >
-        <span className={`font-semibold text-red-200 ${compact ? "text-xs" : "text-sm"}`}>{callToAction.label}</span>
-        <span className="text-red-300/70 text-xs">{callToAction.sublabel}</span>
+        <span className={`font-semibold text-red-800 dark:text-red-200 ${compact ? "text-xs" : "text-sm"}`}>{callToAction.label}</span>
+        <span className="text-red-700 dark:text-red-300/70 text-xs">{callToAction.sublabel}</span>
       </a>
     </div>
   );
