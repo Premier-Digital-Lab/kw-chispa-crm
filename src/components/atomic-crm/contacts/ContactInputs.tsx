@@ -494,6 +494,7 @@ const ServiceAreasTabInputs = () => (
 );
 
 const MembershipTabInputs = () => {
+  const translate = useTranslate();
   const { identity } = useGetIdentity();
   const isAdmin = identity?.administrator === true;
 
