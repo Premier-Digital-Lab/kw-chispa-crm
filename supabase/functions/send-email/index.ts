@@ -192,18 +192,14 @@ function buildAdminNotification(data: {
   lastName: string;
   email: string;
   cellNumber: string;
-  marketCenterName: string;
-  agentRole: string;
 }): { subject: string; html: string } {
-  const { firstName, lastName, email, cellNumber, marketCenterName, agentRole } = data;
+  const { firstName, lastName, email, cellNumber } = data;
   const crmUrl = "https://kw-chispa-crm.netlify.app";
 
   const rows = [
     ["Name", `${firstName} ${lastName}`],
     ["Email", email],
     ["Cell", cellNumber || "—"],
-    ["Market Center", marketCenterName || "—"],
-    ["Agent Role", agentRole || "—"],
   ]
     .map(
       ([label, value]) =>
@@ -349,8 +345,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
         lastName: data.last_name ?? "",
         email: data.email ?? "",
         cellNumber: data.cell_number ?? "",
-        marketCenterName: data.market_center_name ?? "",
-        agentRole: data.agent_role ?? "",
       });
       await sendEmail(to, subject, html);
     } else if (type === "welcome_approved") {
