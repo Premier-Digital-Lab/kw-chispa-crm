@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCanAccess, useGetIdentity, useGetList, useTranslate } from "ra-core";
 import { Link, useNavigate } from "react-router";
-import { MessageCircle, UserCheck, AlertTriangle } from "lucide-react";
+import { UserCheck, AlertTriangle } from "lucide-react";
 import { useProfileComplete } from "../hooks/useProfileComplete";
 
 import { getSupabaseClient } from "@/components/atomic-crm/providers/supabase/supabase";
@@ -61,32 +61,45 @@ const ProfileIncompleteBanner = () => {
   );
 };
 
-/**
- * Shown to approved non-admin members in place of the admin dashboard.
- * Directs them to use the chat assistant to search for other members.
- */
 const MemberWelcomeDashboard = () => (
-  <div className="max-w-lg mx-auto mt-16 flex flex-col items-center gap-6 text-center px-4">
-    <MessageCircle className="w-12 h-12 text-muted-foreground" />
-    <div className="flex flex-col gap-2">
+  <div className="max-w-2xl mx-auto mt-8 flex flex-col gap-8 px-4">
+    <div className="flex flex-col gap-1 text-center">
       <h2 className="text-2xl font-bold">Welcome to KW CHISPA!</h2>
       <p className="text-muted-foreground text-base">
         ¡Bienvenido/a a KW CHISPA!
       </p>
     </div>
-    <Card className="p-6 w-full text-left">
-      <p className="text-sm mb-2">
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {[
+        { label: "Find an Agent", sublabel: "Buscar un Agente", to: "/find-agent" },
+        { label: "Members", sublabel: "Miembros", to: "/contacts" },
+        { label: "Premier", sublabel: "Premier", to: "/premier" },
+        { label: "Content Generator", sublabel: "Generador de Contenido", to: "/content-generator" },
+        { label: "Events", sublabel: "Eventos", to: "/events" },
+        { label: "Chapter Leaders", sublabel: "Líderes de Capítulo", to: "/chapter-leaders" },
+      ].map(({ label, sublabel, to }) => (
+        <Link
+          key={to}
+          to={to}
+          className="flex flex-col gap-1 border-l-4 border-red-600 bg-card rounded-r-lg px-4 py-3 shadow-sm hover:bg-accent transition-colors no-underline"
+        >
+          <span className="font-semibold text-foreground text-sm">{label}</span>
+          <span className="text-muted-foreground text-xs">{sublabel}</span>
+        </Link>
+      ))}
+    </div>
+
+    <div className="flex flex-col gap-2 text-sm text-muted-foreground text-center">
+      <p>
         Use the chat assistant to search for members by city, state, language,
         or Market Center.
       </p>
-      <p className="text-sm text-muted-foreground">
+      <p>
         Usa el asistente de chat para buscar miembros por ciudad, estado,
         idioma o Market Center.
       </p>
-    </Card>
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <span>Click the chat bubble in the bottom-right corner to get started</span>
-      <span>→</span>
+      <p>Click the chat bubble in the bottom-right corner to get started →</p>
     </div>
   </div>
 );
