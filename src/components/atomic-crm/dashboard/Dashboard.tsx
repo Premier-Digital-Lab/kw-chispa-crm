@@ -71,33 +71,36 @@ const NAV_LINKS = [
   { label: "Interested in Becoming a Chapter Leader?", sublabel: "¿Interesado/a en ser Líder de Capítulo?", to: "https://docs.google.com/forms/d/e/1FAIpQLSfFI8NNbLl1otXTbHXorMQd_InBJwpqFqtiUJvMvpsHiaE68A/viewform?usp=header", external: true },
 ];
 
-const NavBoxes = ({ compact = false }: { compact?: boolean }) => (
-  <div className={`grid grid-cols-2 ${compact ? "sm:grid-cols-4 gap-2" : "sm:grid-cols-2 gap-4"}`}>
-    {NAV_LINKS.map(({ label, sublabel, to, external }) =>
-      external ? (
-        <a
-          key={to}
-          href={to}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-card rounded-r-lg px-3 py-2 shadow-sm hover:bg-accent transition-colors no-underline"
-        >
-          <span className={`font-semibold text-foreground ${compact ? "text-xs" : "text-sm"}`}>{label}</span>
-          <span className="text-muted-foreground text-xs">{sublabel}</span>
-        </a>
-      ) : (
-        <Link
-          key={to}
-          to={to}
-          className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-card rounded-r-lg px-3 py-2 shadow-sm hover:bg-accent transition-colors no-underline"
-        >
-          <span className={`font-semibold text-foreground ${compact ? "text-xs" : "text-sm"}`}>{label}</span>
-          <span className="text-muted-foreground text-xs">{sublabel}</span>
-        </Link>
-      )
-    )}
-  </div>
-);
+const NavBoxes = ({ compact = false }: { compact?: boolean }) => {
+  const mainLinks = NAV_LINKS.slice(0, 6);
+  const callToAction = NAV_LINKS[6];
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className={`grid grid-cols-2 ${compact ? "sm:grid-cols-3 gap-2" : "sm:grid-cols-2 gap-4"}`}>
+        {mainLinks.map(({ label, sublabel, to }) => (
+          <Link
+            key={to}
+            to={to}
+            className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-card rounded-r-lg px-3 py-2 shadow-sm hover:bg-accent transition-colors no-underline"
+          >
+            <span className={`font-semibold text-foreground ${compact ? "text-xs" : "text-sm"}`}>{label}</span>
+            <span className="text-muted-foreground text-xs">{sublabel}</span>
+          </Link>
+        ))}
+      </div>
+      <a
+        href={callToAction.to}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col gap-0.5 border-l-4 border-red-600 bg-red-950/40 rounded-r-lg px-3 py-2 shadow-sm hover:bg-red-950/60 transition-colors no-underline w-full"
+      >
+        <span className={`font-semibold text-red-200 ${compact ? "text-xs" : "text-sm"}`}>{callToAction.label}</span>
+        <span className="text-red-300/70 text-xs">{callToAction.sublabel}</span>
+      </a>
+    </div>
+  );
+};
 
 const MemberWelcomeDashboard = () => (
   <div className="max-w-2xl mx-auto mt-8 flex flex-col gap-8 px-4">
