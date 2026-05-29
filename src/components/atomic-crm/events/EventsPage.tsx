@@ -320,11 +320,11 @@ export const EventsPage = () => {
           <div className="flex items-center gap-2 mb-4">
             <Star className="w-5 h-5 text-muted-foreground" />
             <h2 className="text-xl font-semibold text-muted-foreground">
-              Featured Events
+              {translate("crm.events.featured_events")}
             </h2>
           </div>
           {featuredEvents.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No upcoming featured events</p>
+            <p className="text-sm text-muted-foreground">{translate("crm.events.no_featured_events")}</p>
           ) : (
             <div className="space-y-3">
               {featuredEvents.map((event) => (
@@ -378,7 +378,7 @@ export const EventsPage = () => {
         <div className="flex items-center gap-2 mb-4">
           <RefreshCw className="w-5 h-5 text-muted-foreground" />
           <h2 className="text-xl font-semibold text-muted-foreground">
-            Recurring Events
+            {translate("crm.events.recurring_events")}
           </h2>
         </div>
         <RecurringEvents />

@@ -669,6 +669,9 @@ export const englishCrmMessages = {
       no_events_this_month: "No events this month",
       no_upcoming_events: "No upcoming events",
       events_on_day: "Events on %{date}",
+      featured_events: "Featured Events",
+      no_featured_events: "No upcoming featured events",
+      recurring_events: "Recurring Events",
     },
     chapter_leaders: {
       nav_label: "Chapter Leaders",

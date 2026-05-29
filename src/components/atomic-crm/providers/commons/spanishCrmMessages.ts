@@ -671,6 +671,9 @@ export const spanishCrmMessages: PartialCrmMessages = {
       no_events_this_month: "Sin eventos este mes",
       no_upcoming_events: "Sin próximos eventos",
       events_on_day: "Eventos el %{date}",
+      featured_events: "Eventos Destacados",
+      no_featured_events: "No hay eventos destacados próximos",
+      recurring_events: "Eventos Recurrentes",
     },
     chapter_leaders: {
       nav_label: "Líderes de Capítulo",
