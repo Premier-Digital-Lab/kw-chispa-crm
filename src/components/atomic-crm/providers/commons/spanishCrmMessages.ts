@@ -409,9 +409,11 @@ export const spanishCrmMessages: PartialCrmMessages = {
         create_account: "Crear cuenta",
         create_first_user:
           "Crea la primera cuenta de usuario para completar la configuración.",
+        create_member_account: "Crea tu cuenta de miembro de KW CHISPA.",
         creating: "Creando...",
         initial_user_created: "Usuario inicial creado correctamente",
       },
+      already_have_account: "¿Ya tienes una cuenta? Inicia sesión",
       welcome_title: "Bienvenido a KW CHISPA Central",
       dont_have_account: "¿No tienes una cuenta? Regístrate",
       chatbot: {

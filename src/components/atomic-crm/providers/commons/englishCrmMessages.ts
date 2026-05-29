@@ -407,9 +407,11 @@ export const englishCrmMessages = {
         create_account: "Create account",
         create_first_user:
           "Create the first user account to complete the setup.",
+        create_member_account: "Create your KW CHISPA member account.",
         creating: "Creating...",
         initial_user_created: "Initial user successfully created",
       },
+      already_have_account: "Already have an account? Sign In",
       welcome_title: "Welcome to KW CHISPA Central",
       dont_have_account: "Don't have an account? Sign Up",
       chatbot: {
