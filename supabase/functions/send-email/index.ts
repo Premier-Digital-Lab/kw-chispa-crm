@@ -151,7 +151,7 @@ function buildWelcomeApproved(firstName: string): {
           <li style="margin-bottom:6px;"><strong>Events</strong> — Search and register for KW CHISPA events</li>
           <li style="margin-bottom:6px;"><strong>Chapter Leaders</strong> — Resources for Chapter Leaders <em>(Chapter Leaders only)</em></li>
         </ul>
-        <p style="margin:0 0 16px;">Your request to join the KW CHISPA Facebook group will also be approved. This is where we network and brainstorm daily. Come join us in the <a href="${facebookUrl}" style="color:#CC0000;text-decoration:none;">KW CHISPA Facebook group</a>!</p>
+        <p style="margin:0 0 16px;color:#CC0000;font-weight:bold;text-decoration:underline;">IMPORTANT: In order to approve your request to join the KW CHISPA Facebook group, please use the link to return to the group (<a href="${facebookUrl}" style="color:#CC0000;">https://www.facebook.com/groups/kwchispa</a>) and add the following passcode in the required question to join the group — <span style="font-style:italic;">somoskwchispa</span></p>
         <p style="margin:0 0 16px;">Questions, comments or interested in leadership with KW CHISPA? Please drop us a note at <a href="mailto:info@kwchispa.com" style="color:#CC0000;text-decoration:none;">info@kwchispa.com</a> and someone will get back to you within the day. We look forward to being in business with you.</p>
         <p style="margin:0 0 24px;"><em>With Gratitude,</em><br/><em>Your KW CHISPA Leadership Council</em></p>
         <p style="margin:0;">
