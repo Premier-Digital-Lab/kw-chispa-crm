@@ -114,6 +114,8 @@ export const englishCrmMessages = {
         join_date: "Join Date",
         member_status: "Member Status",
         kw_website: "KW Website",
+        kw_email_address_label: "KW Email Address (Put your @kw.com email first. You can add a second email.)",
+        is_chapter_leader: "Chapter Leader",
       },
       action: {
         add: "Add member",

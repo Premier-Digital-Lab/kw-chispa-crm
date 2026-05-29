@@ -116,6 +116,8 @@ export const spanishCrmMessages: PartialCrmMessages = {
         join_date: "Fecha de ingreso",
         member_status: "Estado de membresía",
         kw_website: "Sitio Web KW",
+        kw_email_address_label: "Correo KW (Pon tu correo @kw.com primero. Puedes agregar un segundo correo.)",
+        is_chapter_leader: "Líder de Capítulo",
       },
       action: {
         add: "Agregar miembro",

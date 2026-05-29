@@ -333,7 +333,7 @@ const IdentityTabInputs = () => {
       <TextInput source="last_name" validate={required()} helperText={false} />
       <TextInput source="title" helperText={false} />
       <ReferenceInput source="company_id" reference="companies" perPage={10}>
-        <AutocompleteCompanyInput label="Market Center Name" />
+        <AutocompleteCompanyInput label={translate("resources.contacts.fields.market_center_name")} />
       </ReferenceInput>
       <TextInput
         source="cell_number"
@@ -341,7 +341,7 @@ const IdentityTabInputs = () => {
         helperText={false}
       />
 
-      <ArrayInput source="email_jsonb" helperText={false} label="KW Email Address (Put your @kw.com email first. You can add a second email.)">
+      <ArrayInput source="email_jsonb" helperText={false} label={translate("resources.contacts.fields.kw_email_address_label")}>
         <SimpleFormIterator
           inline
           disableReordering
@@ -373,7 +373,7 @@ const IdentityTabInputs = () => {
 
       <TextInput
         source="kw_website"
-        label="KW Website"
+        label={translate("resources.contacts.fields.kw_website")}
         helperText={false}
         validate={required()}
         placeholder="e.g. https://yourname.kw.com"
@@ -531,7 +531,7 @@ const MembershipTabInputs = () => {
         />
       )}
       {isAdmin && (
-        <BooleanInput source="is_chapter_leader" label="Chapter Leader" helperText={false} />
+        <BooleanInput source="is_chapter_leader" label={translate("resources.contacts.fields.is_chapter_leader")} helperText={false} />
       )}
       <BooleanInput source="has_newsletter" helperText={false} />
     </div>
