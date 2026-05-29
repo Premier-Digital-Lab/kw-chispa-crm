@@ -400,6 +400,7 @@ export const spanishCrmMessages: PartialCrmMessages = {
       confirm_password: "Confirmar contraseña",
       confirmation_required:
         "Sigue el enlace que te enviamos por correo electrónico para confirmar tu cuenta.",
+      check_spam: "Por favor revisa tu carpeta de spam si no ves el correo en tu bandeja de entrada.",
       recovery_email_sent:
         "Si eres usuario registrado, recibirás un correo de recuperación de contraseña en breve.",
       sign_in_failed: "Error al iniciar sesión.",
@@ -708,9 +709,9 @@ export const spanishCrmMessages: PartialCrmMessages = {
         "Algo salió mal. Por favor intenta de nuevo o contacta a info@kwchispa.com.",
     },
     profileCompletion: {
-      banner_title: "Your profile is incomplete. Please complete your profile to access all features of KW CHISPA Central.",
+      banner_title: "Tu perfil está incompleto. Por favor completa tu perfil para acceder a todas las funciones de KW CHISPA Central.",
       banner_title_es: "Tu perfil está incompleto. Por favor completa tu perfil para acceder a todas las funciones de KW CHISPA Central.",
-      complete_profile: "Complete Profile",
+      complete_profile: "Completar perfil",
       complete_profile_es: "Completar perfil",
     },
   },
