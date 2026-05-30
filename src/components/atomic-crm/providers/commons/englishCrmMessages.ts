@@ -687,6 +687,8 @@ export const englishCrmMessages = {
       edit: "Edit",
       delete: "Delete",
       delete_confirm: "Are you sure you want to delete this resource?",
+      back_to_categories: "Back to Categories",
+      back_to_category: "Back to %{category}",
       form: {
         title_label: "Title",
         category: "Category",

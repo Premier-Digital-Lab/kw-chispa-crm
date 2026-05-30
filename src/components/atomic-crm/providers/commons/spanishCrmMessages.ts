@@ -689,6 +689,8 @@ export const spanishCrmMessages: PartialCrmMessages = {
       edit: "Editar",
       delete: "Eliminar",
       delete_confirm: "¿Estás seguro de que deseas eliminar este recurso?",
+      back_to_categories: "Volver a Categorías",
+      back_to_category: "Volver a %{category}",
       form: {
         title_label: "Título",
         category: "Categoría",

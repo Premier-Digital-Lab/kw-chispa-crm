@@ -278,7 +278,7 @@ export const ChapterLeadersPage = () => {
             onClick={() => setSelectedCategory(null)}
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Categories
+            {translate("crm.chapter_leaders.back_to_categories")}
           </Button>
           <h1 className="text-2xl font-bold">{selectedCategory}</h1>
         </div>
@@ -292,7 +292,7 @@ export const ChapterLeadersPage = () => {
             onClick={() => setSelectedSubcategory(null)}
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to {selectedCategory}
+            {translate("crm.chapter_leaders.back_to_category", { category: selectedCategory })}
           </Button>
           <h1 className="text-2xl font-bold">{selectedSubcategory}</h1>
         </div>
