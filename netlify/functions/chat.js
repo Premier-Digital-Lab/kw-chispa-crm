@@ -52,7 +52,9 @@ exports.handler = async (event) => {
           );
           if (tierResp.ok) {
             tierData = await tierResp.json();
-            if (tierData?.[0]?.membership_tier) {
+            if (tierData?.some((r) => r.membership_tier === 'Premier')) {
+              membershipTier = 'Premier';
+            } else if (tierData?.[0]?.membership_tier) {
               membershipTier = tierData[0].membership_tier;
             }
           }
