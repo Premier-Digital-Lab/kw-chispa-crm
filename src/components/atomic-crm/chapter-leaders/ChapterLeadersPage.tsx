@@ -1,9 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGetIdentity, useTranslate, useNotify } from "ra-core";
 import {
+  Calendar,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   ExternalLink,
+  FileText,
   Lock,
   Pencil,
   Plus,
@@ -101,6 +105,7 @@ export const ChapterLeadersPage = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [manualsExpanded, setManualsExpanded] = useState(false);
 
   const resetNav = () => {
     setSelectedCategory(null);
@@ -301,6 +306,86 @@ export const ChapterLeadersPage = () => {
       {/* ── Content ───────────────────────────────────────────────────────── */}
       {isLoading && (
         <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
+      )}
+
+      {/* ── Static Chapter Resources ─────────────────────────────────────── */}
+      {!isLoading && isLevel1 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            Chapter Resources
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Box 1: KW CHISPA Chapter Leadership Manuals (expandable) */}
+            <Card
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() => setManualsExpanded((v) => !v)}
+            >
+              <CardContent className="py-4 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FileText className="w-5 h-5 text-muted-foreground shrink-0" />
+                    <p className="font-semibold text-base truncate">
+                      KW CHISPA Chapter Leadership Manuals
+                    </p>
+                  </div>
+                  {manualsExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-muted-foreground shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
+                  )}
+                </div>
+                {manualsExpanded && (
+                  <div className="mt-3 flex flex-col gap-2 pl-7">
+                    <a
+                      href="https://yxebmtukofvfthkzaknc.supabase.co/storage/v1/object/public/chapter-leader-resources/KW%20CHISPA%20Chapter%20Leadership%20Council%20Covenant.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-sm text-primary hover:underline"
+                    >
+                      <FileText className="w-3.5 h-3.5 shrink-0" />
+                      CLC Covenant
+                    </a>
+                    <a
+                      href="https://yxebmtukofvfthkzaknc.supabase.co/storage/v1/object/public/chapter-leader-resources/KW%20CHISPA%20%20Chapter%20Leadership%20Council%20(CLC)%20Policies%20and%20Guidelines%20Manual.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-sm text-primary hover:underline"
+                    >
+                      <FileText className="w-3.5 h-3.5 shrink-0" />
+                      CLC Policies and Guidelines Manual
+                    </a>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Box 2: KW CHISPA Chapter Event Calendar (direct link) */}
+            <Card
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/spreadsheets/d/1TkCCKKLcbGqStRhhYXyFIHJpDdGkFPyq/edit?gid=214935856#gid=214935856",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+            >
+              <CardContent className="py-4 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
+                    <p className="font-semibold text-base truncate">
+                      KW CHISPA Chapter Event Calendar
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
 
       {/* Level 1: category cards */}
