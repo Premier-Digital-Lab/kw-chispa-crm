@@ -12,6 +12,21 @@ import type { ClipboardEventHandler, FocusEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
+export const KW_CHISPA_COUNTRIES = [
+  "Albania", "Argentina", "Aruba", "Bahamas", "Belize", "Bermuda",
+  "Bolivia", "Bonaire", "Bulgaria", "Cayman Islands", "Colombia",
+  "Costa Rica", "Croatia", "Curacao", "Czech Republic", "Dominican Republic",
+  "Dubai", "Egypt", "El Salvador", "France", "French Polynesia", "Germany",
+  "Greece & Cyprus", "Guatemala", "Guyana", "Honduras", "Hungary", "India",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Luxembourg", "Malaysia",
+  "Mexico", "Monaco", "Mongolia", "Nicaragua", "North Macedonia", "Panama",
+  "Paraguay", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar",
+  "Romania", "Saudi Arabia", "Scotland", "Serbia", "Singapore", "Sint Maarten",
+  "Slovenia", "South Africa", "Spain", "Suriname", "São Paulo", "Thailand",
+  "Turks and Caicos", "Türkiye & Northern Cyprus", "United Kingdom",
+  "Uruguay", "Uzbekistan", "Vietnam",
+].map((c) => ({ id: c, name: c }));
+
 const kwEmailValidator = (value: string, allValues: any) => {
   if (!value) return undefined;
   const emailList = allValues?.email_jsonb || [];
@@ -45,6 +60,7 @@ import { isLinkedinUrl } from "../misc/isLinkedInUrl";
 import { isValidUrl } from "../misc/isValidUrl";
 import ImageEditorField from "../misc/ImageEditorField";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
+import { AutocompleteArrayInput } from "@/components/admin/autocomplete-array-input";
 import {
   contactGender,
   translateContactGenderLabel,
@@ -455,7 +471,7 @@ const KwInfoTabInputs = () => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <TextInput source="mc_zip_code" validate={required()} helperText={false} />
-            <TextInput source="mc_country" validate={required()} helperText={false} />
+            <SelectInput source="mc_country" validate={required()} helperText={false} choices={KW_CHISPA_COUNTRIES} />
           </div>
         </div>
       </div>
@@ -485,10 +501,11 @@ const ServiceAreasTabInputs = () => (
       validate={required()}
       helperText={false}
     />
-    <CommaSeparatedInput
+    <AutocompleteArrayInput
       source="countries_served"
       validate={required()}
       helperText={false}
+      choices={KW_CHISPA_COUNTRIES}
     />
   </div>
 );

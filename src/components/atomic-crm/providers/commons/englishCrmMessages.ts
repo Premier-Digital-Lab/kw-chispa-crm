@@ -573,6 +573,8 @@ export const englishCrmMessages = {
         agent_role_placeholder: "Any role",
         agent_role_all: "Any role",
         countries_served: "Countries Served",
+        countries_served_placeholder: "Any country",
+        countries_served_all: "Any country",
         search: "Search",
         at_least_one_required: "Fill in at least one field to search.",
       },

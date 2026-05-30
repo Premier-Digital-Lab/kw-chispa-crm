@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { getSupabaseClient } from "../providers/supabase/supabase";
 import type { Contact } from "../types";
 import { AgentMap } from "./AgentMap";
+import { KW_CHISPA_COUNTRIES } from "../contacts/ContactInputs";
 
 type ViewMode = "cards" | "map";
 
@@ -222,13 +223,25 @@ export const FindAgentPage = () => {
               onKeyDown={handleKeyDown}
               placeholder="e.g. Travis"
             />
-            <SearchField
-              label={translate("crm.find_agent.form.countries_served")}
-              value={fields.countriesServed}
-              onChange={(v) => handleFieldChange("countriesServed", v)}
-              onKeyDown={handleKeyDown}
-              placeholder="e.g. Mexico"
-            />
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-sm font-medium">
+                {translate("crm.find_agent.form.countries_served")}
+              </Label>
+              <Select
+                value={fields.countriesServed || "_all"}
+                onValueChange={(v) => handleFieldChange("countriesServed", v === "_all" ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={translate("crm.find_agent.form.countries_served_placeholder")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="_all">{translate("crm.find_agent.form.countries_served_all")}</SelectItem>
+                  {KW_CHISPA_COUNTRIES.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex flex-col gap-1.5">
               <Label className="text-sm font-medium">
                 {translate("crm.find_agent.form.agent_role")}

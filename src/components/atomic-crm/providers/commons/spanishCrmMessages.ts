@@ -575,6 +575,8 @@ export const spanishCrmMessages: PartialCrmMessages = {
         agent_role_placeholder: "Cualquier rol",
         agent_role_all: "Cualquier rol",
         countries_served: "Países Atendidos",
+        countries_served_placeholder: "Cualquier país",
+        countries_served_all: "Cualquier país",
         search: "Buscar",
         at_least_one_required: "Completa al menos un campo para buscar.",
       },
