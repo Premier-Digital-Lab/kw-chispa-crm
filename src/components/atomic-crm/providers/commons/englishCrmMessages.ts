@@ -585,6 +585,13 @@ export const englishCrmMessages = {
       view_cards: "Cards",
       view_map: "Map",
       map_no_locations: "No map locations available. Try the card view.",
+      card: {
+        languages: "Languages",
+        cities_served: "Cities Served",
+        state: "State / Province / Region",
+        countries_served: "Countries Served",
+        view_profile: "View Profile →",
+      },
     },
     profile: {
       inbound: {

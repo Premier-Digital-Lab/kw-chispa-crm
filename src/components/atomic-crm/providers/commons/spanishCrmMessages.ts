@@ -587,6 +587,13 @@ export const spanishCrmMessages: PartialCrmMessages = {
       view_cards: "Tarjetas",
       view_map: "Mapa",
       map_no_locations: "No hay ubicaciones en el mapa. Intenta la vista de tarjetas.",
+      card: {
+        languages: "Idiomas",
+        cities_served: "Ciudades que atiende",
+        state: "Estado / Provincia / Región",
+        countries_served: "Países que atiende",
+        view_profile: "Ver perfil →",
+      },
     },
     profile: {
       inbound: {

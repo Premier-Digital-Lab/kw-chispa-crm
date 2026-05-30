@@ -402,15 +402,15 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               </div>
             )}
 
-            <ArrayBadges items={contact.languages_spoken} label="Languages" />
-            <ArrayBadges items={contact.cities_served} label="Cities Served" />
+            <ArrayBadges items={contact.languages_spoken} label={translate("crm.find_agent.card.languages")} />
+            <ArrayBadges items={contact.cities_served} label={translate("crm.find_agent.card.cities_served")} />
             {contact.mc_state && (
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="font-medium text-foreground">State / Province / Region:</span>{" "}
+                <span className="font-medium text-foreground">{translate("crm.find_agent.card.state")}:</span>{" "}
                 {contact.mc_state}
               </p>
             )}
-            <ArrayBadges items={contact.countries_served} label="Countries Served" />
+            <ArrayBadges items={contact.countries_served} label={translate("crm.find_agent.card.countries_served")} />
 
             {contact.background && (
               <>
@@ -446,7 +446,7 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               to={`/contacts/${contact.id}/show`}
               className="text-xs text-primary hover:underline mt-1"
             >
-              View Profile →
+              {translate("crm.find_agent.card.view_profile")}
             </Link>
           </div>
         </div>

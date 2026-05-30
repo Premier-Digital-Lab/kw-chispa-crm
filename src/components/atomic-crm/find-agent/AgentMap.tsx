@@ -89,7 +89,7 @@ export const AgentMap = ({ contacts }: { contacts: Contact[] }) => {
                   )}
                   {contact.languages_spoken && contact.languages_spoken.length > 0 && (
                     <p>
-                      <span className="font-medium">Languages:</span>{" "}
+                      <span className="font-medium">{translate("crm.find_agent.card.languages")}:</span>{" "}
                       {contact.languages_spoken.join(", ")}
                     </p>
                   )}
@@ -118,7 +118,7 @@ export const AgentMap = ({ contacts }: { contacts: Contact[] }) => {
                       to={`/contacts/${contact.id}/show`}
                       className="text-primary underline hover:no-underline font-medium"
                     >
-                      View Profile →
+                      {translate("crm.find_agent.card.view_profile")}
                     </Link>
                   </div>
                 </div>
