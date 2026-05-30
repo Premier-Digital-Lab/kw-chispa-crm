@@ -24,7 +24,7 @@ exports.handler = async (event) => {
       let tierData = null;
       if (authUserId) {
         const tierResp = await fetch(
-          `${process.env.SUPABASE_URL}/rest/v1/contacts?select=membership_tier&sales_id=eq.${authUserId}`,
+          `${process.env.VITE_SUPABASE_URL}/rest/v1/contacts?select=membership_tier&sales_id=eq.${authUserId}`,
           {
             headers: {
               Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
         }
       }
       console.log('[MemberTier Debug]', {
-        supabaseUrlDefined: !!process.env.SUPABASE_URL,
+        supabaseUrlDefined: !!process.env.VITE_SUPABASE_URL,
         supabaseServiceKeyDefined: !!process.env.SUPABASE_SERVICE_KEY,
         authUserId,
         tierData,
