@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslate } from "ra-core";
-import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin, RefreshCw, Star } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, LayoutGrid, List, MapPin, RefreshCw, Star } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -97,6 +97,7 @@ export const EventsPage = () => {
   const [events, setEvents] = useState<EventbriteEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
   useEffect(() => {
     setLoading(true);
@@ -156,7 +157,33 @@ export const EventsPage = () => {
     <div className="max-w-3xl mx-auto py-6 px-4">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6" />
-        <h1 className="text-2xl font-bold">{translate("crm.events.title")}</h1>
+        <h1 className="text-2xl font-bold flex-1">{translate("crm.events.title")}</h1>
+        <div className="flex border rounded-md overflow-hidden">
+          <button
+            onClick={() => setViewMode("card")}
+            className={[
+              "p-1.5 transition-colors",
+              viewMode === "card"
+                ? "bg-[#CC0000] text-white"
+                : "bg-transparent text-muted-foreground hover:text-foreground",
+            ].join(" ")}
+            aria-label="Card view"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={[
+              "p-1.5 transition-colors",
+              viewMode === "list"
+                ? "bg-[#CC0000] text-white"
+                : "bg-transparent text-muted-foreground hover:text-foreground",
+            ].join(" ")}
+            aria-label="List view"
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <Card>
@@ -325,7 +352,7 @@ export const EventsPage = () => {
           </div>
           {featuredEvents.length === 0 ? (
             <p className="text-sm text-muted-foreground">{translate("crm.events.no_featured_events")}</p>
-          ) : (
+          ) : viewMode === "card" ? (
             <div className="space-y-3">
               {featuredEvents.map((event) => (
                 <Card key={event.id} className="overflow-hidden">
@@ -370,6 +397,44 @@ export const EventsPage = () => {
                 </Card>
               ))}
             </div>
+          ) : (
+            <Card>
+              <CardContent className="p-0">
+                <div className="divide-y">
+                  {featuredEvents.map((event) => (
+                    <div key={event.id} className="flex items-center gap-4 px-4 py-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm leading-snug mb-1">
+                          {event.name}
+                        </h4>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 shrink-0" />
+                            {formatEventDateTime(event.start, event.timezone)}
+                          </span>
+                          {event.venue && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3.5 h-3.5 shrink-0" />
+                              {event.venue.name}
+                              {event.venue.address && ` · ${event.venue.address}`}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="shrink-0 bg-[#CC0000] hover:bg-[#aa0000] text-white"
+                      >
+                        <a href={event.url} target="_blank" rel="noopener noreferrer">
+                          Register on Eventbrite
+                        </a>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
       )}
@@ -381,7 +446,7 @@ export const EventsPage = () => {
             {translate("crm.events.recurring_events")}
           </h2>
         </div>
-        <RecurringEvents />
+        <RecurringEvents viewMode={viewMode} />
       </div>
     </div>
   );

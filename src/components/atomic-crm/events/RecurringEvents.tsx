@@ -31,36 +31,71 @@ const RECURRING_EVENTS: RecurringEvent[] = [
   },
 ];
 
-export const RecurringEvents = () => (
-  <div className="flex flex-col gap-4 sm:flex-row">
-    {RECURRING_EVENTS.map((event) => (
-      <Card key={event.name} className="flex-1 overflow-hidden flex flex-col">
-        <img
-          src={event.image}
-          alt={event.name}
-          className="w-full max-h-64 object-contain bg-muted"
-        />
-        <CardContent className="p-4 flex flex-col gap-3 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-sm leading-snug">{event.name}</h3>
-            <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-[#CC0000] text-white text-xs font-medium px-2 py-0.5">
-              <RefreshCw className="w-3 h-3" />
-              Recurring Event
-            </span>
+type Props = {
+  viewMode?: "card" | "list";
+};
+
+export const RecurringEvents = ({ viewMode = "card" }: Props) => {
+  if (viewMode === "list") {
+    return (
+      <Card>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {RECURRING_EVENTS.map((event) => (
+              <div key={event.name} className="flex items-center gap-4 px-4 py-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm leading-snug mb-1">{event.name}</h3>
+                  <p className="text-xs text-muted-foreground">{event.schedule}</p>
+                  <p className="text-xs text-muted-foreground">{event.platform}</p>
+                </div>
+                <Button
+                  asChild
+                  size="sm"
+                  className="shrink-0 bg-[#CC0000] hover:bg-[#aa0000] text-white"
+                >
+                  <a href={event.url} target="_blank" rel="noopener noreferrer">
+                    Register on Eventbrite
+                  </a>
+                </Button>
+              </div>
+            ))}
           </div>
-          <p className="text-xs text-muted-foreground">{event.schedule}</p>
-          <p className="text-xs text-muted-foreground">{event.platform}</p>
-          <Button
-            asChild
-            size="sm"
-            className="mt-auto bg-[#CC0000] hover:bg-[#aa0000] text-white"
-          >
-            <a href={event.url} target="_blank" rel="noopener noreferrer">
-              Register on Eventbrite
-            </a>
-          </Button>
         </CardContent>
       </Card>
-    ))}
-  </div>
-);
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4 sm:flex-row">
+      {RECURRING_EVENTS.map((event) => (
+        <Card key={event.name} className="flex-1 overflow-hidden flex flex-col">
+          <img
+            src={event.image}
+            alt={event.name}
+            className="w-full max-h-64 object-contain bg-muted"
+          />
+          <CardContent className="p-4 flex flex-col gap-3 flex-1">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-semibold text-sm leading-snug">{event.name}</h3>
+              <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-[#CC0000] text-white text-xs font-medium px-2 py-0.5">
+                <RefreshCw className="w-3 h-3" />
+                Recurring Event
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">{event.schedule}</p>
+            <p className="text-xs text-muted-foreground">{event.platform}</p>
+            <Button
+              asChild
+              size="sm"
+              className="mt-auto bg-[#CC0000] hover:bg-[#aa0000] text-white"
+            >
+              <a href={event.url} target="_blank" rel="noopener noreferrer">
+                Register on Eventbrite
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+};

@@ -538,6 +538,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/legal/FAQPage.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/legal/CookiePolicyPage.tsx",
           "type": "registry:component"
         },
