@@ -21,10 +21,12 @@ exports.handler = async (event) => {
     try {
       const jwtPayload = JSON.parse(Buffer.from(userJwt.split('.')[1], 'base64').toString());
       const authUserId = jwtPayload.sub;
+      let salesId = null;
       let tierData = null;
       if (authUserId) {
-        const tierResp = await fetch(
-          `${process.env.VITE_SUPABASE_URL}/rest/v1/contacts?select=membership_tier&sales_id=eq.${authUserId}`,
+        // Step 1: resolve auth UUID → numeric sales id
+        const salesResp = await fetch(
+          `${process.env.VITE_SUPABASE_URL}/rest/v1/sales?select=id&user_id=eq.${authUserId}`,
           {
             headers: {
               Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
@@ -32,10 +34,27 @@ exports.handler = async (event) => {
             },
           },
         );
-        if (tierResp.ok) {
-          tierData = await tierResp.json();
-          if (tierData?.[0]?.membership_tier) {
-            membershipTier = tierData[0].membership_tier;
+        if (salesResp.ok) {
+          const salesData = await salesResp.json();
+          salesId = salesData?.[0]?.id ?? null;
+        }
+
+        // Step 2: look up membership_tier by numeric sales id
+        if (salesId !== null) {
+          const tierResp = await fetch(
+            `${process.env.VITE_SUPABASE_URL}/rest/v1/contacts?select=membership_tier&sales_id=eq.${salesId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+                apikey: process.env.SUPABASE_SERVICE_KEY,
+              },
+            },
+          );
+          if (tierResp.ok) {
+            tierData = await tierResp.json();
+            if (tierData?.[0]?.membership_tier) {
+              membershipTier = tierData[0].membership_tier;
+            }
           }
         }
       }
@@ -43,6 +62,7 @@ exports.handler = async (event) => {
         supabaseUrlDefined: !!process.env.VITE_SUPABASE_URL,
         supabaseServiceKeyDefined: !!process.env.SUPABASE_SERVICE_KEY,
         authUserId,
+        salesId,
         tierData,
         membershipTier,
       });
