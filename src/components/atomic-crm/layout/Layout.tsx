@@ -32,6 +32,8 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           <Link to="/terms-of-use" className="hover:text-muted-foreground transition-colors">Terms of Use</Link>
           {" · "}
           <Link to="/cookie-policy" className="hover:text-muted-foreground transition-colors">Cookie Policy</Link>
+          {" · "}
+          <Link to="/faq" className="hover:text-muted-foreground transition-colors">FAQ</Link>
         </footer>
         <Notification />
       </div>

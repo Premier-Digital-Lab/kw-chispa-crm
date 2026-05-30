@@ -32,6 +32,7 @@ import { ContentGeneratorPage } from "../content-generator/ContentGeneratorPage"
 import { EventsPage } from "../events/EventsPage";
 import { ChapterLeadersPage } from "../chapter-leaders/ChapterLeadersPage";
 import { PrivacyPolicyPage } from "../legal/PrivacyPolicyPage";
+import { FAQPage } from "../legal/FAQPage";
 import { TermsOfUsePage } from "../legal/TermsOfUsePage";
 import { CookiePolicyPage } from "../legal/CookiePolicyPage";
 import {
@@ -328,6 +329,7 @@ const DesktopAdmin = (
         <Route path={PrivacyPolicyPage.path} element={<PrivacyPolicyPage />} />
         <Route path={TermsOfUsePage.path} element={<TermsOfUsePage />} />
         <Route path={CookiePolicyPage.path} element={<CookiePolicyPage />} />
+        <Route path={FAQPage.path} element={<FAQPage />} />
       </CustomRoutes>
 
       <CustomRoutes>
@@ -402,6 +404,7 @@ const MobileAdmin = (
           <Route path={PrivacyPolicyPage.path} element={<PrivacyPolicyPage />} />
           <Route path={TermsOfUsePage.path} element={<TermsOfUsePage />} />
           <Route path={CookiePolicyPage.path} element={<CookiePolicyPage />} />
+          <Route path={FAQPage.path} element={<FAQPage />} />
         </CustomRoutes>
         <CustomRoutes>
           <Route
