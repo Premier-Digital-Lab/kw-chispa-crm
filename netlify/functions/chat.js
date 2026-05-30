@@ -21,6 +21,7 @@ exports.handler = async (event) => {
     try {
       const jwtPayload = JSON.parse(Buffer.from(userJwt.split('.')[1], 'base64').toString());
       const authUserId = jwtPayload.sub;
+      let tierData = null;
       if (authUserId) {
         const tierResp = await fetch(
           `${process.env.SUPABASE_URL}/rest/v1/contacts?select=membership_tier&sales_id=eq.${authUserId}`,
@@ -32,12 +33,19 @@ exports.handler = async (event) => {
           },
         );
         if (tierResp.ok) {
-          const tierData = await tierResp.json();
+          tierData = await tierResp.json();
           if (tierData?.[0]?.membership_tier) {
             membershipTier = tierData[0].membership_tier;
           }
         }
       }
+      console.log('[MemberTier Debug]', {
+        supabaseUrlDefined: !!process.env.SUPABASE_URL,
+        supabaseServiceKeyDefined: !!process.env.SUPABASE_SERVICE_KEY,
+        authUserId,
+        tierData,
+        membershipTier,
+      });
     } catch (e) {
       console.warn('Could not look up membership tier:', e.message);
     }
@@ -58,8 +66,9 @@ You can help members in two ways:
 If a member asks how to do something on the platform, here is what you know:
 
 PROFILE:
-- Members can update their profile by clicking their name or avatar in the top right corner, or going to Settings.
-- They can update their photo, contact info, languages spoken, cities/counties/states served, Market Center info, and social media links.
+- Members can update their profile by clicking on the "Members" tab in the main navigation.
+- From there they can update their photo, contact info, languages spoken, cities/counties/states served, Market Center info, and social media links.
+- To update their name or avatar they can click their name or avatar in the top right corner.
 - Profile changes are saved with the Save button.
 
 FIND AN AGENT:
@@ -72,7 +81,9 @@ EVENTS:
 - Events are pulled live from Eventbrite plus recurring community events are always shown.
 
 CHANGE PASSWORD:
-- Members can change their password by going to Settings and clicking "Change Password."
+- Members can change their password by clicking their name or avatar in the top right corner.
+- Then go to Profile and click "Change Password."
+- They will receive an email with instructions to set a new password.
 
 PREMIER RESOURCES (Premier members only):
 - Premier members have access to a Premier Resources page with exclusive content and tools for KW CHISPA agents.
@@ -83,7 +94,7 @@ SOCIAL MEDIA CONTENT GENERATOR (Premier members only):
 - If this member is Free tier, tell them: "The Social Media Content Generator is an AI tool available to Premier members that creates professional social media content for your real estate business — images and videos you can post right away. To access it, you would need to upgrade to Premier membership."
 
 UPGRADING TO PREMIER:
-- Members can upgrade to Premier by visiting the Premier Resources page and clicking the upgrade button, or by contacting a KW CHISPA admin.
+- Members can upgrade to Premier by visiting the Premier Resources page and clicking the upgrade button.
 
 ─── MEMBER SEARCH ───
 
