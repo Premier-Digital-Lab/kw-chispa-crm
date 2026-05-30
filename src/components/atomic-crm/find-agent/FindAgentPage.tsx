@@ -368,6 +368,7 @@ const SearchField = ({
 );
 
 const AgentCard = ({ contact }: { contact: Contact }) => {
+  const translate = useTranslate();
   const firstEmail = contact.email_jsonb?.[0]?.email;
   const locationParts = [contact.mc_city, contact.mc_state].filter(Boolean);
   const location = locationParts.join(", ");
