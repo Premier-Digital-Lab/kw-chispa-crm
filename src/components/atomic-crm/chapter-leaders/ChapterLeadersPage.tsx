@@ -12,6 +12,7 @@ import {
   Pencil,
   Plus,
   Trash2,
+  Users,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -378,6 +379,30 @@ export const ChapterLeadersPage = () => {
                     <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
                     <p className="font-semibold text-base truncate">
                       KW CHISPA Chapter Event Calendar
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Box 3: KW CHISPA Chapter Leaders Roster (direct link) */}
+            <Card
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+            >
+              <CardContent className="py-4 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Users className="w-5 h-5 text-muted-foreground shrink-0" />
+                    <p className="font-semibold text-base truncate">
+                      KW CHISPA Chapter Leaders Roster
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
