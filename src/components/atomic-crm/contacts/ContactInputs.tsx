@@ -24,7 +24,7 @@ export const KW_CHISPA_COUNTRIES = [
   "Romania", "Saudi Arabia", "Scotland", "Serbia", "Singapore", "Sint Maarten",
   "Slovenia", "South Africa", "Spain", "Suriname", "São Paulo", "Thailand",
   "Turks and Caicos", "Türkiye & Northern Cyprus", "United Kingdom",
-  "Uruguay", "Uzbekistan", "Vietnam",
+  "Uruguay", "Uzbekistan", "Vietnam", "United States of America",
 ].map((c) => ({ id: c, name: c }));
 
 const kwEmailValidator = (value: string, allValues: any) => {
