@@ -430,7 +430,7 @@ export const ChapterLeadersPage = () => {
                   <div className="flex items-center gap-2 min-w-0">
                     <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
                     <p className="font-semibold text-base truncate">
-                      KW CHISPA Regions Calendar
+                      KW CHISPA Chapter Calendar of Events
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
