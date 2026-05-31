@@ -171,8 +171,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     if (newStatus === "Active" && newTier !== oldTier) {
-      const id = await findSubscriberByEmail(email);
+      let id = await findSubscriberByEmail(email);
       if (id) {
+        // Subscriber exists — just move between groups
         if (oldTier === "Free" && newTier === "Premier") {
           await removeFromGroup(id, GROUP_FREE);
           await addToGroup(id, GROUP_PREMIER);
@@ -180,6 +181,18 @@ Deno.serve(async (req: Request): Promise<Response> => {
           await removeFromGroup(id, GROUP_PREMIER);
           await addToGroup(id, GROUP_DOWNGRADED);
         }
+      } else {
+        // Subscriber not found in MailerLite — create them
+        // and place in correct group based on current tier
+        const targetGroup = newTier === "Premier"
+          ? GROUP_PREMIER
+          : GROUP_FREE;
+        await upsertSubscriber(
+          email,
+          record?.first_name ?? "",
+          record?.last_name ?? "",
+          targetGroup,
+        );
       }
       return ok();
     }
