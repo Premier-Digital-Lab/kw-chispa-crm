@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  Clock,
   ExternalLink,
   FileText,
   Lock,
@@ -232,6 +233,8 @@ export const ChapterLeadersPage = () => {
     return acc;
   }, {});
   const groupKeys = Object.keys(grouped).sort();
+  const pinnedCategories = new Set(["Chapter Logos", "Marketing Request", "Marketing Request Form"]);
+  const filteredGroupKeys = groupKeys.filter(k => !pinnedCategories.has(k));
 
   // Level 2: resources in the selected category
   const categoryResources = selectedCategory ? (grouped[selectedCategory] ?? []) : [];
@@ -315,10 +318,12 @@ export const ChapterLeadersPage = () => {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
             Chapter Resources
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Box 1: KW CHISPA Chapter Leaders Roster (full width, direct link) */}
+          <div className="grid grid-cols-2 gap-4">
+
+            {/* Column 1, Row 1: KW CHISPA Chapter Leaders Roster */}
             <Card
-              className="col-span-1 sm:col-span-2 cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              style={{ gridColumn: 1, gridRow: 1 }}
+              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() =>
                 window.open(
                   "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
@@ -340,8 +345,9 @@ export const ChapterLeadersPage = () => {
               </CardContent>
             </Card>
 
-            {/* Box 2: KW CHISPA Chapter Leadership Manuals (expandable) */}
+            {/* Column 1, Row 2: KW CHISPA Chapter Leadership Manuals */}
             <Card
+              style={{ gridColumn: 1, gridRow: 2 }}
               className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() => setManualsExpanded((v) => !v)}
             >
@@ -386,8 +392,30 @@ export const ChapterLeadersPage = () => {
               </CardContent>
             </Card>
 
-            {/* Box 3: KW CHISPA Chapter Event Calendar (direct link) */}
+            {/* Column 1, Row 3: Chapter Logos (dynamic — category from DB) */}
+            {grouped["Chapter Logos"] && (
+              <Card
+                style={{ gridColumn: 1, gridRow: 3 }}
+                className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+                onClick={() => setSelectedCategory("Chapter Logos")}
+              >
+                <CardContent className="py-2 px-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-base truncate">Chapter Logos</p>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        {resourceCount(grouped["Chapter Logos"])}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Column 2, Row 1: KW CHISPA Regions Calendar */}
             <Card
+              style={{ gridColumn: 2, gridRow: 1 }}
               className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() =>
                 window.open(
@@ -402,26 +430,71 @@ export const ChapterLeadersPage = () => {
                   <div className="flex items-center gap-2 min-w-0">
                     <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
                     <p className="font-semibold text-base truncate">
-                      KW CHISPA Chapter Event Calendar
+                      KW CHISPA Regions Calendar
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
+
+            {/* Column 2, Row 2: Eventbrite Templates Coming Soon (static, not clickable) */}
+            <Card
+              style={{ gridColumn: 2, gridRow: 2 }}
+              className="border-l-4 border-l-[#CC0000]"
+            >
+              <CardContent className="py-2 px-5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Clock className="w-5 h-5 text-muted-foreground shrink-0" />
+                  <div>
+                    <p className="font-semibold text-base">Eventbrite Templates Coming Soon</p>
+                    <p className="text-xs text-muted-foreground">Coming Soon</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Column 2, Row 3: Marketing Request Form (dynamic — category from DB) */}
+            {(() => {
+              const mrKey = grouped["Marketing Request Form"]
+                ? "Marketing Request Form"
+                : grouped["Marketing Request"]
+                ? "Marketing Request"
+                : null;
+              if (!mrKey) return null;
+              return (
+                <Card
+                  style={{ gridColumn: 2, gridRow: 3 }}
+                  className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+                  onClick={() => setSelectedCategory(mrKey)}
+                >
+                  <CardContent className="py-2 px-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-base truncate">{mrKey}</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                          {resourceCount(grouped[mrKey])}
+                        </p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </div>
         </div>
       )}
 
-      {/* Level 1: category cards */}
+      {/* Level 1: remaining category cards (pinned categories are shown in Chapter Resources above) */}
       {!isLoading && isLevel1 && (
-        groupKeys.length === 0 ? (
+        resources.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
           </div>
-        ) : (
+        ) : filteredGroupKeys.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {groupKeys.map((category) => (
+            {filteredGroupKeys.map((category) => (
               <Card
                 key={category}
                 className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
@@ -441,7 +514,7 @@ export const ChapterLeadersPage = () => {
               </Card>
             ))}
           </div>
-        )
+        ) : null
       )}
 
       {/* Level 2a: subcategory cards (when category has subcategories) */}
