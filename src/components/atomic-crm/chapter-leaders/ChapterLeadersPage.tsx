@@ -388,7 +388,7 @@ export const ChapterLeadersPage = () => {
 
             {/* Box 3: KW CHISPA Chapter Leaders Roster (direct link) */}
             <Card
-              className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              className="col-span-1 sm:col-span-2 cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() =>
                 window.open(
                   "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
