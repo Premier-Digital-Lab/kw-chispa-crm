@@ -316,12 +316,36 @@ export const ChapterLeadersPage = () => {
             Chapter Resources
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Box 1: KW CHISPA Chapter Leadership Manuals (expandable) */}
+            {/* Box 1: KW CHISPA Chapter Leaders Roster (full width, direct link) */}
+            <Card
+              className="col-span-1 sm:col-span-2 cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+            >
+              <CardContent className="py-2 px-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Users className="w-5 h-5 text-muted-foreground shrink-0" />
+                    <p className="font-semibold text-base truncate">
+                      KW CHISPA Chapter Leaders Roster
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Box 2: KW CHISPA Chapter Leadership Manuals (expandable) */}
             <Card
               className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() => setManualsExpanded((v) => !v)}
             >
-              <CardContent className="py-4 px-5">
+              <CardContent className="py-2 px-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 min-w-0">
                     <FileText className="w-5 h-5 text-muted-foreground shrink-0" />
@@ -362,7 +386,7 @@ export const ChapterLeadersPage = () => {
               </CardContent>
             </Card>
 
-            {/* Box 2: KW CHISPA Chapter Event Calendar (direct link) */}
+            {/* Box 3: KW CHISPA Chapter Event Calendar (direct link) */}
             <Card
               className="cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
               onClick={() =>
@@ -373,36 +397,12 @@ export const ChapterLeadersPage = () => {
                 )
               }
             >
-              <CardContent className="py-4 px-5">
+              <CardContent className="py-2 px-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 min-w-0">
                     <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
                     <p className="font-semibold text-base truncate">
                       KW CHISPA Chapter Event Calendar
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Box 3: KW CHISPA Chapter Leaders Roster (direct link) */}
-            <Card
-              className="col-span-1 sm:col-span-2 cursor-pointer hover:bg-muted/40 transition-colors border-l-4 border-l-[#CC0000]"
-              onClick={() =>
-                window.open(
-                  "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
-                  "_blank",
-                  "noopener,noreferrer"
-                )
-              }
-            >
-              <CardContent className="py-4 px-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Users className="w-5 h-5 text-muted-foreground shrink-0" />
-                    <p className="font-semibold text-base truncate">
-                      KW CHISPA Chapter Leaders Roster
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
