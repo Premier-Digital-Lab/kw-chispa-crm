@@ -235,8 +235,8 @@ export const CookiePolicyPage = () => {
             </p>
             <p>
               Website:{" "}
-              <a href="https://kw-chispa-crm.netlify.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
-                kw-chispa-crm.netlify.app
+              <a href="https://kw-chispa-central.netlify.app" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                kw-chispa-central.netlify.app
               </a>
             </p>
           </div>

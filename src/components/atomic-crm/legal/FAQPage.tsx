@@ -10,9 +10,9 @@ const FAQ_SECTIONS = [
     questions: [
       {
         q: "How do I log in to KW CHISPA Central?",
-        a: "Go to kw-chispa-crm.netlify.app and enter your email and password. If you forgot your password, click \"Forgot Password\" on the login page and a reset link will be sent to your email.",
+        a: "Go to kw-chispa-central.netlify.app and enter your email and password. If you forgot your password, click \"Forgot Password\" on the login page and a reset link will be sent to your email.",
         qes: "¿Cómo inicio sesión en KW CHISPA Central?",
-        aes: "Ve a kw-chispa-crm.netlify.app e ingresa tu correo electrónico y contraseña. Si olvidaste tu contraseña, haz clic en \"Olvidé mi contraseña\" en la página de inicio de sesión y recibirás un enlace para restablecerla.",
+        aes: "Ve a kw-chispa-central.netlify.app e ingresa tu correo electrónico y contraseña. Si olvidaste tu contraseña, haz clic en \"Olvidé mi contraseña\" en la página de inicio de sesión y recibirás un enlace para restablecerla.",
       },
       {
         q: "How do I create an account?",

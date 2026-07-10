@@ -3,7 +3,7 @@ import { corsHeaders } from "../_shared/cors.ts";
 
 const POSTMARK_API_TOKEN = Deno.env.get("POSTMARK_API_TOKEN") ?? "";
 const FROM_EMAIL = "info@kwchispa.com";
-const LOGO_URL = "https://kw-chispa-crm.netlify.app/logo-white.png";
+const LOGO_URL = "https://kw-chispa-central.netlify.app/logo-white.png";
 
 // ─── HTML template ────────────────────────────────────────────────────────────
 
@@ -128,7 +128,7 @@ function buildWelcomeApproved(firstName: string): {
   subject: string;
   html: string;
 } {
-  const crmUrl = "https://kw-chispa-crm.netlify.app";
+  const crmUrl = "https://kw-chispa-central.netlify.app";
   const facebookUrl = "https://www.facebook.com/groups/kwchispa";
 
   return {
@@ -194,7 +194,7 @@ function buildAdminNotification(data: {
   cellNumber: string;
 }): { subject: string; html: string } {
   const { firstName, lastName, email, cellNumber } = data;
-  const crmUrl = "https://kw-chispa-crm.netlify.app";
+  const crmUrl = "https://kw-chispa-central.netlify.app";
 
   const rows = [
     ["Name", `${firstName} ${lastName}`],
