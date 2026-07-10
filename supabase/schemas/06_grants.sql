@@ -61,6 +61,14 @@ grant all on function public.merge_contacts(bigint, bigint) to anon;
 grant all on function public.merge_contacts(bigint, bigint) to authenticated;
 grant all on function public.merge_contacts(bigint, bigint) to service_role;
 
+grant all on function public.protect_contacts_privileged_columns() to anon;
+grant all on function public.protect_contacts_privileged_columns() to authenticated;
+grant all on function public.protect_contacts_privileged_columns() to service_role;
+
+grant all on function public.protect_sales_privileged_columns() to anon;
+grant all on function public.protect_sales_privileged_columns() to authenticated;
+grant all on function public.protect_sales_privileged_columns() to service_role;
+
 grant all on function public.set_sales_id_default() to anon;
 grant all on function public.set_sales_id_default() to authenticated;
 grant all on function public.set_sales_id_default() to service_role;

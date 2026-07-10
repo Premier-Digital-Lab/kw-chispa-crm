@@ -425,6 +425,68 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION "public"."protect_contacts_privileged_columns"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  -- service_role has no auth.uid() (no authenticated JWT subject); let it through
+  IF auth.uid() IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  -- Admins may change any column
+  IF is_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.membership_tier IS DISTINCT FROM OLD.membership_tier THEN
+    RAISE EXCEPTION 'Only administrators may change the "membership_tier" column on contacts';
+  END IF;
+
+  IF NEW.member_status IS DISTINCT FROM OLD.member_status THEN
+    RAISE EXCEPTION 'Only administrators may change the "member_status" column on contacts';
+  END IF;
+
+  IF NEW.sales_id IS DISTINCT FROM OLD.sales_id THEN
+    RAISE EXCEPTION 'Only administrators may change the "sales_id" column on contacts';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."protect_sales_privileged_columns"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  -- service_role has no auth.uid() (no authenticated JWT subject); let it through
+  IF auth.uid() IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  -- Admins may change any column
+  IF is_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.administrator IS DISTINCT FROM OLD.administrator THEN
+    RAISE EXCEPTION 'Only administrators may change the "administrator" column on sales';
+  END IF;
+
+  IF NEW.disabled IS DISTINCT FROM OLD.disabled THEN
+    RAISE EXCEPTION 'Only administrators may change the "disabled" column on sales';
+  END IF;
+
+  IF NEW.is_super_admin IS DISTINCT FROM OLD.is_super_admin THEN
+    RAISE EXCEPTION 'Only administrators may change the "is_super_admin" column on sales';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION "public"."lowercase_email_jsonb"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'

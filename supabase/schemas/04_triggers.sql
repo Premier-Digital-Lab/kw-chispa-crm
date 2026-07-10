@@ -3,6 +3,17 @@
 -- This file declares all triggers.
 --
 
+-- Block members from changing privileged columns on their own row
+-- (RLS allows self-update by row, not by column; see is_admin()/service_role
+-- checks inside the trigger functions themselves)
+create or replace trigger sales_protect_privileged_columns_trigger
+    before update on public.sales
+    for each row execute function public.protect_sales_privileged_columns();
+
+create or replace trigger contacts_protect_privileged_columns_trigger
+    before update on public.contacts
+    for each row execute function public.protect_contacts_privileged_columns();
+
 -- Auto-populate sales_id from current auth user on insert
 create or replace trigger set_company_sales_id_trigger
     before insert on public.companies
