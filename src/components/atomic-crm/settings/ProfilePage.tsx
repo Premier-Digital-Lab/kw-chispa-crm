@@ -166,9 +166,11 @@ const ProfileForm = ({
   const [authEmail, setAuthEmail] = useState<string>("");
   useEffect(() => {
     try {
-      getSupabaseClient().auth.getSession().then(({ data }) => {
-        setAuthEmail(data.session?.user?.email ?? "");
-      });
+      getSupabaseClient()
+        .auth.getSession()
+        .then(({ data }) => {
+          setAuthEmail(data.session?.user?.email ?? "");
+        });
     } catch {}
   }, []);
 
@@ -285,8 +287,8 @@ const ProfileForm = ({
       <Card>
         <CardContent className="flex justify-end">
           <DataDeletionButton
-            firstName={identity.first_name ?? ""}
-            lastName={identity.last_name ?? ""}
+            firstName={record.first_name ?? ""}
+            lastName={record.last_name ?? ""}
             email={authEmail}
             id={identity.id}
           />
