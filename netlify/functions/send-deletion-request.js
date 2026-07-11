@@ -41,6 +41,7 @@ exports.handler = async (event) => {
     : null;
 
   if (!userJwt) {
+    console.error("No Authorization header provided");
     return {
       statusCode: 401,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -49,6 +50,11 @@ exports.handler = async (event) => {
   }
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    const missing = [
+      !supabaseUrl && "VITE_SUPABASE_URL",
+      !supabaseAnonKey && "VITE_SUPABASE_ANON_KEY/VITE_SB_PUBLISHABLE_KEY",
+    ].filter(Boolean);
+    console.error("Missing Supabase env vars:", missing.join(", "));
     return {
       statusCode: 500,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -67,6 +73,8 @@ exports.handler = async (event) => {
       },
     });
     if (!verifyResp.ok) {
+      const text = await verifyResp.text();
+      console.error("Supabase auth check failed:", verifyResp.status, text);
       return {
         statusCode: 401,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -75,6 +83,7 @@ exports.handler = async (event) => {
     }
     const verifiedUser = await verifyResp.json();
     if (!verifiedUser?.id) {
+      console.error("Verified user response missing id");
       return {
         statusCode: 401,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -82,6 +91,7 @@ exports.handler = async (event) => {
       };
     }
   } catch (e) {
+    console.error("Supabase auth check threw:", e.message);
     return {
       statusCode: 401,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -93,6 +103,7 @@ exports.handler = async (event) => {
   try {
     body = JSON.parse(event.body || "{}");
   } catch {
+    console.error("Invalid JSON in request body");
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -102,6 +113,7 @@ exports.handler = async (event) => {
 
   const { firstName, lastName, email, id } = body;
   if (!firstName || !lastName || !email || !id) {
+    console.error("Missing required fields");
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -118,6 +130,7 @@ exports.handler = async (event) => {
     String(email).length > MAX_FIELD_LENGTH ||
     String(id).length > MAX_FIELD_LENGTH
   ) {
+    console.error("Field too long");
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -126,6 +139,7 @@ exports.handler = async (event) => {
   }
 
   if (!EMAIL_REGEX.test(email)) {
+    console.error("Invalid email format");
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
