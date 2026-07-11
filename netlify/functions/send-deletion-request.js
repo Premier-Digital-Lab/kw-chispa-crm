@@ -113,7 +113,13 @@ exports.handler = async (event) => {
 
   const { firstName, lastName, email, id } = body;
   if (!firstName || !lastName || !email || !id) {
-    console.error("Missing required fields");
+    const missingFields = [
+      !firstName && "firstName",
+      !lastName && "lastName",
+      !email && "email",
+      !id && "id",
+    ].filter(Boolean);
+    console.error("Missing required fields:", missingFields.join(", "));
     return {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
