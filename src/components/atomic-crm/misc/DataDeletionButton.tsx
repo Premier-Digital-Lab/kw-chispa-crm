@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { getSupabaseClient } from "../providers/supabase/supabase";
 
 interface DataDeletionButtonProps {
   firstName: string;
@@ -25,14 +26,22 @@ export const DataDeletionButton = ({
 }: DataDeletionButtonProps) => {
   const translate = useTranslate();
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
 
   const handleConfirm = async () => {
     setStatus("loading");
     try {
+      const session = await getSupabaseClient().auth.getSession();
+      const accessToken = session.data.session?.access_token;
+
       const res = await fetch("/.netlify/functions/send-deletion-request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify({ firstName, lastName, email, id: String(id) }),
       });
       if (!res.ok) throw new Error("Request failed");
@@ -49,15 +58,16 @@ export const DataDeletionButton = ({
 
   return (
     <>
-      <Button
-        type="button"
-        variant="destructive"
-        onClick={() => setOpen(true)}
-      >
+      <Button type="button" variant="destructive" onClick={() => setOpen(true)}>
         {translate("crm.dataDeletion.buttonLabel")}
       </Button>
 
-      <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
+      <Dialog
+        open={open}
+        onOpenChange={(v) => {
+          if (!v) handleClose();
+        }}
+      >
         <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>

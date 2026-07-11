@@ -10,7 +10,11 @@ exports.handler = async (event) => {
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: CORS_HEADERS, body: "Method Not Allowed" };
+    return {
+      statusCode: 405,
+      headers: CORS_HEADERS,
+      body: "Method Not Allowed",
+    };
   }
 
   const POSTMARK_API_KEY = process.env.POSTMARK_API_KEY;
@@ -22,6 +26,66 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Server misconfigured" }),
+    };
+  }
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey =
+    process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SB_PUBLISHABLE_KEY;
+
+  // Extract user JWT forwarded from the frontend
+  const authHeader =
+    event.headers["authorization"] || event.headers["Authorization"];
+  const userJwt = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+
+  if (!userJwt) {
+    return {
+      statusCode: 401,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Unauthorized" }),
+    };
+  }
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return {
+      statusCode: 500,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        error: "Supabase is not configured on the server.",
+      }),
+    };
+  }
+
+  // Verify the JWT with Supabase's auth endpoint — never trust a locally decoded token
+  try {
+    const verifyResp = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${userJwt}`,
+        apikey: supabaseAnonKey,
+      },
+    });
+    if (!verifyResp.ok) {
+      return {
+        statusCode: 401,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Unauthorized" }),
+      };
+    }
+    const verifiedUser = await verifyResp.json();
+    if (!verifiedUser?.id) {
+      return {
+        statusCode: 401,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Unauthorized" }),
+      };
+    }
+  } catch (e) {
+    return {
+      statusCode: 401,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Unauthorized" }),
     };
   }
 
@@ -42,6 +106,30 @@ exports.handler = async (event) => {
       statusCode: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Missing required fields" }),
+    };
+  }
+
+  const MAX_FIELD_LENGTH = 200;
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (
+    String(firstName).length > MAX_FIELD_LENGTH ||
+    String(lastName).length > MAX_FIELD_LENGTH ||
+    String(email).length > MAX_FIELD_LENGTH ||
+    String(id).length > MAX_FIELD_LENGTH
+  ) {
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Field too long" }),
+    };
+  }
+
+  if (!EMAIL_REGEX.test(email)) {
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Invalid email format" }),
     };
   }
 
