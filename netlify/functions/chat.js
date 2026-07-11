@@ -103,14 +103,6 @@ exports.handler = async (event) => {
         }
       }
     }
-    console.log("[MemberTier Debug]", {
-      supabaseUrlDefined: !!process.env.VITE_SUPABASE_URL,
-      supabaseServiceKeyDefined: !!process.env.SUPABASE_SERVICE_KEY,
-      authUserId,
-      salesId,
-      tierData,
-      membershipTier,
-    });
   } catch (e) {
     console.warn("Could not look up membership tier:", e.message);
   }
@@ -446,10 +438,6 @@ Be warm, helpful, and professional.`;
                 error: `Unknown tool: ${toolUseBlock.name}`,
               };
             }
-            console.log(
-              `Tool result [${toolUseBlock.name}]:`,
-              JSON.stringify(result),
-            );
             return {
               tool_use_id: toolUseBlock.id,
               content: JSON.stringify(result),
@@ -491,7 +479,6 @@ Be warm, helpful, and professional.`;
         );
 
         const secondData = await secondResp.json();
-        console.log("Anthropic second response:", JSON.stringify(secondData));
         const textBlock = secondData?.content?.find((b) => b.type === "text");
         const reply =
           textBlock?.text ??
