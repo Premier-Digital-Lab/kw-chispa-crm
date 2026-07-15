@@ -9,7 +9,7 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-import type { Contact } from "../types";
+import type { AgentSearchResult } from "./FindAgentPage";
 
 // Fix Leaflet's default icon URLs broken by Vite's asset pipeline
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -23,17 +23,17 @@ const US_CENTER: [number, number] = [39.8283, -98.5795];
 const DEFAULT_ZOOM = 4;
 
 // Fits map bounds to all visible pins after results load
-const BoundsAdjuster = ({ contacts }: { contacts: Contact[] }) => {
+const BoundsAdjuster = ({ contacts }: { contacts: AgentSearchResult[] }) => {
   const map = useMap();
 
   useEffect(() => {
     const pinned = contacts.filter(
-      (c) => c.latitude != null && c.longitude != null
+      (c) => c.latitude != null && c.longitude != null,
     );
     if (pinned.length === 0) return;
 
     const bounds = L.latLngBounds(
-      pinned.map((c) => [c.latitude!, c.longitude!] as [number, number])
+      pinned.map((c) => [c.latitude!, c.longitude!] as [number, number]),
     );
     map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
   }, [contacts, map]);
@@ -41,11 +41,11 @@ const BoundsAdjuster = ({ contacts }: { contacts: Contact[] }) => {
   return null;
 };
 
-export const AgentMap = ({ contacts }: { contacts: Contact[] }) => {
+export const AgentMap = ({ contacts }: { contacts: AgentSearchResult[] }) => {
   const translate = useTranslate();
 
   const pinned = contacts.filter(
-    (c) => c.latitude != null && c.longitude != null
+    (c) => c.latitude != null && c.longitude != null,
   );
 
   return (
@@ -77,22 +77,29 @@ export const AgentMap = ({ contacts }: { contacts: Contact[] }) => {
                     {contact.first_name} {contact.last_name}
                   </p>
                   {contact.agent_role && (
-                    <p className="text-muted-foreground">{contact.agent_role}</p>
+                    <p className="text-muted-foreground">
+                      {contact.agent_role}
+                    </p>
                   )}
                   {contact.market_center_name && (
                     <p>{contact.market_center_name}</p>
                   )}
                   {(contact.mc_city || contact.mc_state) && (
                     <p className="text-muted-foreground">
-                      {[contact.mc_city, contact.mc_state].filter(Boolean).join(", ")}
+                      {[contact.mc_city, contact.mc_state]
+                        .filter(Boolean)
+                        .join(", ")}
                     </p>
                   )}
-                  {contact.languages_spoken && contact.languages_spoken.length > 0 && (
-                    <p>
-                      <span className="font-medium">{translate("crm.find_agent.card.languages")}:</span>{" "}
-                      {contact.languages_spoken.join(", ")}
-                    </p>
-                  )}
+                  {contact.languages_spoken &&
+                    contact.languages_spoken.length > 0 && (
+                      <p>
+                        <span className="font-medium">
+                          {translate("crm.find_agent.card.languages")}:
+                        </span>{" "}
+                        {contact.languages_spoken.join(", ")}
+                      </p>
+                    )}
                   {contact.cell_number && (
                     <p>
                       <a

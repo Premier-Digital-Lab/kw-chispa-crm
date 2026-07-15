@@ -1,13 +1,27 @@
 import { useState, useCallback, useEffect } from "react";
 import { useTranslate } from "ra-core";
 import { Link } from "react-router";
-import { Search, MessageCircle, MapPin, Building2, Phone, Mail, UserCircle } from "lucide-react";
+import {
+  Search,
+  MessageCircle,
+  MapPin,
+  Building2,
+  Phone,
+  Mail,
+  UserCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
 import { getSupabaseClient } from "../providers/supabase/supabase";
@@ -16,6 +30,28 @@ import { AgentMap } from "./AgentMap";
 import { KW_CHISPA_COUNTRIES } from "../contacts/ContactInputs";
 
 type ViewMode = "cards" | "map";
+
+// Matches exactly the columns selected in useAgentSearch's query below —
+// keep in sync if that select list changes.
+export type AgentSearchResult = Pick<
+  Contact,
+  | "id"
+  | "first_name"
+  | "last_name"
+  | "agent_role"
+  | "market_center_name"
+  | "mc_city"
+  | "mc_state"
+  | "languages_spoken"
+  | "cities_served"
+  | "counties_served"
+  | "countries_served"
+  | "cell_number"
+  | "email_jsonb"
+  | "background"
+  | "latitude"
+  | "longitude"
+>;
 
 type SearchFields = {
   name: string;
@@ -44,13 +80,24 @@ const isAnyFieldFilled = (fields: SearchFields) =>
 
 const STORAGE_KEY = "find-agent-search-state";
 
-const saveSearchState = (fields: SearchFields, results: Contact[], viewMode: ViewMode) => {
+const saveSearchState = (
+  fields: SearchFields,
+  results: AgentSearchResult[],
+  viewMode: ViewMode,
+) => {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ fields, results, viewMode }));
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ fields, results, viewMode }),
+    );
   } catch {}
 };
 
-const loadSearchState = (): { fields: SearchFields; results: Contact[]; viewMode?: ViewMode } | null => {
+const loadSearchState = (): {
+  fields: SearchFields;
+  results: AgentSearchResult[];
+  viewMode?: ViewMode;
+} | null => {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -60,7 +107,7 @@ const loadSearchState = (): { fields: SearchFields; results: Contact[]; viewMode
 };
 
 const useAgentSearch = () => {
-  const [results, setResults] = useState<Contact[] | null>(null);
+  const [results, setResults] = useState<AgentSearchResult[] | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
   const search = useCallback(async (fields: SearchFields) => {
@@ -70,9 +117,7 @@ const useAgentSearch = () => {
       let query = supabase
         .from("contacts")
         .select(
-          "id,first_name,last_name,agent_role,market_center_name,mc_city,mc_state," +
-          "languages_spoken,cities_served,counties_served,countries_served,cell_number,email_jsonb,background," +
-          "latitude,longitude"
+          "id,first_name,last_name,agent_role,market_center_name,mc_city,mc_state,languages_spoken,cities_served,counties_served,countries_served,cell_number,email_jsonb,background,latitude,longitude",
         )
         .eq("member_status", "Active")
         .order("last_name", { ascending: true })
@@ -84,11 +129,15 @@ const useAgentSearch = () => {
       }
       if (fields.city.trim()) {
         const city = fields.city.trim();
-        query = query.or(`mc_city.ilike.%${city}%,cities_served.cs.{"${city}"}`);
+        query = query.or(
+          `mc_city.ilike.%${city}%,cities_served.cs.{"${city}"}`,
+        );
       }
       if (fields.state.trim()) {
         const state = fields.state.trim();
-        query = query.or(`mc_state.ilike.%${state}%,states_served.cs.{"${state}"}`);
+        query = query.or(
+          `mc_state.ilike.%${state}%,states_served.cs.{"${state}"}`,
+        );
       }
       if (fields.county.trim()) {
         query = query.contains("counties_served", [fields.county.trim()]);
@@ -97,13 +146,18 @@ const useAgentSearch = () => {
         query = query.contains("languages_spoken", [fields.language.trim()]);
       }
       if (fields.marketCenter.trim()) {
-        query = query.ilike("market_center_name", `%${fields.marketCenter.trim()}%`);
+        query = query.ilike(
+          "market_center_name",
+          `%${fields.marketCenter.trim()}%`,
+        );
       }
       if (fields.agentRole) {
         query = query.eq("agent_role", fields.agentRole);
       }
       if (fields.countriesServed.trim()) {
-        query = query.contains("countries_served", [fields.countriesServed.trim()]);
+        query = query.contains("countries_served", [
+          fields.countriesServed.trim(),
+        ]);
       }
 
       const { data, error } = await query;
@@ -111,7 +165,7 @@ const useAgentSearch = () => {
         console.error("Agent search error:", error.message);
         setResults([]);
       } else {
-        setResults((data ?? []) as Contact[]);
+        setResults((data ?? []) as unknown as AgentSearchResult[]);
       }
     } finally {
       setIsSearching(false);
@@ -130,7 +184,9 @@ export const FindAgentPage = () => {
 
   // Restore search state when navigating back within the SPA, but clear on hard reload/refresh
   useEffect(() => {
-    const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    const navEntry = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
     if (navEntry?.type === "reload") {
       sessionStorage.removeItem(STORAGE_KEY);
       return;
@@ -142,7 +198,7 @@ export const FindAgentPage = () => {
       setHasSearched(true);
       if (saved.viewMode) setViewMode(saved.viewMode);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persist search state so it survives navigation away and back
@@ -229,15 +285,25 @@ export const FindAgentPage = () => {
               </Label>
               <Select
                 value={fields.countriesServed || "_all"}
-                onValueChange={(v) => handleFieldChange("countriesServed", v === "_all" ? "" : v)}
+                onValueChange={(v) =>
+                  handleFieldChange("countriesServed", v === "_all" ? "" : v)
+                }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={translate("crm.find_agent.form.countries_served_placeholder")} />
+                  <SelectValue
+                    placeholder={translate(
+                      "crm.find_agent.form.countries_served_placeholder",
+                    )}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="_all">{translate("crm.find_agent.form.countries_served_all")}</SelectItem>
+                  <SelectItem value="_all">
+                    {translate("crm.find_agent.form.countries_served_all")}
+                  </SelectItem>
                   {KW_CHISPA_COUNTRIES.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -248,16 +314,26 @@ export const FindAgentPage = () => {
               </Label>
               <Select
                 value={fields.agentRole}
-                onValueChange={(v) => handleFieldChange("agentRole", v === "_all" ? "" : v)}
+                onValueChange={(v) =>
+                  handleFieldChange("agentRole", v === "_all" ? "" : v)
+                }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={translate("crm.find_agent.form.agent_role_placeholder")} />
+                  <SelectValue
+                    placeholder={translate(
+                      "crm.find_agent.form.agent_role_placeholder",
+                    )}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="_all">{translate("crm.find_agent.form.agent_role_all")}</SelectItem>
+                  <SelectItem value="_all">
+                    {translate("crm.find_agent.form.agent_role_all")}
+                  </SelectItem>
                   <SelectItem value="Solo Agent">Solo Agent</SelectItem>
                   <SelectItem value="Team Member">Team Member</SelectItem>
-                  <SelectItem value="Team Lead">Team Leader of your Team</SelectItem>
+                  <SelectItem value="Team Lead">
+                    Team Leader of your Team
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -380,7 +456,7 @@ const SearchField = ({
   </div>
 );
 
-const AgentCard = ({ contact }: { contact: Contact }) => {
+const AgentCard = ({ contact }: { contact: AgentSearchResult }) => {
   const translate = useTranslate();
   const firstEmail = contact.email_jsonb?.[0]?.email;
   const locationParts = [contact.mc_city, contact.mc_state].filter(Boolean);
@@ -399,7 +475,9 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               {contact.first_name} {contact.last_name}
             </Link>
             {contact.agent_role && (
-              <p className="text-sm text-muted-foreground">{contact.agent_role}</p>
+              <p className="text-sm text-muted-foreground">
+                {contact.agent_role}
+              </p>
             )}
 
             {contact.market_center_name && (
@@ -416,15 +494,26 @@ const AgentCard = ({ contact }: { contact: Contact }) => {
               </div>
             )}
 
-            <ArrayBadges items={contact.languages_spoken} label={translate("crm.find_agent.card.languages")} />
-            <ArrayBadges items={contact.cities_served} label={translate("crm.find_agent.card.cities_served")} />
+            <ArrayBadges
+              items={contact.languages_spoken}
+              label={translate("crm.find_agent.card.languages")}
+            />
+            <ArrayBadges
+              items={contact.cities_served}
+              label={translate("crm.find_agent.card.cities_served")}
+            />
             {contact.mc_state && (
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="font-medium text-foreground">{translate("crm.find_agent.card.state")}:</span>{" "}
+                <span className="font-medium text-foreground">
+                  {translate("crm.find_agent.card.state")}:
+                </span>{" "}
                 {contact.mc_state}
               </p>
             )}
-            <ArrayBadges items={contact.countries_served} label={translate("crm.find_agent.card.countries_served")} />
+            <ArrayBadges
+              items={contact.countries_served}
+              label={translate("crm.find_agent.card.countries_served")}
+            />
 
             {contact.background && (
               <>

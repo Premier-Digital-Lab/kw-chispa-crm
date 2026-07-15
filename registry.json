@@ -326,10 +326,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/providers/commons/frenchCrmMessages.ts",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/atomic-crm/providers/commons/englishCrmMessages.ts",
           "type": "registry:component"
         },
