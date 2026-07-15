@@ -287,8 +287,8 @@ const ProfileForm = ({
       <Card>
         <CardContent className="flex justify-end">
           <DataDeletionButton
-            firstName={record.first_name ?? ""}
-            lastName={record.last_name ?? ""}
+            firstName={record?.first_name ?? ""}
+            lastName={record?.last_name ?? ""}
             email={authEmail}
             id={identity.id}
           />
