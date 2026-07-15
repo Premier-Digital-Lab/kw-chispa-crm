@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { useGetIdentity, useTranslate, useNotify } from "ra-core";
+import {
+  useGetIdentity,
+  useTranslate,
+  useNotify,
+  type Identifier,
+} from "ra-core";
 import {
   FileText,
   Video,
@@ -63,12 +68,17 @@ const emptyForm: ResourceFormData = {
 const TABS: ResourceType[] = ["document", "recording", "template"];
 
 const ResourceIcon = ({ type }: { type: ResourceType }) => {
-  if (type === "document") return <FileText className="w-5 h-5 shrink-0 text-blue-500" />;
-  if (type === "recording") return <Video className="w-5 h-5 shrink-0 text-purple-500" />;
+  if (type === "document")
+    return <FileText className="w-5 h-5 shrink-0 text-blue-500" />;
+  if (type === "recording")
+    return <Video className="w-5 h-5 shrink-0 text-purple-500" />;
   return <FileCode className="w-5 h-5 shrink-0 text-green-500" />;
 };
 
-const usePremierAccess = (identityId: number | undefined, isAdmin: boolean) => {
+const usePremierAccess = (
+  identityId: Identifier | undefined,
+  isAdmin: boolean,
+) => {
   const [isPremier, setIsPremier] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
 
@@ -88,7 +98,8 @@ const usePremierAccess = (identityId: number | undefined, isAdmin: boolean) => {
       .maybeSingle()
       .then(({ data }) => {
         setIsPremier(
-          data?.membership_tier === "Premier" && data?.member_status === "Active"
+          data?.membership_tier === "Premier" &&
+            data?.member_status === "Active",
         );
         setIsChecking(false);
       });
@@ -110,7 +121,8 @@ export const PremierPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingResource, setEditingResource] = useState<PremierResource | null>(null);
+  const [editingResource, setEditingResource] =
+    useState<PremierResource | null>(null);
   const [form, setForm] = useState<ResourceFormData>(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -167,7 +179,10 @@ export const PremierPage = () => {
       if (error) {
         notify("ra.notification.http_error", { type: "error" });
       } else {
-        notify("ra.notification.updated", { type: "success", messageArgs: { smart_count: 1 } });
+        notify("ra.notification.updated", {
+          type: "success",
+          messageArgs: { smart_count: 1 },
+        });
         setDialogOpen(false);
         fetchResources();
       }
@@ -195,7 +210,10 @@ export const PremierPage = () => {
     if (error) {
       notify("ra.notification.http_error", { type: "error" });
     } else {
-      notify("ra.notification.deleted", { type: "success", messageArgs: { smart_count: 1 } });
+      notify("ra.notification.deleted", {
+        type: "success",
+        messageArgs: { smart_count: 1 },
+      });
       setDeleteTargetId(null);
       fetchResources();
     }
@@ -217,7 +235,9 @@ export const PremierPage = () => {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">{translate("crm.premier.title")}</h1>
+          <h1 className="text-2xl font-bold">
+            {translate("crm.premier.title")}
+          </h1>
         </div>
         {isAdmin && (
           <Button onClick={openAddDialog} className="gap-2">
@@ -240,14 +260,18 @@ export const PremierPage = () => {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {translate(`crm.premier.tabs.${tab}s` as `crm.premier.tabs.${string}`)}
+            {translate(
+              `crm.premier.tabs.${tab}s` as `crm.premier.tabs.${string}`,
+            )}
           </button>
         ))}
       </div>
 
       {/* Resource list */}
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
+        <p className="text-sm text-muted-foreground">
+          {translate("crm.common.loading")}
+        </p>
       ) : resources.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <ResourceIcon type={activeTab} />
@@ -283,14 +307,18 @@ export const PremierPage = () => {
               <Label>{translate("crm.premier.form.title_label")}</Label>
               <Input
                 value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
               />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label>{translate("crm.premier.form.description")}</Label>
               <Textarea
                 value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, description: e.target.value }))
+                }
                 rows={3}
               />
             </div>
@@ -298,7 +326,9 @@ export const PremierPage = () => {
               <Label>{translate("crm.premier.form.type")}</Label>
               <Select
                 value={form.resource_type}
-                onValueChange={(v) => setForm((f) => ({ ...f, resource_type: v as ResourceType }))}
+                onValueChange={(v) =>
+                  setForm((f) => ({ ...f, resource_type: v as ResourceType }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -320,7 +350,9 @@ export const PremierPage = () => {
               <Label>{translate("crm.premier.form.url")}</Label>
               <Input
                 value={form.url}
-                onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, url: e.target.value }))
+                }
                 placeholder="https://"
               />
             </div>
@@ -332,7 +364,9 @@ export const PremierPage = () => {
                 onClick={handleSave}
                 disabled={isSaving || !form.title.trim() || !form.url.trim()}
               >
-                {isSaving ? translate("crm.common.loading") : translate("crm.premier.form.save")}
+                {isSaving
+                  ? translate("crm.common.loading")
+                  : translate("crm.premier.form.save")}
               </Button>
             </div>
           </div>
@@ -340,7 +374,10 @@ export const PremierPage = () => {
       </Dialog>
 
       {/* Delete confirm dialog */}
-      <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
+      <Dialog
+        open={deleteTargetId !== null}
+        onOpenChange={() => setDeleteTargetId(null)}
+      >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>{translate("crm.premier.delete_confirm")}</DialogTitle>
@@ -351,7 +388,9 @@ export const PremierPage = () => {
             </Button>
             <Button
               variant="destructive"
-              onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
+              onClick={() =>
+                deleteTargetId !== null && handleDelete(deleteTargetId)
+              }
             >
               {translate("crm.premier.delete")}
             </Button>
@@ -381,7 +420,7 @@ const LockScreen = ({ message }: { message: string }) => {
     script.id = "paypal-sdk";
     script.src = `https://www.paypal.com/sdk/js?client-id=AQwl-kcSXaZ8ymAlMl-LCzUsKXDdKm92lyIKoOds5C-Y5T_NVauwPFGN4Y2Y9sbJstBGduucFDwsLkS7&vault=true&intent=subscription`;
     script.onload = () => setSdkReady(true);
-    script.onerror = () => console.error('PayPal SDK failed to load');
+    script.onerror = () => console.error("PayPal SDK failed to load");
     document.body.appendChild(script);
   }, []);
 
@@ -392,7 +431,11 @@ const LockScreen = ({ message }: { message: string }) => {
       .Buttons({
         createSubscription: (
           _data: unknown,
-          actions: { subscription: { create: (o: { plan_id: string }) => Promise<string> } },
+          actions: {
+            subscription: {
+              create: (o: { plan_id: string }) => Promise<string>;
+            };
+          },
         ) => actions.subscription.create({ plan_id: PAYPAL_PLAN_ID }),
         onApprove: () => setSuccess(true),
         style: { color: "blue", shape: "rect", label: "subscribe" },
@@ -419,7 +462,9 @@ const LockScreen = ({ message }: { message: string }) => {
         </div>
       </div>
       <h2 className="text-xl font-semibold mb-3">Premier Members Only</h2>
-      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{message}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+        {message}
+      </p>
       <div id="paypal-button-container" />
     </div>
   );
@@ -456,7 +501,9 @@ const ResourceCard = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => window.open(resource.url, "_blank", "noopener,noreferrer")}
+            onClick={() =>
+              window.open(resource.url, "_blank", "noopener,noreferrer")
+            }
             className="gap-1.5"
           >
             <ExternalLink className="w-3.5 h-3.5" />

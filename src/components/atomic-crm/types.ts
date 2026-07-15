@@ -53,6 +53,7 @@ export type SalesFormData = {
   last_name: string;
   administrator: boolean;
   disabled: boolean;
+  review_status?: string;
 };
 
 export type Sale = {
@@ -63,6 +64,7 @@ export type Sale = {
   disabled?: boolean;
   user_id: string;
   is_super_admin?: boolean;
+  created_at?: string;
 
   /**
    * This is a copy of the user's email, to make it easier to handle by react admin
@@ -117,11 +119,13 @@ export type Contact = {
   title: string;
   company_id?: Identifier | null;
   email_jsonb: EmailAndType[];
+  phone_jsonb?: PhoneNumberAndType[];
   avatar?: Partial<RAFile>;
   linkedin_url?: string | null;
   first_seen: string;
   last_seen: string;
   has_newsletter: boolean;
+  status?: string | null;
   is_chapter_leader?: boolean | null;
   tags: number[];
   gender: string;

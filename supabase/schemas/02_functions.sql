@@ -234,13 +234,14 @@ begin
   select count(id) into sales_count
   from public.sales;
 
-  insert into public.sales (first_name, last_name, email, user_id, administrator)
+  insert into public.sales (first_name, last_name, email, user_id, administrator, created_at)
   values (
     coalesce(new.raw_user_meta_data ->> 'first_name', new.raw_user_meta_data -> 'custom_claims' ->> 'first_name', 'Pending'),
     coalesce(new.raw_user_meta_data ->> 'last_name', new.raw_user_meta_data -> 'custom_claims' ->> 'last_name', 'Pending'),
     new.email,
     new.id,
-    case when sales_count > 0 then FALSE else TRUE end
+    case when sales_count > 0 then FALSE else TRUE end,
+    new.created_at
   );
   return new;
 end;
@@ -481,6 +482,10 @@ BEGIN
 
   IF NEW.is_super_admin IS DISTINCT FROM OLD.is_super_admin THEN
     RAISE EXCEPTION 'Only administrators may change the "is_super_admin" column on sales';
+  END IF;
+
+  IF NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+    RAISE EXCEPTION 'Only administrators may change the "created_at" column on sales';
   END IF;
 
   RETURN NEW;

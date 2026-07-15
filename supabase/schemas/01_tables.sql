@@ -97,7 +97,9 @@ create table public.sales (
     administrator boolean not null,
     user_id uuid not null,
     avatar jsonb,
-    disabled boolean not null default false
+    disabled boolean not null default false,
+    review_status text not null default 'pending'::text,
+    created_at timestamp with time zone not null default now()
 );
 
 create unique index uq__sales__user_id on public.sales using btree (user_id);

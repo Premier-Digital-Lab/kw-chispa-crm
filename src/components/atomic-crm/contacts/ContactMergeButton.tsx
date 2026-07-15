@@ -251,11 +251,11 @@ const ContactMergeDialog = ({ open, onClose }: ContactMergeDialogProps) => {
                       be added
                     </li>
                   )}
-                  {loserContact.phone_jsonb?.length > 0 && (
+                  {(loserContact.phone_jsonb?.length ?? 0) > 0 && (
                     <li>
-                      • {loserContact.phone_jsonb.length} phone number
-                      {loserContact.phone_jsonb.length !== 1 ? "s" : ""} will be
-                      added
+                      • {loserContact.phone_jsonb?.length} phone number
+                      {loserContact.phone_jsonb?.length !== 1 ? "s" : ""} will
+                      be added
                     </li>
                   )}
                   {!notesCount &&

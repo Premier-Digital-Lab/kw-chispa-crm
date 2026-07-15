@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { differenceInDays, formatRelative } from "date-fns";
-import { enUS, fr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { useLocaleState } from "ra-core";
 
 /**
@@ -22,9 +22,6 @@ import { useLocaleState } from "ra-core";
  * This would return relatives dates as "3 days ago 3:00 PM" which isn't ideal. We want "3 days ago at 3:00 PM".
  */
 
-const getDateFnsLocale = (locale: string) =>
-  locale.startsWith("fr") ? fr : enUS;
-
 export const formatLocalizedDate = (date: string, locale = "en") =>
   new Intl.DateTimeFormat(locale, {
     year: "numeric",
@@ -35,13 +32,12 @@ export const formatLocalizedDate = (date: string, locale = "en") =>
 export const formatRelativeDate = (date: string, locale = "en") => {
   const dateObj = new Date(date);
   const now = new Date();
-  const dateFnsLocale = getDateFnsLocale(locale);
 
   if (differenceInDays(now, dateObj) > 6) {
     return new Intl.DateTimeFormat(locale).format(dateObj);
   }
 
-  return formatRelative(dateObj, now, { locale: dateFnsLocale });
+  return formatRelative(dateObj, now, { locale: enUS });
 };
 
 export const useRelativeDate = (date: string) => {

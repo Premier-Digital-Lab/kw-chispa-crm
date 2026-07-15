@@ -5,11 +5,13 @@ import { Suspense, type ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
+import { useCoerceUnsupportedLocale } from "../providers/commons/i18nProvider";
 import { PendingApprovalGuard } from "../login/PendingApprovalGuard";
 import { MobileNavigation } from "./MobileNavigation";
 
 export const MobileLayout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
+  useCoerceUnsupportedLocale();
   return (
     <PendingApprovalGuard>
       <ErrorBoundary FallbackComponent={Error}>

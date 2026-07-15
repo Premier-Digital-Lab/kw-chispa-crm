@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { useGetIdentity, useTranslate, useNotify } from "ra-core";
+import {
+  useGetIdentity,
+  useTranslate,
+  useNotify,
+  type Identifier,
+} from "ra-core";
 import {
   Calendar,
   ChevronDown,
@@ -58,7 +63,10 @@ const emptyForm: ResourceFormData = {
   subcategory: "",
 };
 
-const useChapterLeaderAccess = (identityId: number | undefined, isAdmin: boolean) => {
+const useChapterLeaderAccess = (
+  identityId: Identifier | undefined,
+  isAdmin: boolean,
+) => {
   const [hasAccess, setHasAccess] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
 
@@ -91,7 +99,10 @@ export const ChapterLeadersPage = () => {
   const { identity, isPending: identityPending } = useGetIdentity();
 
   const isAdmin = !!identity?.administrator;
-  const { hasAccess, isChecking } = useChapterLeaderAccess(identity?.id, isAdmin);
+  const { hasAccess, isChecking } = useChapterLeaderAccess(
+    identity?.id,
+    isAdmin,
+  );
 
   const [resources, setResources] = useState<ChapterLeaderResource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -99,10 +110,13 @@ export const ChapterLeadersPage = () => {
   // null = Level 1 (categories)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   // null = Level 2 (subcategories or direct links); string = Level 3 (links)
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
+    null,
+  );
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingResource, setEditingResource] = useState<ChapterLeaderResource | null>(null);
+  const [editingResource, setEditingResource] =
+    useState<ChapterLeaderResource | null>(null);
   const [form, setForm] = useState<ResourceFormData>(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -174,7 +188,10 @@ export const ChapterLeadersPage = () => {
       if (error) {
         notify("ra.notification.http_error", { type: "error" });
       } else {
-        notify("ra.notification.updated", { type: "success", messageArgs: { smart_count: 1 } });
+        notify("ra.notification.updated", {
+          type: "success",
+          messageArgs: { smart_count: 1 },
+        });
         setDialogOpen(false);
         resetNav();
         fetchResources();
@@ -204,7 +221,10 @@ export const ChapterLeadersPage = () => {
     if (error) {
       notify("ra.notification.http_error", { type: "error" });
     } else {
-      notify("ra.notification.deleted", { type: "success", messageArgs: { smart_count: 1 } });
+      notify("ra.notification.deleted", {
+        type: "success",
+        messageArgs: { smart_count: 1 },
+      });
       setDeleteTargetId(null);
       resetNav();
       fetchResources();
@@ -226,22 +246,33 @@ export const ChapterLeadersPage = () => {
   const uncategorizedLabel = translate("crm.chapter_leaders.uncategorized");
 
   // Level 1: group all resources by category
-  const grouped = resources.reduce<Record<string, ChapterLeaderResource[]>>((acc, r) => {
-    const key = r.category ?? uncategorizedLabel;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(r);
-    return acc;
-  }, {});
+  const grouped = resources.reduce<Record<string, ChapterLeaderResource[]>>(
+    (acc, r) => {
+      const key = r.category ?? uncategorizedLabel;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(r);
+      return acc;
+    },
+    {},
+  );
   const groupKeys = Object.keys(grouped).sort();
-  const pinnedCategories = new Set(["Chapter Logos", "Marketing Request", "Marketing Request Form"]);
-  const filteredGroupKeys = groupKeys.filter(k => !pinnedCategories.has(k));
+  const pinnedCategories = new Set([
+    "Chapter Logos",
+    "Marketing Request",
+    "Marketing Request Form",
+  ]);
+  const filteredGroupKeys = groupKeys.filter((k) => !pinnedCategories.has(k));
 
   // Level 2: resources in the selected category
-  const categoryResources = selectedCategory ? (grouped[selectedCategory] ?? []) : [];
-  const hasSubcategories = categoryResources.some(r => r.subcategory);
+  const categoryResources = selectedCategory
+    ? (grouped[selectedCategory] ?? [])
+    : [];
+  const hasSubcategories = categoryResources.some((r) => r.subcategory);
 
   // Level 2 subcategory grouping (used only when hasSubcategories)
-  const subgrouped = categoryResources.reduce<Record<string, ChapterLeaderResource[]>>((acc, r) => {
+  const subgrouped = categoryResources.reduce<
+    Record<string, ChapterLeaderResource[]>
+  >((acc, r) => {
     const key = r.subcategory ?? uncategorizedLabel;
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
@@ -250,26 +281,32 @@ export const ChapterLeadersPage = () => {
   const subgroupKeys = Object.keys(subgrouped).sort();
 
   // Level 3: resources matching both category and subcategory
-  const level3Resources = (selectedCategory && selectedSubcategory)
-    ? categoryResources.filter(r => (r.subcategory ?? uncategorizedLabel) === selectedSubcategory)
-    : [];
+  const level3Resources =
+    selectedCategory && selectedSubcategory
+      ? categoryResources.filter(
+          (r) => (r.subcategory ?? uncategorizedLabel) === selectedSubcategory,
+        )
+      : [];
 
   const isLevel1 = selectedCategory === null;
   const isLevel2 = selectedCategory !== null && selectedSubcategory === null;
   const isLevel3 = selectedCategory !== null && selectedSubcategory !== null;
 
   const resourceCount = (items: ChapterLeaderResource[]) =>
-    `${items.length} ${items.length === 1
-      ? translate("crm.chapter_leaders.resource_singular")
-      : translate("crm.chapter_leaders.resource_plural")}`;
+    `${items.length} ${
+      items.length === 1
+        ? translate("crm.chapter_leaders.resource_singular")
+        : translate("crm.chapter_leaders.resource_plural")
+    }`;
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-
       {/* ── Header ────────────────────────────────────────────────────────── */}
       {isLevel1 && (
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">{translate("crm.chapter_leaders.title")}</h1>
+          <h1 className="text-2xl font-bold">
+            {translate("crm.chapter_leaders.title")}
+          </h1>
           {isAdmin && (
             <Button onClick={openAddDialog} className="gap-2">
               <Plus className="w-4 h-4" />
@@ -301,7 +338,9 @@ export const ChapterLeadersPage = () => {
             onClick={() => setSelectedSubcategory(null)}
           >
             <ChevronLeft className="w-4 h-4" />
-            {translate("crm.chapter_leaders.back_to_category", { category: selectedCategory })}
+            {translate("crm.chapter_leaders.back_to_category", {
+              category: selectedCategory,
+            })}
           </Button>
           <h1 className="text-2xl font-bold">{selectedSubcategory}</h1>
         </div>
@@ -309,7 +348,9 @@ export const ChapterLeadersPage = () => {
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
       {isLoading && (
-        <p className="text-sm text-muted-foreground">{translate("crm.common.loading")}</p>
+        <p className="text-sm text-muted-foreground">
+          {translate("crm.common.loading")}
+        </p>
       )}
 
       {/* ── Static Chapter Resources ─────────────────────────────────────── */}
@@ -319,7 +360,6 @@ export const ChapterLeadersPage = () => {
             Chapter Resources
           </h2>
           <div className="grid grid-cols-2 gap-4">
-
             {/* Column 1, Row 1: KW CHISPA Chapter Leaders Roster */}
             <Card
               style={{ gridColumn: 1, gridRow: 1 }}
@@ -328,7 +368,7 @@ export const ChapterLeadersPage = () => {
                 window.open(
                   "https://docs.google.com/spreadsheets/d/1Cj9GSyJks3joujS3IsMDcrWtac0C5SrU5TyxZv1kqXo/edit?usp=sharing",
                   "_blank",
-                  "noopener,noreferrer"
+                  "noopener,noreferrer",
                 )
               }
             >
@@ -402,7 +442,9 @@ export const ChapterLeadersPage = () => {
                 <CardContent className="py-2 px-5">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-semibold text-base truncate">Chapter Logos</p>
+                      <p className="font-semibold text-base truncate">
+                        Chapter Logos
+                      </p>
                       <p className="text-sm text-muted-foreground mt-0.5">
                         {resourceCount(grouped["Chapter Logos"])}
                       </p>
@@ -421,7 +463,7 @@ export const ChapterLeadersPage = () => {
                 window.open(
                   "https://docs.google.com/spreadsheets/d/1TkCCKKLcbGqStRhhYXyFIHJpDdGkFPyq/edit?gid=214935856#gid=214935856",
                   "_blank",
-                  "noopener,noreferrer"
+                  "noopener,noreferrer",
                 )
               }
             >
@@ -447,7 +489,9 @@ export const ChapterLeadersPage = () => {
                 <div className="flex items-center gap-2 min-w-0">
                   <Clock className="w-5 h-5 text-muted-foreground shrink-0" />
                   <div>
-                    <p className="font-semibold text-base">Eventbrite Templates Coming Soon</p>
+                    <p className="font-semibold text-base">
+                      Eventbrite Templates Coming Soon
+                    </p>
                     <p className="text-xs text-muted-foreground">Coming Soon</p>
                   </div>
                 </div>
@@ -459,8 +503,8 @@ export const ChapterLeadersPage = () => {
               const mrKey = grouped["Marketing Request Form"]
                 ? "Marketing Request Form"
                 : grouped["Marketing Request"]
-                ? "Marketing Request"
-                : null;
+                  ? "Marketing Request"
+                  : null;
               if (!mrKey) return null;
               return (
                 <Card
@@ -471,7 +515,9 @@ export const ChapterLeadersPage = () => {
                   <CardContent className="py-2 px-5">
                     <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="font-semibold text-base truncate">{mrKey}</p>
+                        <p className="font-semibold text-base truncate">
+                          {mrKey}
+                        </p>
                         <p className="text-sm text-muted-foreground mt-0.5">
                           {resourceCount(grouped[mrKey])}
                         </p>
@@ -487,8 +533,9 @@ export const ChapterLeadersPage = () => {
       )}
 
       {/* Level 1: remaining category cards (pinned categories are shown in Chapter Resources above) */}
-      {!isLoading && isLevel1 && (
-        resources.length === 0 ? (
+      {!isLoading &&
+        isLevel1 &&
+        (resources.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
           </div>
@@ -503,7 +550,9 @@ export const ChapterLeadersPage = () => {
                 <CardContent className="py-4 px-5">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-semibold text-base truncate">{category}</p>
+                      <p className="font-semibold text-base truncate">
+                        {category}
+                      </p>
                       <p className="text-sm text-muted-foreground mt-0.5">
                         {resourceCount(grouped[category])}
                       </p>
@@ -514,8 +563,7 @@ export const ChapterLeadersPage = () => {
               </Card>
             ))}
           </div>
-        ) : null
-      )}
+        ) : null)}
 
       {/* Level 2a: subcategory cards (when category has subcategories) */}
       {!isLoading && isLevel2 && hasSubcategories && (
@@ -529,7 +577,9 @@ export const ChapterLeadersPage = () => {
               <CardContent className="py-4 px-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-semibold text-base truncate">{subcategory}</p>
+                    <p className="font-semibold text-base truncate">
+                      {subcategory}
+                    </p>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {resourceCount(subgrouped[subcategory])}
                     </p>
@@ -543,8 +593,10 @@ export const ChapterLeadersPage = () => {
       )}
 
       {/* Level 2b: resource list directly (when category has no subcategories) */}
-      {!isLoading && isLevel2 && !hasSubcategories && (
-        categoryResources.length === 0 ? (
+      {!isLoading &&
+        isLevel2 &&
+        !hasSubcategories &&
+        (categoryResources.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
           </div>
@@ -561,12 +613,12 @@ export const ChapterLeadersPage = () => {
               />
             ))}
           </div>
-        )
-      )}
+        ))}
 
       {/* Level 3: resource list for selected category + subcategory */}
-      {!isLoading && isLevel3 && (
-        level3Resources.length === 0 ? (
+      {!isLoading &&
+        isLevel3 &&
+        (level3Resources.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-sm">{translate("crm.chapter_leaders.empty")}</p>
           </div>
@@ -583,8 +635,7 @@ export const ChapterLeadersPage = () => {
               />
             ))}
           </div>
-        )
-      )}
+        ))}
 
       {/* ── Add / Edit dialog ─────────────────────────────────────────────── */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -596,7 +647,11 @@ export const ChapterLeadersPage = () => {
                 : translate("crm.chapter_leaders.form.add_title")}
             </DialogTitle>
           </DialogHeader>
-          <ResourceFormFields form={form} setForm={setForm} translate={translate} />
+          <ResourceFormFields
+            form={form}
+            setForm={setForm}
+            translate={translate}
+          />
           <div className="flex gap-2 justify-end pt-1">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               {translate("crm.chapter_leaders.form.cancel")}
@@ -614,10 +669,15 @@ export const ChapterLeadersPage = () => {
       </Dialog>
 
       {/* ── Delete confirm dialog ─────────────────────────────────────────── */}
-      <Dialog open={deleteTargetId !== null} onOpenChange={() => setDeleteTargetId(null)}>
+      <Dialog
+        open={deleteTargetId !== null}
+        onOpenChange={() => setDeleteTargetId(null)}
+      >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>{translate("crm.chapter_leaders.delete_confirm")}</DialogTitle>
+            <DialogTitle>
+              {translate("crm.chapter_leaders.delete_confirm")}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex gap-2 justify-end pt-2">
             <Button variant="outline" onClick={() => setDeleteTargetId(null)}>
@@ -625,7 +685,9 @@ export const ChapterLeadersPage = () => {
             </Button>
             <Button
               variant="destructive"
-              onClick={() => deleteTargetId !== null && handleDelete(deleteTargetId)}
+              onClick={() =>
+                deleteTargetId !== null && handleDelete(deleteTargetId)
+              }
             >
               {translate("crm.chapter_leaders.delete")}
             </Button>
@@ -669,15 +731,21 @@ const ResourceFormFields = ({
       <Label>{translate("crm.chapter_leaders.form.subcategory")}</Label>
       <Input
         value={form.subcategory}
-        onChange={(e) => setForm((f) => ({ ...f, subcategory: e.target.value }))}
-        placeholder={translate("crm.chapter_leaders.form.subcategory_placeholder")}
+        onChange={(e) =>
+          setForm((f) => ({ ...f, subcategory: e.target.value }))
+        }
+        placeholder={translate(
+          "crm.chapter_leaders.form.subcategory_placeholder",
+        )}
       />
     </div>
     <div className="flex flex-col gap-1.5">
       <Label>{translate("crm.chapter_leaders.form.description")}</Label>
       <Textarea
         value={form.description}
-        onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+        onChange={(e) =>
+          setForm((f) => ({ ...f, description: e.target.value }))
+        }
         rows={3}
       />
     </div>
@@ -739,7 +807,9 @@ const ResourceCard = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => window.open(resource.url, "_blank", "noopener,noreferrer")}
+            onClick={() =>
+              window.open(resource.url, "_blank", "noopener,noreferrer")
+            }
             className="gap-1.5"
           >
             <ExternalLink className="w-3.5 h-3.5" />

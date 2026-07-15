@@ -41,11 +41,7 @@ export const NoteCreate = ({
       <Form>
         <div className={cn("space-y-3", className)}>
           <NoteInputs defaultStatus={defaultStatus} showStatus={showStatus} />
-          <NoteCreateButton
-            defaultStatus={defaultStatus}
-            record={record}
-            reference={reference}
-          />
+          <NoteCreateButton record={record} reference={reference} />
         </div>
       </Form>
     </CreateBase>
@@ -53,11 +49,9 @@ export const NoteCreate = ({
 };
 
 const NoteCreateButton = ({
-  defaultStatus,
   reference,
   record,
 }: {
-  defaultStatus?: string;
   reference: "contacts" | "deals";
   record: RaRecord<Identifier>;
 }) => {
@@ -76,7 +70,7 @@ const NoteCreateButton = ({
     attachments: null,
   };
 
-  const handleSuccess = (data: any) => {
+  const handleSuccess = () => {
     reset(resetValues, { keepValues: false });
     refetch();
     update(reference, {

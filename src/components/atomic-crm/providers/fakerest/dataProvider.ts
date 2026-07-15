@@ -25,6 +25,7 @@ import { getCompanyAvatar } from "../commons/getCompanyAvatar";
 import { getContactAvatar } from "../commons/getContactAvatar";
 import { mergeContacts } from "../commons/mergeContacts";
 import type { CrmDataProvider } from "../types";
+import type { MailerLiteCampaign } from "../supabase/dataProvider";
 import {
   authProvider as defaultAuthProvider,
   USER_STORAGE_KEY,
@@ -315,6 +316,12 @@ export const createDataProvider = ({
         previousData: prev,
       });
       return config;
+    },
+    getNewsletterCampaigns: async (): Promise<MailerLiteCampaign[]> => {
+      return [];
+    },
+    sendNewsletterCampaign: async (_campaignId: string): Promise<void> => {
+      // No-op in demo mode: FakeRest has no MailerLite integration to call.
     },
   };
 

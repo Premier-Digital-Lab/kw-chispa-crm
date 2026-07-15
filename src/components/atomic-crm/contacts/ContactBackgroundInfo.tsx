@@ -13,9 +13,8 @@ export const ContactBackgroundInfo = () => {
   const translate = useTranslate();
   const [locale = "en"] = useLocaleState();
   const { identity } = useGetIdentity();
-  const isAdmin = identity?.administrator === true;
   const isCurrentUser = record?.sales_id === identity?.id;
-  const salesName = useGetSalesName(record?.sales_id, {
+  useGetSalesName(record?.sales_id, {
     enabled: !isCurrentUser,
   });
 
@@ -43,8 +42,6 @@ export const ContactBackgroundInfo = () => {
           })}
         </span>
       </div>
-
-
     </div>
   );
 };

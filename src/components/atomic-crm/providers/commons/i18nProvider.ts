@@ -1,11 +1,9 @@
-import { mergeTranslations } from "ra-core";
+import { useEffect } from "react";
+import { mergeTranslations, useLocaleState } from "ra-core";
 import polyglotI18nProvider from "ra-i18n-polyglot";
 import englishMessages from "ra-language-english";
-import frenchMessages from "ra-language-french";
 import { raSupabaseEnglishMessages } from "ra-supabase-language-english";
-import { raSupabaseFrenchMessages } from "ra-supabase-language-french";
 import { englishCrmMessages } from "./englishCrmMessages";
-import { frenchCrmMessages } from "./frenchCrmMessages";
 import { spanishCrmMessages } from "./spanishCrmMessages";
 import { raSpanishMessages } from "./raSpanishMessages";
 
@@ -17,28 +15,11 @@ const raSupabaseEnglishMessagesOverride = {
   },
 };
 
-const raSupabaseFrenchMessagesOverride = {
-  "ra-supabase": {
-    auth: {
-      password_reset:
-        "Consultez vos emails pour trouver le message de reinitialisation du mot de passe.",
-    },
-  },
-};
-
 const englishCatalog = mergeTranslations(
   englishMessages,
   raSupabaseEnglishMessages,
   raSupabaseEnglishMessagesOverride,
   englishCrmMessages,
-);
-
-const frenchCatalog = mergeTranslations(
-  englishCatalog,
-  frenchMessages,
-  raSupabaseFrenchMessages,
-  raSupabaseFrenchMessagesOverride,
-  frenchCrmMessages,
 );
 
 const spanishCatalog = mergeTranslations(
@@ -47,7 +28,7 @@ const spanishCatalog = mergeTranslations(
   spanishCrmMessages,
 );
 
-export const getInitialLocale = (): "en" | "fr" | "es" => {
+export const getInitialLocale = (): "en" | "es" => {
   if (typeof navigator === "undefined") {
     return "en";
   }
@@ -56,18 +37,12 @@ export const getInitialLocale = (): "en" | "fr" | "es" => {
   if (browserLocale?.toLowerCase().startsWith("es")) {
     return "es";
   }
-  if (browserLocale?.toLowerCase().startsWith("fr")) {
-    return "fr";
-  }
 
   return "en";
 };
 
 export const i18nProvider = polyglotI18nProvider(
   (locale) => {
-    if (locale === "fr") {
-      return frenchCatalog;
-    }
     if (locale === "es") {
       return spanishCatalog;
     }
@@ -77,10 +52,22 @@ export const i18nProvider = polyglotI18nProvider(
   [
     { locale: "en", name: "English" },
     { locale: "es", name: "Español" },
-    { locale: "fr", name: "Français" },
   ],
   { allowMissing: true },
 );
+
+// French support was removed; coerce any locale still persisted from before
+// (browser-detected or user-selected) so the language selector doesn't render blank.
+const UNSUPPORTED_LOCALES = ["fr"];
+
+export const useCoerceUnsupportedLocale = () => {
+  const [locale, setLocale] = useLocaleState();
+  useEffect(() => {
+    if (UNSUPPORTED_LOCALES.includes(locale)) {
+      setLocale("en");
+    }
+  }, [locale, setLocale]);
+};
 
 export const testI18nProvider = polyglotI18nProvider(
   () => englishCatalog,

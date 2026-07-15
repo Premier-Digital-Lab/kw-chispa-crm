@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useGetIdentity, useTranslate } from "ra-core";
+import { useGetIdentity, useTranslate, type Identifier } from "ra-core";
 import { Lock } from "lucide-react";
 
 import { getSupabaseClient } from "../providers/supabase/supabase";
 
-const usePremierAccess = (identityId: number | undefined, isAdmin: boolean) => {
+const usePremierAccess = (
+  identityId: Identifier | undefined,
+  isAdmin: boolean,
+) => {
   const [isPremier, setIsPremier] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
 
@@ -24,7 +27,8 @@ const usePremierAccess = (identityId: number | undefined, isAdmin: boolean) => {
       .maybeSingle()
       .then(({ data }) => {
         setIsPremier(
-          data?.membership_tier === "Premier" && data?.member_status === "Active"
+          data?.membership_tier === "Premier" &&
+            data?.member_status === "Active",
         );
         setIsChecking(false);
       });
@@ -58,14 +62,23 @@ export const ContentGeneratorPage = () => {
   }
 
   if (!isPremier) {
-    return <LockScreen message={translate("crm.content_generator.locked_message")} />;
+    return (
+      <LockScreen message={translate("crm.content_generator.locked_message")} />
+    );
   }
 
   return (
-    <div style={{ position: "fixed", top: "51px", left: 0, right: 0, bottom: 0 }}>
+    <div
+      style={{ position: "fixed", top: "51px", left: 0, right: 0, bottom: 0 }}
+    >
       <iframe
         src={`https://web-production-283a7.up.railway.app?user_id=${authUUID}`}
-        style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          border: "none",
+          display: "block",
+        }}
         title="Content Generator"
       />
     </div>
@@ -89,7 +102,7 @@ const LockScreen = ({ message }: { message: string }) => {
     script.id = "paypal-sdk";
     script.src = `https://www.paypal.com/sdk/js?client-id=AQwl-kcSXaZ8ymAlMl-LCzUsKXDdKm92lyIKoOds5C-Y5T_NVauwPFGN4Y2Y9sbJstBGduucFDwsLkS7&vault=true&intent=subscription`;
     script.onload = () => setSdkReady(true);
-    script.onerror = () => console.error('PayPal SDK failed to load');
+    script.onerror = () => console.error("PayPal SDK failed to load");
     document.body.appendChild(script);
   }, []);
 
@@ -100,7 +113,11 @@ const LockScreen = ({ message }: { message: string }) => {
       .Buttons({
         createSubscription: (
           _data: unknown,
-          actions: { subscription: { create: (o: { plan_id: string }) => Promise<string> } },
+          actions: {
+            subscription: {
+              create: (o: { plan_id: string }) => Promise<string>;
+            };
+          },
         ) => actions.subscription.create({ plan_id: PAYPAL_PLAN_ID }),
         onApprove: () => setSuccess(true),
         style: { color: "blue", shape: "rect", label: "subscribe" },
@@ -127,7 +144,9 @@ const LockScreen = ({ message }: { message: string }) => {
         </div>
       </div>
       <h2 className="text-xl font-semibold mb-3">Premier Members Only</h2>
-      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{message}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+        {message}
+      </p>
       <div id="paypal-button-container" />
     </div>
   );
